@@ -20,6 +20,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     "navybaby-v0-4.onrender.com",
+    "navybaby.onrender.com",
 ]
 
 # === APPS ===
