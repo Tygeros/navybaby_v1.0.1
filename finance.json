@@ -1,0 +1,5297 @@
+[
+{
+  "model": "finance.financecategory",
+  "pk": 3,
+  "fields": {
+    "name": "Lương nhân viên",
+    "type": "EXPENSE",
+    "description": "Trả lương nhân viên"
+  }
+},
+{
+  "model": "finance.financecategory",
+  "pk": 4,
+  "fields": {
+    "name": "KH thanh toán đơn hàng",
+    "type": "INCOME",
+    "description": "Thanh toán tiền hàng"
+  }
+},
+{
+  "model": "finance.financecategory",
+  "pk": 5,
+  "fields": {
+    "name": "Nạp ví web vận chuyển",
+    "type": "EXPENSE",
+    "description": ""
+  }
+},
+{
+  "model": "finance.financecategory",
+  "pk": 6,
+  "fields": {
+    "name": "Nhập tệ",
+    "type": "EXPENSE",
+    "description": ""
+  }
+},
+{
+  "model": "finance.financecategory",
+  "pk": 7,
+  "fields": {
+    "name": "Túi gói hàng",
+    "type": "EXPENSE",
+    "description": ""
+  }
+},
+{
+  "model": "finance.financecategory",
+  "pk": 8,
+  "fields": {
+    "name": "Phí ship từ kho AZ",
+    "type": "EXPENSE",
+    "description": ""
+  }
+},
+{
+  "model": "finance.financecategory",
+  "pk": 9,
+  "fields": {
+    "name": "Chi khác (cụ thể mô tả)",
+    "type": "EXPENSE",
+    "description": ""
+  }
+},
+{
+  "model": "finance.financecategory",
+  "pk": 11,
+  "fields": {
+    "name": "Khác (Cụ thể phần mô tả)",
+    "type": "EXPENSE",
+    "description": ""
+  }
+},
+{
+  "model": "finance.financecategory",
+  "pk": 12,
+  "fields": {
+    "name": "Khấu trừ khoản tiền đặt cọc",
+    "type": "EXPENSE",
+    "description": ""
+  }
+},
+{
+  "model": "finance.financecategory",
+  "pk": 13,
+  "fields": {
+    "name": "KH đặt cọc tiền hàng",
+    "type": "INCOME",
+    "description": ""
+  }
+},
+{
+  "model": "finance.financecategory",
+  "pk": 14,
+  "fields": {
+    "name": "Hoàn tiền cho KH do hủy đơn",
+    "type": "EXPENSE",
+    "description": "Hoàn tiền đơn hàng chuyển trạng thái từ \"Đã đối soát\" -> \"Hủy đơn\""
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 5,
+  "fields": {
+    "category": 13,
+    "amount": "437000.00",
+    "customer": 1240,
+    "note": null,
+    "created_at": "2025-11-11T08:19:51.080Z",
+    "updated_at": "2025-11-11T08:19:51.080Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 6,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 1245,
+    "note": null,
+    "created_at": "2025-11-11T09:29:51.663Z",
+    "updated_at": "2025-11-11T09:29:51.663Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 7,
+  "fields": {
+    "category": 13,
+    "amount": "1000000.00",
+    "customer": 3,
+    "note": null,
+    "created_at": "2025-09-03T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:02.912Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 8,
+  "fields": {
+    "category": 13,
+    "amount": "1000000.00",
+    "customer": 101,
+    "note": null,
+    "created_at": "2025-09-04T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:03.423Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 9,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 114,
+    "note": null,
+    "created_at": "2025-08-31T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:03.941Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 10,
+  "fields": {
+    "category": 13,
+    "amount": "300000.00",
+    "customer": 129,
+    "note": null,
+    "created_at": "2025-09-03T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:04.439Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 11,
+  "fields": {
+    "category": 13,
+    "amount": "50000.00",
+    "customer": 93,
+    "note": null,
+    "created_at": "2025-08-31T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:04.836Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 12,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 42,
+    "note": null,
+    "created_at": "2025-08-31T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:05.227Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 13,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 84,
+    "note": null,
+    "created_at": "2025-08-31T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:05.705Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 14,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 142,
+    "note": null,
+    "created_at": "2025-08-31T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:06.093Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 15,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 155,
+    "note": null,
+    "created_at": "2025-08-31T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:06.597Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 16,
+  "fields": {
+    "category": 13,
+    "amount": "800000.00",
+    "customer": 140,
+    "note": null,
+    "created_at": "2025-08-31T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:07.007Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 17,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 156,
+    "note": null,
+    "created_at": "2025-08-31T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:07.417Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 18,
+  "fields": {
+    "category": 13,
+    "amount": "2300000.00",
+    "customer": 161,
+    "note": "",
+    "created_at": "2025-08-31T17:00:00Z",
+    "updated_at": "2025-11-12T05:17:01.008Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 19,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 200,
+    "note": null,
+    "created_at": "2025-09-08T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:08.200Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 20,
+  "fields": {
+    "category": 13,
+    "amount": "226000.00",
+    "customer": 340,
+    "note": null,
+    "created_at": "2025-09-11T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:08.587Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 21,
+  "fields": {
+    "category": 13,
+    "amount": "600000.00",
+    "customer": 349,
+    "note": null,
+    "created_at": "2025-09-12T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:08.977Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 22,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 361,
+    "note": null,
+    "created_at": "2025-09-14T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:09.365Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 23,
+  "fields": {
+    "category": 13,
+    "amount": "500000.00",
+    "customer": 379,
+    "note": null,
+    "created_at": "2025-09-15T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:09.753Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 24,
+  "fields": {
+    "category": 13,
+    "amount": "500000.00",
+    "customer": 361,
+    "note": null,
+    "created_at": "2025-09-15T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:10.140Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 25,
+  "fields": {
+    "category": 13,
+    "amount": "520000.00",
+    "customer": 389,
+    "note": null,
+    "created_at": "2025-09-16T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:10.529Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 26,
+  "fields": {
+    "category": 13,
+    "amount": "1119000.00",
+    "customer": 395,
+    "note": null,
+    "created_at": "2025-09-16T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:10.918Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 27,
+  "fields": {
+    "category": 13,
+    "amount": "1000000.00",
+    "customer": 405,
+    "note": null,
+    "created_at": "2025-09-18T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:11.313Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 28,
+  "fields": {
+    "category": 13,
+    "amount": "468000.00",
+    "customer": 418,
+    "note": null,
+    "created_at": "2025-09-19T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:11.699Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 29,
+  "fields": {
+    "category": 13,
+    "amount": "300000.00",
+    "customer": 422,
+    "note": null,
+    "created_at": "2025-09-19T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:12.090Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 30,
+  "fields": {
+    "category": 13,
+    "amount": "430000.00",
+    "customer": 424,
+    "note": null,
+    "created_at": "2025-09-19T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:12.487Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 31,
+  "fields": {
+    "category": 13,
+    "amount": "205000.00",
+    "customer": 425,
+    "note": null,
+    "created_at": "2025-09-20T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:12.883Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 32,
+  "fields": {
+    "category": 13,
+    "amount": "320000.00",
+    "customer": 434,
+    "note": null,
+    "created_at": "2025-09-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:13.670Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 33,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 432,
+    "note": null,
+    "created_at": "2025-09-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:14.062Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 34,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 433,
+    "note": null,
+    "created_at": "2025-09-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:14.450Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 35,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 345,
+    "note": null,
+    "created_at": "2025-09-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:14.840Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 36,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 441,
+    "note": null,
+    "created_at": "2025-09-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:15.228Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 37,
+  "fields": {
+    "category": 13,
+    "amount": "435000.00",
+    "customer": 440,
+    "note": null,
+    "created_at": "2025-09-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:15.615Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 38,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 446,
+    "note": null,
+    "created_at": "2025-09-22T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:16.004Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 39,
+  "fields": {
+    "category": 13,
+    "amount": "430000.00",
+    "customer": 452,
+    "note": null,
+    "created_at": "2025-09-22T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:16.393Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 40,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 483,
+    "note": null,
+    "created_at": "2025-09-25T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:16.783Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 41,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 489,
+    "note": null,
+    "created_at": "2025-09-25T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:17.173Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 42,
+  "fields": {
+    "category": 13,
+    "amount": "310000.00",
+    "customer": 478,
+    "note": null,
+    "created_at": "2025-09-25T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:17.565Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 43,
+  "fields": {
+    "category": 13,
+    "amount": "350000.00",
+    "customer": 492,
+    "note": null,
+    "created_at": "2025-09-25T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:18.004Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 44,
+  "fields": {
+    "category": 13,
+    "amount": "1260000.00",
+    "customer": 493,
+    "note": null,
+    "created_at": "2025-09-26T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:18.393Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 45,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 497,
+    "note": null,
+    "created_at": "2025-09-26T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:18.784Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 46,
+  "fields": {
+    "category": 13,
+    "amount": "540000.00",
+    "customer": 509,
+    "note": null,
+    "created_at": "2025-09-26T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:19.181Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 47,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 520,
+    "note": null,
+    "created_at": "2025-09-27T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:19.571Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 48,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 525,
+    "note": null,
+    "created_at": "2025-09-28T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:19.958Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 49,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 534,
+    "note": null,
+    "created_at": "2025-09-28T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:20.347Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 50,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 540,
+    "note": null,
+    "created_at": "2025-09-28T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:20.735Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 51,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 541,
+    "note": null,
+    "created_at": "2025-09-28T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:21.123Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 52,
+  "fields": {
+    "category": 13,
+    "amount": "300000.00",
+    "customer": 544,
+    "note": null,
+    "created_at": "2025-09-30T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:21.548Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 53,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 552,
+    "note": null,
+    "created_at": "2025-09-30T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:21.939Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 54,
+  "fields": {
+    "category": 13,
+    "amount": "500000.00",
+    "customer": 570,
+    "note": null,
+    "created_at": "2025-09-30T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:22.367Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 55,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 585,
+    "note": null,
+    "created_at": "2025-09-30T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:22.981Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 56,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 555,
+    "note": null,
+    "created_at": "2025-09-30T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:23.493Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 57,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 605,
+    "note": null,
+    "created_at": "2025-10-02T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:23.930Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 58,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 638,
+    "note": null,
+    "created_at": "2025-10-04T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:24.415Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 59,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 659,
+    "note": null,
+    "created_at": "2025-10-06T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:24.813Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 60,
+  "fields": {
+    "category": 12,
+    "amount": "435000.00",
+    "customer": 666,
+    "note": "",
+    "created_at": "2025-10-06T17:00:00Z",
+    "updated_at": "2025-11-13T04:22:16.732Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 61,
+  "fields": {
+    "category": 13,
+    "amount": "280000.00",
+    "customer": 662,
+    "note": null,
+    "created_at": "2025-10-06T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:25.644Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 62,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 670,
+    "note": null,
+    "created_at": "2025-10-06T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:26.062Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 63,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 678,
+    "note": null,
+    "created_at": "2025-10-07T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:26.565Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 64,
+  "fields": {
+    "category": 13,
+    "amount": "50000.00",
+    "customer": 681,
+    "note": null,
+    "created_at": "2025-10-07T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:27.077Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 65,
+  "fields": {
+    "category": 13,
+    "amount": "245000.00",
+    "customer": 683,
+    "note": null,
+    "created_at": "2025-10-07T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:27.487Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 66,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 693,
+    "note": null,
+    "created_at": "2025-10-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:28.000Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 67,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 701,
+    "note": null,
+    "created_at": "2025-10-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:28.408Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 68,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 709,
+    "note": null,
+    "created_at": "2025-10-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:28.818Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 69,
+  "fields": {
+    "category": 13,
+    "amount": "400000.00",
+    "customer": 702,
+    "note": null,
+    "created_at": "2025-10-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:29.228Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 70,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 1202,
+    "note": null,
+    "created_at": "2025-10-10T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:29.637Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 71,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 715,
+    "note": null,
+    "created_at": "2025-10-12T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:30.045Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 72,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 716,
+    "note": null,
+    "created_at": "2025-10-12T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:30.433Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 73,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 725,
+    "note": null,
+    "created_at": "2025-10-12T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:30.823Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 74,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 736,
+    "note": null,
+    "created_at": "2025-10-12T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:31.209Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 75,
+  "fields": {
+    "category": 13,
+    "amount": "182000.00",
+    "customer": 745,
+    "note": null,
+    "created_at": "2025-10-12T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:31.596Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 76,
+  "fields": {
+    "category": 13,
+    "amount": "259000.00",
+    "customer": 746,
+    "note": null,
+    "created_at": "2025-10-12T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:31.988Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 77,
+  "fields": {
+    "category": 13,
+    "amount": "50000.00",
+    "customer": 750,
+    "note": null,
+    "created_at": "2025-10-12T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:32.403Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 78,
+  "fields": {
+    "category": 13,
+    "amount": "300000.00",
+    "customer": 751,
+    "note": null,
+    "created_at": "2025-10-12T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:32.795Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 79,
+  "fields": {
+    "category": 13,
+    "amount": "340000.00",
+    "customer": 770,
+    "note": null,
+    "created_at": "2025-10-13T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:33.189Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 80,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 781,
+    "note": null,
+    "created_at": "2025-10-14T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:33.576Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 81,
+  "fields": {
+    "category": 13,
+    "amount": "270000.00",
+    "customer": 782,
+    "note": null,
+    "created_at": "2025-10-14T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:33.964Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 82,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 788,
+    "note": null,
+    "created_at": "2025-10-14T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:34.356Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 83,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 819,
+    "note": null,
+    "created_at": "2025-10-16T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:34.757Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 84,
+  "fields": {
+    "category": 13,
+    "amount": "360000.00",
+    "customer": 835,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:35.167Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 85,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 841,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:35.576Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 86,
+  "fields": {
+    "category": 4,
+    "amount": "265000.00",
+    "customer": 3,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:35.986Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 87,
+  "fields": {
+    "category": 4,
+    "amount": "179000.00",
+    "customer": 3,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:36.395Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 88,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 5,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:36.805Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 89,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 6,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:37.317Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 90,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 7,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:37.727Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 91,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 8,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:38.239Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 92,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 9,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:39.058Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 93,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 10,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:39.467Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 94,
+  "fields": {
+    "category": 4,
+    "amount": "215000.00",
+    "customer": 10,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:40.480Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 95,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 12,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:41.401Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 96,
+  "fields": {
+    "category": 4,
+    "amount": "215000.00",
+    "customer": 12,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:41.823Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 97,
+  "fields": {
+    "category": 4,
+    "amount": "125000.00",
+    "customer": 12,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:42.335Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 98,
+  "fields": {
+    "category": 4,
+    "amount": "195000.00",
+    "customer": 12,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:42.744Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 99,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 12,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:43.154Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 100,
+  "fields": {
+    "category": 4,
+    "amount": "155000.00",
+    "customer": 12,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:43.565Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 101,
+  "fields": {
+    "category": 4,
+    "amount": "139000.00",
+    "customer": 12,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:43.973Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 102,
+  "fields": {
+    "category": 4,
+    "amount": "189000.00",
+    "customer": 151,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:44.383Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 103,
+  "fields": {
+    "category": 4,
+    "amount": "99000.00",
+    "customer": 151,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:44.792Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 104,
+  "fields": {
+    "category": 4,
+    "amount": "325000.00",
+    "customer": 151,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:45.202Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 105,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 33,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:45.611Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 106,
+  "fields": {
+    "category": 4,
+    "amount": "229000.00",
+    "customer": 33,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:46.123Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 107,
+  "fields": {
+    "category": 4,
+    "amount": "249000.00",
+    "customer": 33,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:46.636Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 108,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 35,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:47.047Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 109,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 36,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:47.660Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 110,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 37,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:48.069Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 111,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 38,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:48.581Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 112,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 39,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:48.991Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 113,
+  "fields": {
+    "category": 4,
+    "amount": "299000.00",
+    "customer": 39,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:49.502Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 114,
+  "fields": {
+    "category": 4,
+    "amount": "170000.00",
+    "customer": 39,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:50.015Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 115,
+  "fields": {
+    "category": 4,
+    "amount": "129000.00",
+    "customer": 3,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:50.527Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 116,
+  "fields": {
+    "category": 4,
+    "amount": "179000.00",
+    "customer": 3,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:51.047Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 117,
+  "fields": {
+    "category": 4,
+    "amount": "420000.00",
+    "customer": 3,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:51.550Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 118,
+  "fields": {
+    "category": 4,
+    "amount": "179000.00",
+    "customer": 3,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:51.960Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 119,
+  "fields": {
+    "category": 4,
+    "amount": "139000.00",
+    "customer": 3,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:52.370Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 120,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 44,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:52.779Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 121,
+  "fields": {
+    "category": 4,
+    "amount": "119000.00",
+    "customer": 44,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:53.189Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 122,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 45,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:53.598Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 123,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 46,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:54.008Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 124,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 46,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:54.418Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 125,
+  "fields": {
+    "category": 4,
+    "amount": "174000.00",
+    "customer": 47,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:54.930Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 126,
+  "fields": {
+    "category": 4,
+    "amount": "159000.00",
+    "customer": 47,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:55.339Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 127,
+  "fields": {
+    "category": 4,
+    "amount": "151000.00",
+    "customer": 49,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:55.749Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 128,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 50,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:56.261Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 129,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 52,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:56.659Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 130,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 53,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:57.082Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 131,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 51,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:57.695Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 132,
+  "fields": {
+    "category": 4,
+    "amount": "170000.00",
+    "customer": 54,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:58.104Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 133,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 56,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:58.514Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 134,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 57,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:58.924Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 135,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 58,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:59.333Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 136,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 59,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:39:59.731Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 137,
+  "fields": {
+    "category": 4,
+    "amount": "170000.00",
+    "customer": 59,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:00.152Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 138,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 60,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:00.562Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 139,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 61,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:00.971Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 140,
+  "fields": {
+    "category": 4,
+    "amount": "185000.00",
+    "customer": 63,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:01.381Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 141,
+  "fields": {
+    "category": 4,
+    "amount": "185000.00",
+    "customer": 63,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:01.779Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 142,
+  "fields": {
+    "category": 4,
+    "amount": "99000.00",
+    "customer": 63,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:02.303Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 143,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 64,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:02.712Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 144,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 64,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:03.224Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 145,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 65,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:03.736Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 146,
+  "fields": {
+    "category": 4,
+    "amount": "170000.00",
+    "customer": 65,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:04.237Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 147,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 66,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:04.658Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 148,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 66,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:05.069Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 149,
+  "fields": {
+    "category": 4,
+    "amount": "359000.00",
+    "customer": 67,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:05.580Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 150,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 67,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:05.989Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 151,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 68,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:06.398Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 152,
+  "fields": {
+    "category": 4,
+    "amount": "139000.00",
+    "customer": 68,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:06.808Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 153,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 69,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:07.218Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 154,
+  "fields": {
+    "category": 4,
+    "amount": "179000.00",
+    "customer": 70,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:07.730Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 155,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 70,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:08.139Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 156,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 34,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:08.549Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 157,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 34,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:08.959Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 158,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 71,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:09.471Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 159,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 24,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:09.880Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 160,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 26,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:10.290Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 161,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 26,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:10.699Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 162,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 27,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:11.202Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 163,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 27,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:11.621Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 164,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 28,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:12.030Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 165,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 13,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:12.440Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 166,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 13,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:12.952Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 167,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 14,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:13.362Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 168,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 15,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:13.874Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 169,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 16,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:14.386Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 170,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 17,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:15.307Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 171,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 19,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:15.717Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 172,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 19,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:16.245Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 173,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 19,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:16.741Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 174,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 20,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:17.153Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 175,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 21,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:17.560Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 176,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 1234,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:18.072Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 177,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 22,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:18.482Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 178,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 22,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:19.404Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 179,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 22,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:19.915Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 180,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 23,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:20.325Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 181,
+  "fields": {
+    "category": 4,
+    "amount": "125000.00",
+    "customer": 23,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:20.734Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 182,
+  "fields": {
+    "category": 4,
+    "amount": "99000.00",
+    "customer": 23,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:21.144Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 183,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 72,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:21.554Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 184,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 73,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:21.963Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 185,
+  "fields": {
+    "category": 4,
+    "amount": "109000.00",
+    "customer": 73,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:22.475Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 186,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 73,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:22.987Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 187,
+  "fields": {
+    "category": 4,
+    "amount": "75000.00",
+    "customer": 73,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:23.499Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 188,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 74,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:24.012Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 189,
+  "fields": {
+    "category": 4,
+    "amount": "174000.00",
+    "customer": 1195,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:24.524Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 190,
+  "fields": {
+    "category": 4,
+    "amount": "174000.00",
+    "customer": 1195,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:24.933Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 191,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 76,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:25.445Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 192,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 76,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:25.854Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 193,
+  "fields": {
+    "category": 4,
+    "amount": "259000.00",
+    "customer": 77,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:26.469Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 194,
+  "fields": {
+    "category": 4,
+    "amount": "299000.00",
+    "customer": 77,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:26.878Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 195,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 77,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:27.290Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 196,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 77,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:27.800Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 197,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 78,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:28.210Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 198,
+  "fields": {
+    "category": 4,
+    "amount": "109000.00",
+    "customer": 78,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:28.619Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 199,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 79,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:29.029Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 200,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 80,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:29.438Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 201,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 80,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:29.950Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 202,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 81,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:30.451Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 203,
+  "fields": {
+    "category": 4,
+    "amount": "109000.00",
+    "customer": 81,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:30.838Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 204,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 40,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:31.282Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 205,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 40,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:31.692Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 206,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 82,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:32.101Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 207,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 83,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:32.613Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 208,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 84,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:33.023Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 209,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 84,
+    "note": null,
+    "created_at": "2025-10-17T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:33.535Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 210,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 848,
+    "note": null,
+    "created_at": "2025-10-19T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:33.949Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 211,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 862,
+    "note": null,
+    "created_at": "2025-10-19T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:34.458Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 212,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 85,
+    "note": null,
+    "created_at": "2025-10-19T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:34.968Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 213,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 85,
+    "note": null,
+    "created_at": "2025-10-19T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:35.377Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 214,
+  "fields": {
+    "category": 4,
+    "amount": "319000.00",
+    "customer": 3,
+    "note": null,
+    "created_at": "2025-10-19T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:35.787Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 215,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 4,
+    "note": null,
+    "created_at": "2025-10-19T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:36.299Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 216,
+  "fields": {
+    "category": 4,
+    "amount": "139000.00",
+    "customer": 4,
+    "note": null,
+    "created_at": "2025-10-19T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:36.811Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 217,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 870,
+    "note": null,
+    "created_at": "2025-10-20T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:37.221Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 218,
+  "fields": {
+    "category": 13,
+    "amount": "250000.00",
+    "customer": 872,
+    "note": null,
+    "created_at": "2025-10-20T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:37.630Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 219,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 876,
+    "note": null,
+    "created_at": "2025-10-20T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:38.040Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 220,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 881,
+    "note": null,
+    "created_at": "2025-10-20T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:38.552Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 221,
+  "fields": {
+    "category": 13,
+    "amount": "155000.00",
+    "customer": 887,
+    "note": null,
+    "created_at": "2025-10-20T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:38.961Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 222,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 889,
+    "note": null,
+    "created_at": "2025-10-20T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:39.369Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 223,
+  "fields": {
+    "category": 13,
+    "amount": "250000.00",
+    "customer": 892,
+    "note": null,
+    "created_at": "2025-10-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:39.781Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 224,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 893,
+    "note": null,
+    "created_at": "2025-10-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:40.190Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 225,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 894,
+    "note": null,
+    "created_at": "2025-10-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:40.703Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 226,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 895,
+    "note": null,
+    "created_at": "2025-10-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:41.214Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 227,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 904,
+    "note": null,
+    "created_at": "2025-10-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:41.624Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 228,
+  "fields": {
+    "category": 13,
+    "amount": "50000.00",
+    "customer": 909,
+    "note": null,
+    "created_at": "2025-10-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:42.033Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 229,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 919,
+    "note": null,
+    "created_at": "2025-10-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:42.443Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 230,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 921,
+    "note": null,
+    "created_at": "2025-10-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:42.853Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 231,
+  "fields": {
+    "category": 13,
+    "amount": "50000.00",
+    "customer": 923,
+    "note": null,
+    "created_at": "2025-10-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:43.262Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 232,
+  "fields": {
+    "category": 13,
+    "amount": "250000.00",
+    "customer": 924,
+    "note": null,
+    "created_at": "2025-10-21T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:43.672Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 233,
+  "fields": {
+    "category": 13,
+    "amount": "395000.00",
+    "customer": 928,
+    "note": "KH-231025-002 check lại",
+    "created_at": "2025-10-22T17:00:00Z",
+    "updated_at": "2025-11-13T09:36:36.637Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 234,
+  "fields": {
+    "category": 13,
+    "amount": "300000.00",
+    "customer": 929,
+    "note": null,
+    "created_at": "2025-10-22T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:44.491Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 235,
+  "fields": {
+    "category": 4,
+    "amount": "185000.00",
+    "customer": 1212,
+    "note": null,
+    "created_at": "2025-10-22T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:44.889Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 236,
+  "fields": {
+    "category": 4,
+    "amount": "185000.00",
+    "customer": 1212,
+    "note": null,
+    "created_at": "2025-10-22T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:45.311Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 237,
+  "fields": {
+    "category": 4,
+    "amount": "185000.00",
+    "customer": 1212,
+    "note": null,
+    "created_at": "2025-10-22T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:45.822Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 238,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 927,
+    "note": null,
+    "created_at": "2025-10-23T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:46.232Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 239,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 946,
+    "note": null,
+    "created_at": "2025-10-23T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:46.846Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 240,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 963,
+    "note": null,
+    "created_at": "2025-10-23T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:47.358Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 241,
+  "fields": {
+    "category": 13,
+    "amount": "675000.00",
+    "customer": 967,
+    "note": null,
+    "created_at": "2025-10-23T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:47.870Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 242,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 936,
+    "note": null,
+    "created_at": "2025-10-24T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:48.280Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 243,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 978,
+    "note": null,
+    "created_at": "2025-10-24T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:48.678Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 244,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 989,
+    "note": null,
+    "created_at": "2025-10-24T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:49.099Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 245,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 991,
+    "note": null,
+    "created_at": "2025-10-24T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:49.611Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 246,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 995,
+    "note": null,
+    "created_at": "2025-10-24T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:50.021Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 247,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1015,
+    "note": null,
+    "created_at": "2025-10-25T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:50.635Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 248,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1021,
+    "note": null,
+    "created_at": "2025-10-26T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:51.045Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 249,
+  "fields": {
+    "category": 13,
+    "amount": "670000.00",
+    "customer": 1025,
+    "note": null,
+    "created_at": "2025-10-26T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:51.455Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 250,
+  "fields": {
+    "category": 13,
+    "amount": "260000.00",
+    "customer": 1034,
+    "note": null,
+    "created_at": "2025-10-26T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:51.864Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 251,
+  "fields": {
+    "category": 13,
+    "amount": "260000.00",
+    "customer": 1037,
+    "note": null,
+    "created_at": "2025-10-27T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:52.376Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 252,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1038,
+    "note": null,
+    "created_at": "2025-10-27T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:52.787Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 253,
+  "fields": {
+    "category": 13,
+    "amount": "50000.00",
+    "customer": 1028,
+    "note": null,
+    "created_at": "2025-10-27T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:53.196Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 254,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1041,
+    "note": null,
+    "created_at": "2025-10-27T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:53.605Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 255,
+  "fields": {
+    "category": 4,
+    "amount": "209000.00",
+    "customer": 378,
+    "note": null,
+    "created_at": "2025-10-29T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:54.219Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 256,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1054,
+    "note": null,
+    "created_at": "2025-10-30T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:54.629Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 257,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1055,
+    "note": null,
+    "created_at": "2025-10-30T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:55.038Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 258,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 1056,
+    "note": null,
+    "created_at": "2025-10-30T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:55.448Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 259,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1063,
+    "note": null,
+    "created_at": "2025-10-30T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:55.960Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 260,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1065,
+    "note": null,
+    "created_at": "2025-10-30T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:56.882Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 261,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1066,
+    "note": null,
+    "created_at": "2025-10-30T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:57.291Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 262,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1220,
+    "note": null,
+    "created_at": "2025-10-30T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:57.717Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 263,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1080,
+    "note": null,
+    "created_at": "2025-10-31T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:58.213Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 264,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1085,
+    "note": null,
+    "created_at": "2025-10-31T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:58.622Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 265,
+  "fields": {
+    "category": 13,
+    "amount": "300000.00",
+    "customer": 1061,
+    "note": null,
+    "created_at": "2025-10-31T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:59.032Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 266,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1092,
+    "note": null,
+    "created_at": "2025-11-01T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:59.430Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 267,
+  "fields": {
+    "category": 13,
+    "amount": "80000.00",
+    "customer": 1098,
+    "note": null,
+    "created_at": "2025-11-01T17:00:00Z",
+    "updated_at": "2025-11-11T09:40:59.851Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 268,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1101,
+    "note": null,
+    "created_at": "2025-11-01T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:00.260Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 269,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 1115,
+    "note": null,
+    "created_at": "2025-11-03T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:00.670Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 270,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1120,
+    "note": null,
+    "created_at": "2025-11-03T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:01.512Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 271,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1130,
+    "note": null,
+    "created_at": "2025-11-03T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:01.922Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 272,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1135,
+    "note": null,
+    "created_at": "2025-11-04T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:02.332Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 273,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1137,
+    "note": null,
+    "created_at": "2025-11-04T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:02.741Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 274,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 1144,
+    "note": null,
+    "created_at": "2025-11-04T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:03.151Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 275,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1152,
+    "note": null,
+    "created_at": "2025-11-04T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:03.751Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 276,
+  "fields": {
+    "category": 13,
+    "amount": "137000.00",
+    "customer": 1155,
+    "note": null,
+    "created_at": "2025-11-04T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:04.570Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 277,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1162,
+    "note": null,
+    "created_at": "2025-11-05T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:05.813Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 278,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1169,
+    "note": null,
+    "created_at": "2025-11-05T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:06.302Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 279,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1175,
+    "note": null,
+    "created_at": "2025-11-05T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:06.712Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 280,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1178,
+    "note": null,
+    "created_at": "2025-11-05T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:07.326Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 281,
+  "fields": {
+    "category": 13,
+    "amount": "200000.00",
+    "customer": 1189,
+    "note": null,
+    "created_at": "2025-11-06T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:07.838Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 282,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1228,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:08.239Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 283,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1229,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:08.629Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 284,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 11,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:09.067Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 285,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 11,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:09.477Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 286,
+  "fields": {
+    "category": 4,
+    "amount": "99000.00",
+    "customer": 11,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:09.989Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 287,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 11,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:10.398Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 288,
+  "fields": {
+    "category": 4,
+    "amount": "179000.00",
+    "customer": 11,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:10.910Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 289,
+  "fields": {
+    "category": 4,
+    "amount": "99000.00",
+    "customer": 11,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:11.319Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 290,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 18,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:11.717Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 291,
+  "fields": {
+    "category": 4,
+    "amount": "249000.00",
+    "customer": 25,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:12.127Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 292,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 29,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:12.548Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 293,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 30,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:12.958Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 294,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 31,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:13.347Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 295,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 32,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:13.777Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 296,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 39,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:14.289Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 297,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 40,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:14.801Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 298,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 40,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:15.314Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 299,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 42,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:15.826Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 300,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 43,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:16.337Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 301,
+  "fields": {
+    "category": 4,
+    "amount": "75000.00",
+    "customer": 48,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:16.851Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 302,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 48,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:17.361Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 303,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 55,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:17.873Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 304,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 62,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:18.386Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 305,
+  "fields": {
+    "category": 4,
+    "amount": "109000.00",
+    "customer": 1235,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:19.000Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 306,
+  "fields": {
+    "category": 4,
+    "amount": "159000.00",
+    "customer": 1235,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:19.409Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 307,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 86,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:19.921Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 308,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 87,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:20.433Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 309,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 87,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:20.946Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 310,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 88,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:21.457Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 311,
+  "fields": {
+    "category": 4,
+    "amount": "245000.00",
+    "customer": 89,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:21.867Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 312,
+  "fields": {
+    "category": 4,
+    "amount": "245000.00",
+    "customer": 90,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:22.379Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 313,
+  "fields": {
+    "category": 4,
+    "amount": "179000.00",
+    "customer": 91,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:22.891Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 314,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 92,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:23.403Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 315,
+  "fields": {
+    "category": 4,
+    "amount": "174000.00",
+    "customer": 93,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:23.812Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 316,
+  "fields": {
+    "category": 4,
+    "amount": "159000.00",
+    "customer": 94,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:24.324Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 317,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 95,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:24.734Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 318,
+  "fields": {
+    "category": 4,
+    "amount": "99000.00",
+    "customer": 95,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:25.144Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 319,
+  "fields": {
+    "category": 4,
+    "amount": "165000.00",
+    "customer": 96,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:25.543Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 320,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 96,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:25.952Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 321,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 97,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:26.372Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 322,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 97,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:26.782Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 323,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 97,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:27.294Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 324,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 98,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:27.806Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 325,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 98,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:28.216Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 326,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 99,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:28.625Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 327,
+  "fields": {
+    "category": 4,
+    "amount": "170000.00",
+    "customer": 1196,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:29.035Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 328,
+  "fields": {
+    "category": 4,
+    "amount": "170000.00",
+    "customer": 1196,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:29.444Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 329,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 101,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:29.957Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 330,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 101,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:30.366Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 331,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 101,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:30.776Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 332,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 101,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:31.185Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 333,
+  "fields": {
+    "category": 4,
+    "amount": "179000.00",
+    "customer": 102,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:31.595Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 334,
+  "fields": {
+    "category": 4,
+    "amount": "179000.00",
+    "customer": 103,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:32.005Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 335,
+  "fields": {
+    "category": 4,
+    "amount": "179000.00",
+    "customer": 103,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:32.414Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 336,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 104,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:32.824Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 337,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 104,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:33.335Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 338,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 105,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:33.853Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 339,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 106,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:34.360Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 340,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 107,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:34.872Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 341,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 107,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:35.281Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 342,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 108,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:35.793Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 343,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 109,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:36.305Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 344,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 109,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:36.715Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 345,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 110,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:37.129Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 346,
+  "fields": {
+    "category": 4,
+    "amount": "329000.00",
+    "customer": 110,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:37.739Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 347,
+  "fields": {
+    "category": 4,
+    "amount": "319000.00",
+    "customer": 110,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:38.256Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 348,
+  "fields": {
+    "category": 4,
+    "amount": "169000.00",
+    "customer": 110,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:38.763Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 349,
+  "fields": {
+    "category": 4,
+    "amount": "249000.00",
+    "customer": 110,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:39.276Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 350,
+  "fields": {
+    "category": 4,
+    "amount": "168000.00",
+    "customer": 110,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:39.787Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 351,
+  "fields": {
+    "category": 13,
+    "amount": "100000.00",
+    "customer": 1232,
+    "note": null,
+    "created_at": "2025-11-09T17:00:00Z",
+    "updated_at": "2025-11-11T09:41:40.197Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 352,
+  "fields": {
+    "category": 5,
+    "amount": "3000000.00",
+    "customer": null,
+    "note": "",
+    "created_at": "2025-09-04T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:22.847Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 353,
+  "fields": {
+    "category": 8,
+    "amount": "250000.00",
+    "customer": null,
+    "note": "5 lần tháng 8",
+    "created_at": "2025-09-04T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:23.460Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 354,
+  "fields": {
+    "category": 3,
+    "amount": "1080000.00",
+    "customer": null,
+    "note": "Hà partime - lương tháng 8",
+    "created_at": "2025-09-05T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:24.074Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 355,
+  "fields": {
+    "category": 6,
+    "amount": "37600000.00",
+    "customer": null,
+    "note": "1v- 3760",
+    "created_at": "2025-09-06T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:24.693Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 356,
+  "fields": {
+    "category": 11,
+    "amount": "80000.00",
+    "customer": null,
+    "note": "Vé xe tháng 9 Thảo fulltime",
+    "created_at": "2025-09-09T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:25.917Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 357,
+  "fields": {
+    "category": 11,
+    "amount": "145000.00",
+    "customer": null,
+    "note": "tà tữa",
+    "created_at": "2025-09-09T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:26.531Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 358,
+  "fields": {
+    "category": 7,
+    "amount": "200000.00",
+    "customer": null,
+    "note": "5kg túi 45x60",
+    "created_at": "2025-09-09T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:27.146Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 359,
+  "fields": {
+    "category": 6,
+    "amount": "18825000.00",
+    "customer": null,
+    "note": "5k - 3765",
+    "created_at": "2025-09-10T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:27.761Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 360,
+  "fields": {
+    "category": 6,
+    "amount": "18650000.00",
+    "customer": null,
+    "note": "5k - 3730",
+    "created_at": "2025-09-14T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:28.375Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 361,
+  "fields": {
+    "category": 6,
+    "amount": "18675000.00",
+    "customer": null,
+    "note": "5k - 3735",
+    "created_at": "2025-09-16T01:57:32Z",
+    "updated_at": "2025-11-11T13:56:29.092Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 362,
+  "fields": {
+    "category": 8,
+    "amount": "250000.00",
+    "customer": null,
+    "note": "3 chuyến - trả chú kho",
+    "created_at": "2025-09-16T03:06:09Z",
+    "updated_at": "2025-11-11T13:56:29.809Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 363,
+  "fields": {
+    "category": 5,
+    "amount": "3000000.00",
+    "customer": null,
+    "note": "",
+    "created_at": "2025-09-20T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:30.427Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 364,
+  "fields": {
+    "category": 6,
+    "amount": "37650000.00",
+    "customer": null,
+    "note": "1v - 3765",
+    "created_at": "2025-09-21T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:31.039Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 365,
+  "fields": {
+    "category": 6,
+    "amount": "37600000.00",
+    "customer": null,
+    "note": "1v - 3760",
+    "created_at": "2025-09-25T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:31.651Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 366,
+  "fields": {
+    "category": 8,
+    "amount": "68000.00",
+    "customer": null,
+    "note": "",
+    "created_at": "2025-09-29T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:32.266Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 367,
+  "fields": {
+    "category": 5,
+    "amount": "5000000.00",
+    "customer": null,
+    "note": "",
+    "created_at": "2025-10-01T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:32.881Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 368,
+  "fields": {
+    "category": 8,
+    "amount": "123000.00",
+    "customer": null,
+    "note": "",
+    "created_at": "2025-10-01T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:33.495Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 369,
+  "fields": {
+    "category": 6,
+    "amount": "18765000.00",
+    "customer": null,
+    "note": "5k- 3753",
+    "created_at": "2025-10-01T17:00:00Z",
+    "updated_at": "2025-11-11T13:56:34.109Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 377,
+  "fields": {
+    "category": 12,
+    "amount": "2300000.00",
+    "customer": 161,
+    "note": "",
+    "created_at": "2025-11-12T14:48:49.096Z",
+    "updated_at": "2025-11-12T14:48:49.096Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 378,
+  "fields": {
+    "category": 12,
+    "amount": "1000000.00",
+    "customer": 101,
+    "note": "",
+    "created_at": "2025-11-12T14:48:50.085Z",
+    "updated_at": "2025-11-12T14:48:50.085Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 379,
+  "fields": {
+    "category": 12,
+    "amount": "200000.00",
+    "customer": 1245,
+    "note": "",
+    "created_at": "2025-11-12T14:48:51.108Z",
+    "updated_at": "2025-11-12T14:48:51.108Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 380,
+  "fields": {
+    "category": 12,
+    "amount": "200000.00",
+    "customer": 42,
+    "note": "",
+    "created_at": "2025-11-12T14:48:52.132Z",
+    "updated_at": "2025-11-12T14:48:52.132Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 381,
+  "fields": {
+    "category": 12,
+    "amount": "1000000.00",
+    "customer": 3,
+    "note": "",
+    "created_at": "2025-11-12T14:48:53.156Z",
+    "updated_at": "2025-11-12T14:48:53.156Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 388,
+  "fields": {
+    "category": 13,
+    "amount": "300000.00",
+    "customer": 1249,
+    "note": "TEST",
+    "created_at": "2025-11-13T08:58:50.783Z",
+    "updated_at": "2025-11-13T08:58:50.783Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 390,
+  "fields": {
+    "category": 13,
+    "amount": "169000.00",
+    "customer": 77,
+    "note": "",
+    "created_at": "2025-11-13T09:08:22.952Z",
+    "updated_at": "2025-11-13T09:08:22.952Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 395,
+  "fields": {
+    "category": 4,
+    "amount": "99000.00",
+    "customer": 1249,
+    "note": "TEST",
+    "created_at": "2025-11-13T09:50:21.219Z",
+    "updated_at": "2025-11-13T09:50:21.219Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 396,
+  "fields": {
+    "category": 12,
+    "amount": "100000.00",
+    "customer": 1249,
+    "note": "TEST",
+    "created_at": "2025-11-13T09:50:21.971Z",
+    "updated_at": "2025-11-13T09:50:21.971Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 397,
+  "fields": {
+    "category": 12,
+    "amount": "100000.00",
+    "customer": 781,
+    "note": "KH-151025-001",
+    "created_at": "2025-11-13T10:51:18.879Z",
+    "updated_at": "2025-11-13T10:51:18.879Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 398,
+  "fields": {
+    "category": 4,
+    "amount": "579000.00",
+    "customer": 3,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T02:59:40.404Z",
+    "updated_at": "2025-11-14T02:59:40.404Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 399,
+  "fields": {
+    "category": 4,
+    "amount": "676000.00",
+    "customer": 104,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T02:59:41.807Z",
+    "updated_at": "2025-11-14T02:59:41.807Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 400,
+  "fields": {
+    "category": 4,
+    "amount": "2111000.00",
+    "customer": 31,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T02:59:44.909Z",
+    "updated_at": "2025-11-14T02:59:44.909Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 401,
+  "fields": {
+    "category": 4,
+    "amount": "3909000.00",
+    "customer": 47,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T02:59:46.235Z",
+    "updated_at": "2025-11-14T02:59:46.235Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 402,
+  "fields": {
+    "category": 4,
+    "amount": "4000.00",
+    "customer": 107,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T02:59:47.486Z",
+    "updated_at": "2025-11-14T02:59:47.486Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 403,
+  "fields": {
+    "category": 4,
+    "amount": "215000.00",
+    "customer": 30,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T02:59:48.696Z",
+    "updated_at": "2025-11-14T02:59:48.696Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 404,
+  "fields": {
+    "category": 4,
+    "amount": "149000.00",
+    "customer": 77,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T02:59:50.936Z",
+    "updated_at": "2025-11-14T02:59:50.936Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 405,
+  "fields": {
+    "category": 4,
+    "amount": "75000.00",
+    "customer": 66,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T02:59:54.841Z",
+    "updated_at": "2025-11-14T02:59:54.841Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 406,
+  "fields": {
+    "category": 4,
+    "amount": "567000.00",
+    "customer": 108,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T02:59:58.011Z",
+    "updated_at": "2025-11-14T02:59:58.011Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 407,
+  "fields": {
+    "category": 4,
+    "amount": "752000.00",
+    "customer": 101,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T02:59:59.548Z",
+    "updated_at": "2025-11-14T02:59:59.548Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 408,
+  "fields": {
+    "category": 4,
+    "amount": "320000.00",
+    "customer": 44,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:00.907Z",
+    "updated_at": "2025-11-14T03:00:00.907Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 409,
+  "fields": {
+    "category": 4,
+    "amount": "477000.00",
+    "customer": 97,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:03.377Z",
+    "updated_at": "2025-11-14T03:00:03.377Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 410,
+  "fields": {
+    "category": 4,
+    "amount": "1266000.00",
+    "customer": 11,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:06.248Z",
+    "updated_at": "2025-11-14T03:00:06.248Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 411,
+  "fields": {
+    "category": 4,
+    "amount": "446000.00",
+    "customer": 79,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:10.007Z",
+    "updated_at": "2025-11-14T03:00:10.007Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 412,
+  "fields": {
+    "category": 4,
+    "amount": "178000.00",
+    "customer": 82,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:11.373Z",
+    "updated_at": "2025-11-14T03:00:11.373Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 413,
+  "fields": {
+    "category": 4,
+    "amount": "378000.00",
+    "customer": 94,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:18.605Z",
+    "updated_at": "2025-11-14T03:00:18.605Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 414,
+  "fields": {
+    "category": 4,
+    "amount": "1560000.00",
+    "customer": 84,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:20.843Z",
+    "updated_at": "2025-11-14T03:00:20.843Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 415,
+  "fields": {
+    "category": 4,
+    "amount": "517000.00",
+    "customer": 90,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:23.097Z",
+    "updated_at": "2025-11-14T03:00:23.097Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 416,
+  "fields": {
+    "category": 4,
+    "amount": "390000.00",
+    "customer": 87,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:26.987Z",
+    "updated_at": "2025-11-14T03:00:26.988Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 417,
+  "fields": {
+    "category": 4,
+    "amount": "388000.00",
+    "customer": 73,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:31.625Z",
+    "updated_at": "2025-11-14T03:00:31.625Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 418,
+  "fields": {
+    "category": 4,
+    "amount": "234000.00",
+    "customer": 378,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:33.365Z",
+    "updated_at": "2025-11-14T03:00:33.365Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 419,
+  "fields": {
+    "category": 4,
+    "amount": "89000.00",
+    "customer": 83,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:36.428Z",
+    "updated_at": "2025-11-14T03:00:36.428Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 420,
+  "fields": {
+    "category": 4,
+    "amount": "302000.00",
+    "customer": 105,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:37.485Z",
+    "updated_at": "2025-11-14T03:00:37.485Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 421,
+  "fields": {
+    "category": 4,
+    "amount": "288000.00",
+    "customer": 78,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:40.029Z",
+    "updated_at": "2025-11-14T03:00:40.029Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 422,
+  "fields": {
+    "category": 4,
+    "amount": "831000.00",
+    "customer": 39,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:41.829Z",
+    "updated_at": "2025-11-14T03:00:41.829Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 423,
+  "fields": {
+    "category": 4,
+    "amount": "984000.00",
+    "customer": 96,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:43.160Z",
+    "updated_at": "2025-11-14T03:00:43.160Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 424,
+  "fields": {
+    "category": 4,
+    "amount": "289000.00",
+    "customer": 12,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:44.317Z",
+    "updated_at": "2025-11-14T03:00:44.317Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 425,
+  "fields": {
+    "category": 4,
+    "amount": "313000.00",
+    "customer": 27,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:45.553Z",
+    "updated_at": "2025-11-14T03:00:45.553Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 426,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 103,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:47.269Z",
+    "updated_at": "2025-11-14T03:00:47.269Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 427,
+  "fields": {
+    "category": 4,
+    "amount": "99000.00",
+    "customer": 86,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:48.525Z",
+    "updated_at": "2025-11-14T03:00:48.525Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 428,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 24,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:49.766Z",
+    "updated_at": "2025-11-14T03:00:49.766Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 429,
+  "fields": {
+    "category": 4,
+    "amount": "1137000.00",
+    "customer": 25,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:50.912Z",
+    "updated_at": "2025-11-14T03:00:50.912Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 430,
+  "fields": {
+    "category": 4,
+    "amount": "1048000.00",
+    "customer": 95,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:52.384Z",
+    "updated_at": "2025-11-14T03:00:52.384Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 431,
+  "fields": {
+    "category": 4,
+    "amount": "2805000.00",
+    "customer": 1196,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:56.376Z",
+    "updated_at": "2025-11-14T03:00:56.376Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 432,
+  "fields": {
+    "category": 4,
+    "amount": "726000.00",
+    "customer": 40,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:57.812Z",
+    "updated_at": "2025-11-14T03:00:57.812Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 433,
+  "fields": {
+    "category": 4,
+    "amount": "477000.00",
+    "customer": 51,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:00:59.185Z",
+    "updated_at": "2025-11-14T03:00:59.185Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 434,
+  "fields": {
+    "category": 4,
+    "amount": "139000.00",
+    "customer": 89,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:01.291Z",
+    "updated_at": "2025-11-14T03:01:01.291Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 435,
+  "fields": {
+    "category": 4,
+    "amount": "274000.00",
+    "customer": 102,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:04.496Z",
+    "updated_at": "2025-11-14T03:01:04.496Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 436,
+  "fields": {
+    "category": 4,
+    "amount": "4000.00",
+    "customer": 106,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:06.348Z",
+    "updated_at": "2025-11-14T03:01:06.348Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 437,
+  "fields": {
+    "category": 4,
+    "amount": "986000.00",
+    "customer": 85,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:08.463Z",
+    "updated_at": "2025-11-14T03:01:08.463Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 438,
+  "fields": {
+    "category": 4,
+    "amount": "687000.00",
+    "customer": 88,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:09.795Z",
+    "updated_at": "2025-11-14T03:01:09.795Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 439,
+  "fields": {
+    "category": 4,
+    "amount": "1859000.00",
+    "customer": 43,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:11.051Z",
+    "updated_at": "2025-11-14T03:01:11.051Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 440,
+  "fields": {
+    "category": 4,
+    "amount": "968000.00",
+    "customer": 63,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:12.274Z",
+    "updated_at": "2025-11-14T03:01:12.274Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 441,
+  "fields": {
+    "category": 4,
+    "amount": "358000.00",
+    "customer": 13,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:14.325Z",
+    "updated_at": "2025-11-14T03:01:14.325Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 442,
+  "fields": {
+    "category": 4,
+    "amount": "235000.00",
+    "customer": 32,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:15.729Z",
+    "updated_at": "2025-11-14T03:01:15.729Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 443,
+  "fields": {
+    "category": 4,
+    "amount": "159000.00",
+    "customer": 92,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:17.882Z",
+    "updated_at": "2025-11-14T03:01:17.882Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 444,
+  "fields": {
+    "category": 4,
+    "amount": "299000.00",
+    "customer": 26,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:19.212Z",
+    "updated_at": "2025-11-14T03:01:19.212Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 445,
+  "fields": {
+    "category": 4,
+    "amount": "1552000.00",
+    "customer": 1195,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:21.285Z",
+    "updated_at": "2025-11-14T03:01:21.285Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 446,
+  "fields": {
+    "category": 4,
+    "amount": "219000.00",
+    "customer": 46,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:22.700Z",
+    "updated_at": "2025-11-14T03:01:22.700Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 447,
+  "fields": {
+    "category": 4,
+    "amount": "657000.00",
+    "customer": 42,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:28.530Z",
+    "updated_at": "2025-11-14T03:01:28.530Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 448,
+  "fields": {
+    "category": 4,
+    "amount": "95000.00",
+    "customer": 4,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:31.734Z",
+    "updated_at": "2025-11-14T03:01:31.734Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 449,
+  "fields": {
+    "category": 4,
+    "amount": "170000.00",
+    "customer": 81,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:33.885Z",
+    "updated_at": "2025-11-14T03:01:33.885Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 450,
+  "fields": {
+    "category": 4,
+    "amount": "199000.00",
+    "customer": 54,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:35.194Z",
+    "updated_at": "2025-11-14T03:01:35.194Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 451,
+  "fields": {
+    "category": 4,
+    "amount": "139000.00",
+    "customer": 17,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:36.325Z",
+    "updated_at": "2025-11-14T03:01:36.325Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 452,
+  "fields": {
+    "category": 4,
+    "amount": "689000.00",
+    "customer": 8,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:37.482Z",
+    "updated_at": "2025-11-14T03:01:37.482Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 453,
+  "fields": {
+    "category": 4,
+    "amount": "274000.00",
+    "customer": 49,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:39.865Z",
+    "updated_at": "2025-11-14T03:01:39.865Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 454,
+  "fields": {
+    "category": 4,
+    "amount": "178000.00",
+    "customer": 110,
+    "note": "Rà soát tự động: Bổ sung thanh toán còn thiếu sau đối soát đơn hàng",
+    "created_at": "2025-11-14T03:01:42.662Z",
+    "updated_at": "2025-11-14T03:01:42.662Z"
+  }
+},
+{
+  "model": "finance.financetransaction",
+  "pk": 455,
+  "fields": {
+    "category": 12,
+    "amount": "100000.00",
+    "customer": 520,
+    "note": "KH-280925-010",
+    "created_at": "2025-11-14T10:50:18.140Z",
+    "updated_at": "2025-11-14T10:50:18.140Z"
+  }
+}
+]

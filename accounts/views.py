@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from .forms import CustomUserCreationForm
 
 
 def register_view(request):
@@ -10,7 +10,7 @@ def register_view(request):
         return redirect("home")
 
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data.get("username")
@@ -23,6 +23,6 @@ def register_view(request):
             messages.success(request, "Đăng ký thành công. Vui lòng đăng nhập.")
             return redirect("accounts:dang-nhap")
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
 
     return render(request, "accounts/register.html", {"form": form})
