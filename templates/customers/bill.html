@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load number_extras %}
+{% load media_extras %}
+{% load static %}
+{% block title %}{{ title|default:'Bill' }}{% endblock %}
+{% block navbar_icon %}file-text{% endblock %}
+{% block navbar_title %}Khách hàng{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-2xl font-bold text-blue-400 flex items-center">
+    <i data-lucide="file-text" class="w-6 h-6 mr-2"></i>Bill cho {{ customer.name }}
+  </h2>
+  <div class="flex items-center gap-2">
+    <a href="{% url 'customers:customer_detail' customer.code %}?{% if request.GET %}{{ request.GET.urlencode }}{% endif %}" class="inline-flex items-center px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">
+      <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>Quay lại KH
+    </a>
+    <a href="{% url 'finance:income_quick_confirm' %}?customer={{ customer.id }}&amount={{ remaining_amount|default:0 }}&note={{ customer.code }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}" class="inline-flex items-center px-3 py-1.5 rounded-md border text-sm transition bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-500" onclick="return confirm('Xác nhận tạo giao dịch thanh toán số tiền còn lại?');">
+      <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i>Xác nhận thanh toán
+    </a>
+    <button id="btn-export" class="inline-flex items-center px-3 py-1.5 rounded-md border text-sm transition bg-blue-600 text-white border-blue-700 hover:bg-blue-500">
+      <i data-lucide="image" class="w-4 h-4 mr-1"></i>Xuất ảnh
+    </button>
+  </div>
+</div>
+
+<div id="bill-root" class="bg-white text-black p-5 rounded-md shadow max-w-3xl mx-auto">
+  <!-- Header -->
+  <div class="mb-2">
+    <div class="flex items-start justify-between">
+      <div>
+        <div class="text-xl font-bold">NavyBaby</div>
+        <div class="text-sm">Hóa đơn</div>
+      </div>
+    </div>
+    <div class="flex items-baseline justify-between mt-1">
+      <div class="text-sm">Khách hàng: {{ customer.name }}</div>
+      <div class="text-right text-sm">Ngày tạo: {% now "d/m/Y H:i" %}</div>
+    </div>
+  </div>
+
+  <!-- Body: Products table -->
+  <table class="w-full text-sm border border-gray-300" cellspacing="0">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="p-2 border-b border-gray-300 text-left">Tên sản phẩm</th>
+        <th class="p-2 border-b border-gray-300 text-left">Hình ảnh</th>
+        <th class="p-2 border-b border-gray-300 text-right">Đơn giá</th>
+        <th class="p-2 border-b border-gray-300 text-right">Số lượng</th>
+        <th class="p-2 border-b border-gray-300 text-right">Thành tiền</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for o in orders %}
+      <tr>
+        <td class="p-2 align-top">
+          <div class="font-medium">
+            {{ o.product.name }}
+            {% if o.color or o.size %}
+              <span class="text-xs text-gray-500">
+                (
+                {% if o.color %}{{ o.color.name }}{% else %}-{% endif %}
+                /
+                {% if o.size %}{{ o.size.name }}{% else %}-{% endif %}
+                )
+              </span>
+            {% endif %}
+          </div>
+          <div class="text-xs text-gray-600">Mã ĐH: {{ o.code }}</div>
+        </td>
+        <td class="p-2 align-top">
+          {% if o.product.image %}
+            <img src="{{ o.product.image|safe_image_url }}" alt="{{ o.product.name }}" style="width:56px;height:56px;object-fit:cover;border:1px solid #ddd;border-radius:6px;" />
+          {% else %}
+            <div style="width:56px;height:56px;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;"></div>
+          {% endif %}
+        </td>
+        <td class="p-2 text-right align-top">{{ o.unit_price|default:0|smart_vnd }}</td>
+        <td class="p-2 text-right align-top">{{ o.amount_safe|default:0 }}</td>
+        <td class="p-2 text-right align-top font-semibold">{{ o.net_profit|default:0|smart_vnd }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="p-3 text-center text-gray-600">Không có sản phẩm.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Summary -->
+  <div class="mt-4 w-full">
+    <div class="flex items-center justify-end">
+      <div class="w-full md:w-1/2">
+        <div class="flex items-center justify-between py-1">
+          <div>Tổng tiền hàng</div>
+          <div class="font-semibold">{{ total_goods|default:0|smart_vnd }}</div>
+        </div>
+        <div class="flex items-center justify-between py-1">
+          <div>Đã thanh toán</div>
+          <div class="font-semibold">{{ paid_amount|default:0|smart_vnd }}</div>
+        </div>
+        <div class="flex items-center justify-between py-1">
+          <div>Tiền hàng còn lại</div>
+          <div class="font-semibold">{{ remaining_amount|default:0|smart_vnd }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer: bank info -->
+  <div class="mt-6 p-3 border border-gray-300 rounded">
+    <div class="flex items-start justify-between gap-4">
+      <div class="text-sm">
+        <div class="font-bold uppercase mb-2">THÔNG TIN CHUYỂN KHOẢN</div>
+        <div>Ngân hàng {{ bank_name|default:'Techcombank' }}</div>
+        <div>Chủ TK: {{ bank_owner|default:'Quách Thị Phương Nga' }}</div>
+        <div>STK: {{ bank_account|default:'19036902149010' }}</div>
+        <div class="mt-2">Nội dung chuyển khoản: {{ customer.name }}</div>
+        <div class="mt-1">Số tiền: {{ remaining_amount|default:0|smart_vnd }}</div>
+      </div>
+      <div class="ml-auto">
+        {% if qr_url %}
+          <img src="{{ qr_url }}" alt="QR chuyển khoản" crossorigin="anonymous" style="width:180px;height:180px;border-radius:8px;" />
+        {% else %}
+          <img src="{% static 'img/qr_code.png' %}" alt="QR chuyển khoản" crossorigin="anonymous" style="width:180px;height:180px;border-radius:8px;" />
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+  lucide.createIcons();
+  (function(){
+    var btn = document.getElementById('btn-export');
+    var root = document.getElementById('bill-root');
+    if (btn && root && window.html2canvas) {
+      btn.addEventListener('click', function(){
+        html2canvas(root, {backgroundColor: '#ffffff', scale: 2, useCORS: true}).then(function(canvas){
+          var link = document.createElement('a');
+          link.download = 'bill-{{ customer.code }}.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        });
+      });
+    }
+  })();
+</script>
+{% endblock %}

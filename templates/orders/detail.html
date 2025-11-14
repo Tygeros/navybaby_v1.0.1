@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% load number_extras %}
+{% load media_extras %}
+{% block title %}Chi tiết đơn hàng - NavyBaby{% endblock %}
+{% block navbar_icon %}shopping-cart{% endblock %}
+{% block navbar_title %}Đơn hàng{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="flex flex-col md:flex-row justify-between items-center mb-6">
+  <div>
+    <h2 class="text-2xl font-bold flex items-center text-blue-400">
+      <i data-lucide="shopping-cart" class="w-6 h-6 mr-2"></i>Chi tiết đơn hàng
+    </h2>
+    <p class="text-gray-400 text-sm">
+      Mã đơn: <span class="text-blue-300 font-medium">{{ order.code }}</span>
+    </p>
+  </div>
+  <div class="flex flex-wrap gap-2 mt-2 md:mt-0">
+    <a href="{% url 'orders:order_list' %}" class="px-3 py-1.5 rounded-md border text-sm bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 flex items-center">
+      <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>Danh sách
+    </a>
+    <a href="{% url 'orders:order_update' order.pk %}" class="px-3 py-1.5 rounded-md border text-sm bg-yellow-600 text-white border-yellow-700 hover:bg-yellow-500 flex items-center">
+      <i data-lucide="pencil" class="w-4 h-4 mr-1"></i>Chỉnh sửa
+    </a>
+    <button id="btn-open-delete" type="button" class="px-3 py-1.5 rounded-md border text-sm bg-red-600 text-white border-red-700 hover:bg-red-500 flex items-center">
+      <i data-lucide="trash-2" class="w-4 h-4 mr-1"></i>Xóa
+    </button>
+  </div>
+</div>
+
+<!-- Main layout -->
+<div class="bg-[#121212] border border-gray-800 rounded-lg p-5 flex flex-col gap-6 mb-6">
+  <!-- Hàng trên -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="flex flex-col justify-between">
+      <div class="flex justify-center items-center mb-4">
+        {% if order.product.image %}
+          <img src="{{ order.product.image|safe_image_url }}" alt="{{ order.product.name }}" class="w-full max-w-xs h-auto object-cover rounded border border-gray-800 shadow-md">
+        {% else %}
+          <div class="w-full max-w-xs h-64 flex items-center justify-center rounded border border-gray-800 bg-[#161616] text-gray-500">
+            <i data-lucide="image" class="w-10 h-10"></i>
+          </div>
+        {% endif %}
+      </div>
+      <div class="text-xs text-gray-500 text-center mt-2">
+        <p>Tạo: {{ order.created_at|date:"d/m/Y H:i" }} – Cập nhật: {{ order.updated_at|date:"d/m/Y H:i" }}</p>
+      </div>
+    </div>
+
+    <!-- Thông tin đơn hàng -->
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-[#161616] border border-gray-800 rounded p-3 text-center">
+          <p class="text-gray-400 text-xs mb-1">Phân loại</p>
+          <p class="text-gray-200 font-medium">{{ order.product.category.name|default:'-' }}</p>
+        </div>
+        <div class="bg-[#161616] border border-gray-800 rounded p-3 text-center">
+          <p class="text-gray-400 text-xs mb-1">Màu sắc</p>
+          <p class="text-gray-200 font-medium">{{ order.color.name|default:'-' }}</p>
+        </div>
+        <div class="bg-[#161616] border border-gray-800 rounded p-3 text-center">
+          <p class="text-gray-400 text-xs mb-1">Kích thước</p>
+          <p class="text-gray-200 font-medium">{{ order.size.name|default:'-' }}</p>
+        </div>
+        <div class="bg-[#161616] border border-gray-800 rounded p-3 text-center">
+          <p class="text-gray-400 text-xs mb-1">Chiết khấu</p>
+          <p class="text-gray-200 font-medium">{{ order.discount|default:0|smart_vnd }}</p>
+        </div>
+        <div class="bg-[#161616] border border-gray-800 rounded p-3 text-center">
+          <p class="text-gray-400 text-xs mb-1">Số lượng</p>
+          <p class="text-gray-200 font-medium">{{ order.amount }}</p>
+        </div>
+        <div class="bg-[#161616] border border-gray-800 rounded p-3 text-center">
+          <p class="text-gray-400 text-xs mb-1">Doanh thu</p>
+          <p class="text-green-400 font-semibold">{{ revenue|default:0|smart_vnd }}</p>
+        </div>
+      </div>
+      <div class="flex items-center justify-between bg-[#161616] border border-gray-800 rounded-md px-3 py-2">
+        <label for="status-select" class="text-gray-400 text-sm whitespace-nowrap mr-3">
+          Trạng thái đơn hàng
+        </label>
+        <form method="post" action="{% url 'orders:update_order_status' order.pk %}" class="flex-1">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+          <select id="status-select" name="status"
+            class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-1.5 text-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700"
+            onchange="this.form.submit()">
+            {% for value,label in order.STATUS_CHOICES %}
+              <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hàng dưới -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Khách hàng -->
+    <div class="p-4 bg-[#161616] border border-gray-800 rounded-lg">
+      <div class="grid grid-cols-1 md:grid-cols-[1.3fr_0.7fr] gap-4 items-start">
+        <!-- Thông tin -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="user" class="w-5 h-5 text-blue-400"></i>
+            <p class="text-lg font-bold text-blue-300">Khách hàng</p>
+          </div>
+          {% if order.customer %}
+            <a href="{% url 'customers:customer_detail' order.customer.code %}" class="text-blue-400 font-medium hover:underline flex items-center gap-2">
+              <i data-lucide="id-card" class="w-4 h-4 text-gray-300"></i>
+              <span>{{ order.customer.name }}</span>
+            </a>
+            {% if order.customer.phone_number %}
+              <p class="text-gray-300 text-sm flex items-center gap-2">
+                <i data-lucide="phone" class="w-4 h-4 text-gray-400"></i>
+                <span>{{ order.customer.phone_number }}</span>
+              </p>
+            {% endif %}
+            {% if order.customer.address %}
+              <p class="text-gray-300 text-sm flex items-center gap-2">
+                <i data-lucide="map-pin" class="w-4 h-4 text-gray-400"></i>
+                <span>{{ order.customer.address }}</span>
+              </p>
+            {% endif %}
+            {% if order.customer.social_link %}
+              <p class="text-gray-300 text-sm flex items-center gap-2">
+                <i data-lucide="link-2" class="w-4 h-4 text-gray-400"></i>
+                <span class="min-w-0">
+                  <a href="{{ order.customer.social_link }}" target="_blank" rel="noopener" title="{{ order.customer.social_link }}" class="text-blue-400 underline truncate inline-block max-w-full align-middle">{{ order.customer.social_link }}</a>
+                </span>
+              </p>
+            {% endif %}
+          {% else %}
+            <span class="text-gray-200">-</span>
+          {% endif %}
+        </div>
+
+        <!-- Thống kê -->
+        <div class="flex flex-col gap-2">
+          <div class="bg-[#121212] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-3">
+            <i data-lucide="shopping-cart" class="w-5 h-5 text-yellow-400 mb-1"></i>
+            <h4 class="font-bold text-lg text-gray-100">{{ customer_stats.order_count|default:0 }}</h4>
+            <p class="text-gray-400 text-xs">Tổng đơn</p>
+          </div>
+          <div class="bg-[#121212] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-3">
+            <i data-lucide="coins" class="w-5 h-5 text-green-400 mb-1"></i>
+            <h4 class="font-bold text-lg text-gray-100">{{ customer_stats.revenue|default:0|smart_vnd }}</h4>
+            <p class="text-gray-400 text-xs">Doanh thu</p>
+          </div>
+          <div class="bg-[#121212] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-3">
+            <i data-lucide="line-chart" class="w-5 h-5 text-blue-400 mb-1"></i>
+            <h4 class="font-bold text-lg text-emerald-400">{{ customer_stats.net_profit|default:0|smart_vnd }}</h4>
+            <p class="text-gray-400 text-xs">Doanh thu thuần</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sản phẩm -->
+    <div class="p-4 bg-[#161616] border border-gray-800 rounded-lg">
+      <div class="grid grid-cols-1 md:grid-cols-[1.3fr_0.7fr] gap-4 items-start">
+        <!-- Thông tin sản phẩm -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-2 mb-2">
+            <i data-lucide="package" class="w-5 h-5 text-blue-400"></i>
+            <p class="text-lg font-bold text-blue-300">Sản phẩm</p>
+          </div>
+          {% if order.product %}
+            <a href="{% url 'products:product_detail' order.product.pk %}" class="text-blue-400 font-medium hover:underline flex items-center gap-2">
+              <i data-lucide="badge-check" class="w-4 h-4 text-gray-300"></i>
+              <span>{{ order.product.name }}</span>
+            </a>
+            <p class="text-gray-300 text-sm flex items-center gap-2">
+              <i data-lucide="tag" class="w-4 h-4 text-gray-400"></i>
+              <span>{{ order.product.code }}</span>
+            </p>
+            {% if order.product.category %}
+            <p class="text-gray-300 text-sm flex items-center gap-2">
+              <i data-lucide="layers" class="w-4 h-4 text-gray-400"></i>
+              <span>{{ order.product.category.name }}</span>
+            </p>
+            {% endif %}
+            {% if order.product.supplier %}
+            <p class="text-gray-300 text-sm flex items-center gap-2">
+              <i data-lucide="building-2" class="w-4 h-4 text-gray-400"></i>
+              <span>{{ order.product.supplier.name }}</span>
+            </p>
+            {% endif %}
+            <p class="text-gray-300 text-sm flex items-center gap-2">
+              <i data-lucide="coins" class="w-4 h-4 text-green-400"></i>
+              <span>Giá bán: {{ order.product.price|default:0|smart_vnd }}</span>
+            </p>
+          {% else %}
+            <span class="text-gray-200">-</span>
+          {% endif %}
+        </div>
+
+        <!-- Thống kê sản phẩm (3 card con xếp dọc) -->
+        <div class="flex flex-col gap-2">
+          <div class="bg-[#121212] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-3">
+            <i data-lucide="shopping-cart" class="w-5 h-5 text-yellow-400 mb-1"></i>
+            <h4 class="font-bold text-lg text-gray-100">{{ product_stats.order_count|default:0 }}</h4>
+            <p class="text-gray-400 text-xs">Tổng đơn</p>
+          </div>
+          <div class="bg-[#121212] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-3">
+            <i data-lucide="coins" class="w-5 h-5 text-green-400 mb-1"></i>
+            <h4 class="font-bold text-lg text-gray-100">{{ product_stats.revenue|default:0|smart_vnd }}</h4>
+            <p class="text-gray-400 text-xs">Doanh thu</p>
+          </div>
+          <div class="bg-[#121212] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-3">
+            <i data-lucide="line-chart" class="w-5 h-5 text-blue-400 mb-1"></i>
+            <h4 class="font-bold text-lg text-emerald-400">{{ product_stats.net_profit|default:0|smart_vnd }}</h4>
+            <p class="text-gray-400 text-xs">Doanh thu thuần</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete modal -->
+<div id="modal-delete" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-5 w-full max-w-md">
+    <div class="flex items-start gap-3">
+      <i data-lucide="alert-triangle" class="w-6 h-6 text-red-400 mt-0.5"></i>
+      <div>
+        <h4 class="text-lg font-semibold text-gray-100">Xóa đơn hàng?</h4>
+        <p class="text-gray-400 text-sm mt-1">
+          Thao tác này không thể hoàn tác. Bạn có chắc muốn xóa đơn hàng
+          <span class="font-medium text-white">{{ order.code }}</span>?
+        </p>
+      </div>
+    </div>
+    <form method="post" action="{% url 'orders:order_delete' order.pk %}" class="mt-4 flex justify-end gap-2">
+      {% csrf_token %}
+      <button type="button" id="btn-cancel-delete" class="px-4 py-2 rounded-md border text-sm bg-[#121212] text-gray-300 border-gray-800 hover:border-gray-700">Hủy</button>
+      <button type="submit" class="px-4 py-2 rounded-md border text-sm bg-red-600 text-white border-red-700 hover:bg-red-500">Xóa</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  lucide.createIcons();
+  const modal = document.getElementById('modal-delete');
+  const openBtn = document.getElementById('btn-open-delete');
+  const cancelBtn = document.getElementById('btn-cancel-delete');
+  if (openBtn && modal) openBtn.addEventListener('click', () => { modal.classList.remove('hidden'); modal.classList.add('flex'); });
+  if (cancelBtn && modal) cancelBtn.addEventListener('click', () => { modal.classList.add('hidden'); modal.classList.remove('flex'); });
+
+  // Trạng thái: đã chuyển sang submit form onchange nên không cần JS fetch tại đây
+</script>
+{% endblock %}

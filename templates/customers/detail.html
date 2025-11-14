@@ -1,0 +1,691 @@
+{% extends 'base.html' %}
+{% load number_extras %}
+{% load media_extras %}
+{% block title %}{{ title }}{% endblock %}
+{% block navbar_icon %}users{% endblock %}
+{% block navbar_title %}Khách hàng{% endblock %}
+{% block content %}
+<!-- Header -->
+<div class="flex flex-col md:flex-row justify-between items-center mb-6">
+  <div>
+    <h2 class="text-2xl font-bold flex items-center text-blue-400">
+      <i data-lucide="user" class="w-6 h-6 mr-2"></i>Thông tin khách hàng
+    </h2>
+    <p class="text-gray-400 text-sm">Mã KH: <span class="text-blue-300">{{ customer.code }}</span></p>
+  </div>
+  <div class="flex items-center gap-2">
+    <a href="{% url 'customers:customer_list' %}" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">
+      <i data-lucide="arrow-left" class="inline w-4 h-4 mr-1"></i>Quay lại
+    </a>
+    <a href="{% url 'customers:customer_update' customer.code %}" class="px-3 py-1.5 rounded-md border text-sm transition bg-blue-600 text-white border-blue-700 hover:bg-blue-500">
+      <i data-lucide="pencil" class="inline w-4 h-4 mr-1"></i>Chỉnh sửa
+    </a>
+    <button type="button" id="btn-open-delete" class="px-3 py-1.5 rounded-md border text-sm transition bg-red-600 text-white border-red-700 hover:bg-red-500">
+      <i data-lucide="trash-2" class="inline w-4 h-4 mr-1"></i>Xóa
+    </button>
+  </div>
+</div>
+
+<!-- Modal: Deduct Deposit for Bill -->
+<div id="modal-bill-deposit" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+  <div class="bg-[#121212] border border-gray-800 rounded-lg w-full max-w-md overflow-hidden">
+    <div class="px-5 py-4 border-b border-gray-800 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <i data-lucide="banknote" class="w-5 h-5 text-emerald-400"></i>
+        <h4 class="text-gray-100 font-semibold">Khấu trừ tiền đặt cọc</h4>
+      </div>
+      <button type="button" id="bill-deposit-close" class="text-gray-400 hover:text-gray-200">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div class="px-5 py-4">
+      <p class="text-sm text-gray-300">Khách đã đặt cọc: <span id="bill-deposit-total" class="text-blue-400 font-medium"></span></p>
+      <div class="mt-3">
+        <label for="bill-deposit-input" class="block text-sm text-gray-400 mb-1">Số tiền muốn khấu trừ</label>
+        <input id="bill-deposit-input" type="text" inputmode="numeric" pattern="[0-9]*" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" placeholder="Nhập số tiền" />
+        <p class="mt-1 text-xs text-gray-500">Tối đa bằng số tiền đã đặt cọc.</p>
+      </div>
+    </div>
+    <div class="px-5 py-4 border-t border-gray-800 flex items-center justify-end gap-2">
+      <button type="button" id="bill-deposit-none" class="px-3 py-1.5 rounded-md border text-sm bg-[#1a1a1a] text-gray-300 border-gray-800 hover:border-gray-700">Không khấu trừ</button>
+      <button type="button" id="bill-deposit-full" class="px-3 py-1.5 rounded-md border text-sm bg-blue-600 text-white border-blue-700 hover:bg-blue-500">Khấu trừ toàn bộ</button>
+      <button type="button" id="bill-deposit-apply" class="px-3 py-1.5 rounded-md border text-sm bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-500">Áp dụng</button>
+    </div>
+  </div>
+  
+</div>
+
+<!-- Transaction choice modal -->
+<div id="modal-tx" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-5 w-full max-w-md">
+    <div class="flex items-start gap-3 mb-3">
+      <i data-lucide="banknote" class="w-6 h-6 text-emerald-400"></i>
+      <div>
+        <h4 class="text-lg font-semibold text-gray-100">Chọn loại giao dịch</h4>
+        <p class="text-gray-400 text-sm mt-1">Vui lòng chọn một trong hai loại sau.</p>
+      </div>
+    </div>
+    <div class="flex flex-col gap-2">
+      <a href="{% url 'finance:income_create' %}?customer={{ customer.id }}&remaining={{ payment_raw.remaining|default:0 }}&note={{ customer.code }}" class="px-4 py-2 rounded-md border text-sm bg-emerald-700 text-white border-emerald-800 hover:bg-emerald-600 flex items-center justify-center">
+        <i data-lucide="arrow-down-circle" class="w-4 h-4 mr-2"></i>Thêm khoản thu
+      </a>
+      <a href="{% url 'finance:expense_create' %}?customer={{ customer.id }}&category_name=Khấu trừ khoản tiền đặt cọc&amount={{ payment_raw.deposit|default:0 }}&note={{ customer.code }}" class="px-4 py-2 rounded-md border text-sm bg-red-700 text-white border-red-800 hover:bg-red-600 flex items-center justify-center">
+        <i data-lucide="arrow-up-circle" class="w-4 h-4 mr-2"></i>Khấu trừ khoản cọc
+      </a>
+    </div>
+    <div class="mt-4 flex justify-end gap-2">
+      <button type="button" id="btn-cancel-tx" class="px-4 py-2 rounded-md border text-sm bg-[#121212] text-gray-300 border-gray-800 hover:border-gray-700">Đóng</button>
+    </div>
+  </div>
+  
+</div>
+
+<!-- Info + Stats -->
+<div class="flex flex-col lg:flex-row gap-4 mb-6 items-stretch">
+  <!-- Left column -->
+  <div class="lg:w-1/4 bg-[#121212] border border-gray-800 rounded-lg p-5 flex flex-col justify-between">
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <h3 class="text-lg font-semibold text-gray-100">{{ customer.name }}</h3>
+        {% if customer.is_affiliate %}
+          <span class="text-[11px] px-1.5 py-0.5 rounded bg-blue-900/40 border border-blue-800 text-blue-300">CTV</span>
+        {% endif %}
+      </div>
+      <div class="space-y-2.5 text-sm text-gray-300">
+        {% if customer.phone_number %}
+        <p class="flex items-center gap-2">
+          <i data-lucide="phone" class="w-4 h-4 text-blue-400"></i>
+          <span>{{ customer.phone_number }}</span>
+        </p>
+        {% endif %}
+        {% if customer.social_link %}
+        <p class="flex items-center gap-2">
+          <i data-lucide="share-2" class="w-4 h-4 text-blue-400"></i>
+          <span class="min-w-0">
+            <a href="{{ customer.social_link }}" target="_blank" rel="noopener" title="{{ customer.social_link }}" class="text-blue-400 hover:text-blue-300 underline underline-offset-2 truncate inline-block max-w-full align-middle">{{ customer.social_link }}</a>
+          </span>
+        </p>
+        {% endif %}
+        {% if customer.address %}
+        <p class="flex items-center gap-2">
+          <i data-lucide="map-pin" class="w-4 h-4 text-blue-400"></i>
+          <span>{{ customer.address }}</span>
+        </p>
+        {% endif %}
+        {% if customer.note %}
+        <p class="flex items-start gap-2">
+          <i data-lucide="sticky-note" class="w-4 h-4 mt-0.5 text-blue-400"></i>
+          <span>{{ customer.note }}</span>
+        </p>
+        {% endif %}
+      </div>
+    </div>
+    <div>
+      <div class="mt-4">
+        <a href="{% url 'finance:transactions_list' %}?q={{ customer.code }}" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 inline-flex items-center">
+          <i data-lucide="history" class="inline w-4 h-4 mr-1"></i>Lịch sử giao dịch
+        </a>
+      </div>
+      <div class="mt-4 text-xs text-gray-500">
+        Tạo: {{ customer.created_at|date:'d/m/Y H:i' }} · Cập nhật: {{ customer.updated_at|date:'d/m/Y H:i' }}
+      </div>
+    </div>
+    
+  </div>
+
+  <!-- Right column (Stats + Quick actions) -->
+  <div class="lg:w-3/4 flex flex-col gap-4">
+    <!-- Stats grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 h-full">
+      <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-5">
+        <i data-lucide="shopping-cart" class="w-6 h-6 text-yellow-400 mb-2"></i>
+        <h4 class="font-bold text-xl text-gray-100">{{ stats.order_count }}</h4>
+        <p class="text-gray-400 text-sm mt-1">Tổng số đơn</p>
+      </div>
+      <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-5">
+        <i data-lucide="badge-percent" class="w-6 h-6 text-purple-400 mb-2"></i>
+        <h4 class="font-bold text-xl text-gray-100">{{ stats.total_discount }}</h4>
+        <p class="text-gray-400 text-sm mt-1">Chiết khấu</p>
+      </div>
+      <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-5">
+        <i data-lucide="coins" class="w-6 h-6 text-green-400 mb-2"></i>
+        <h4 class="font-bold text-xl text-gray-100">{{ stats.revenue }}</h4>
+        <p class="text-gray-400 text-sm mt-1">Doanh thu</p>
+      </div>
+      <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-5">
+        <i data-lucide="line-chart" class="w-6 h-6 text-blue-400 mb-2"></i>
+        <h4 class="font-bold text-xl text-emerald-400">{{ stats.net_profit|default:0 }}</h4>
+        <p class="text-gray-400 text-sm mt-1">Doanh thu thuần</p>
+      </div>
+    </div>
+
+    <!-- Quick actions – CÓ NÚT TẠO BILL Ở GIỮA -->
+    <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div class="bg-[#161616] border border-gray-800 rounded-lg p-4 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-3">
+              <i data-lucide="wallet" class="w-5 h-5 text-emerald-400"></i>
+              <h4 class="text-sm font-semibold uppercase tracking-wide text-gray-300">Thanh toán</h4>
+            </div>
+            
+          </div>
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center justify-between text-gray-300">
+              <span>Đã thanh toán</span>
+              <span class="text-emerald-400 font-semibold">{{ payment_summary.paid|default:'0đ' }}</span>
+            </div>
+            <div class="flex items-center justify-between text-gray-300">
+              <span>Đã đặt cọc</span>
+              <span class="text-blue-400 font-semibold">{{ payment_summary.deposit|default:'0đ' }}</span>
+            </div>
+            <div class="flex items-center justify-between text-gray-300">
+              <span>Còn phải thanh toán</span>
+              <span class="text-yellow-300 font-semibold">{{ payment_summary.remaining|default:'0đ' }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="bg-[#161616] border border-gray-800 rounded-lg p-4 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="shopping-cart" class="w-5 h-5 text-blue-400"></i>
+              <h4 class="text-base font-semibold text-gray-100">Đơn hàng</h4>
+            </div>
+            <p class="text-sm text-gray-400">Tạo đơn hàng mới cho khách hàng này.</p>
+          </div>
+          <a href="{% url 'orders:order_create' %}?customer={{ customer.code }}&multi=1" class="mt-4 px-3 py-2 rounded-md border text-sm transition bg-blue-600 text-white border-blue-700 hover:bg-blue-500 flex items-center justify-center">
+            <i data-lucide="plus" class="inline w-4 h-4 mr-1"></i>Tạo đơn hàng mới
+          </a>
+        </div>
+        <div class="bg-[#161616] border border-gray-800 rounded-lg p-4 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="banknote" class="w-5 h-5 text-emerald-400"></i>
+              <h4 class="text-base font-semibold text-gray-100">Giao dịch</h4>
+            </div>
+            <p class="text-sm text-gray-400">Ghi nhận khoản thu liên quan đến khách hàng.</p>
+          </div>
+          <button type="button" id="btn-open-tx-modal" title="Chọn loại giao dịch" class="mt-4 px-3 py-2 rounded-md border text-sm transition bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-500 flex items-center justify-center">
+            <i data-lucide="plus-circle" class="inline w-4 h-4 mr-1"></i>Tạo giao dịch mới
+          </button>
+        </div>
+        <div class="bg-[#161616] border border-gray-800 rounded-lg p-4 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <i data-lucide="file-text" class="w-5 h-5 text-emerald-300"></i>
+              <h4 class="text-base font-semibold text-gray-100">Bill & báo cáo</h4>
+            </div>
+            
+          </div>
+          <div class="mt-4 flex flex-col gap-2">
+            
+            <button type="button" title="Tính năng chưa triển khai" class="px-3 py-2 rounded-md border text-sm transition bg-[#1c1c1c] text-gray-400 border-gray-800 hover:border-gray-700 flex items-center justify-center cursor-not-allowed">
+              <i data-lucide="bar-chart-2" class="inline w-4 h-4 mr-1"></i>Xem báo cáo
+            </button>
+            <a id="btn-create-bill" data-deposit="{{ payment_raw.deposit|default:0 }}" href="{% url 'customers:customer_bill' customer.code %}{% if request.GET %}?{{ request.GET.urlencode }}&qr_id=4{% else %}?qr_id=4{% endif %}"
+               class="px-3 py-2 rounded-md border text-sm bg-emerald-800 text-white border-emerald-700 hover:bg-emerald-700 flex items-center justify-center">
+              <i data-lucide="file-plus" class="w-4 h-4 mr-1"></i>Tạo bill
+            </a>
+          </div>
+        </div>
+      </div>
+    
+    </div>
+  </div>
+</div>
+
+<!-- Recent orders -->
+<div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+  <div class="flex items-center justify-between mb-3">
+    <h3 class="text-lg font-semibold text-gray-100 flex items-center">
+      <i data-lucide="clock" class="w-5 h-5 mr-2 text-blue-400"></i>Đơn hàng gần đây
+    </h3>
+    <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
+      <button type="button" id="btn-toggle-multi" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">
+        <i data-lucide="check-square" class="inline w-4 h-4 mr-1"></i>Chọn nhiều đơn hàng
+      </button>
+      <button type="button" id="btn-select-all" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 multi-only hidden">
+        <i data-lucide="check" class="inline w-4 h-4 mr-1"></i>Chọn toàn bộ
+      </button>
+      <form method="get" class="flex flex-col sm:flex-row gap-2 sm:items-center">
+        <div class="relative" data-dropdown="status">
+          <button type="button" data-dropdown-toggle="#dd-status" class="min-w-[12rem] bg-[#161616] border border-gray-800 rounded px-3 py-1.5 text-sm text-gray-200 text-left flex items-center justify-between hover:border-gray-700">
+            <span>Trạng thái{% if current_filters.status %} ({{ current_filters.status|length }}){% endif %}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" /></svg>
+          </button>
+          <div id="dd-status" data-dropdown-panel class="hidden absolute right-0 z-20 mt-1 w-[22rem] max-w-[calc(100vw-2rem)] bg-[#161616] border border-gray-800 rounded-md p-3 shadow-xl">
+            <div class="mb-2">
+              <label class="inline-flex items-center gap-2">
+                <input type="checkbox" data-select-all="status" class="h-4 w-4 rounded border-gray-700 bg-[#121212] text-blue-600 focus:ring-blue-500/40">
+                <span class="text-gray-300">Tất cả các trạng thái</span>
+              </label>
+            </div>
+            <div class="grid grid-cols-2 gap-2 max-h-56 overflow-auto" data-group="status">
+              {% for value,label in order_status_choices %}
+              <label class="inline-flex items-center gap-2">
+                <input type="checkbox" name="status" value="{{ value }}" class="h-4 w-4 rounded border-gray-700 bg-[#121212] text-blue-600 focus:ring-blue-500/40" {% if value in current_filters.status %}checked{% endif %}>
+                <span class="text-gray-300">{{ label }}</span>
+              </label>
+              {% endfor %}
+            </div>
+            <div class="mt-3 flex justify-end">
+              <button type="button" data-dropdown-close="#dd-status" class="px-3 py-1.5 rounded-md border text-xs bg-[#1a1a1a] text-gray-300 border-gray-800 hover:border-gray-700">Đóng</button>
+            </div>
+          </div>
+        </div>
+        <div class="relative" data-dropdown="supplier">
+          <button type="button" data-dropdown-toggle="#dd-supplier" class="min-w-[12rem] bg-[#161616] border border-gray-800 rounded px-3 py-1.5 text-sm text-gray-200 text-left flex items-center justify-between hover:border-gray-700">
+            <span>Nhà cung cấp{% if current_filters.supplier %} ({{ current_filters.supplier|length }}){% endif %}</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" /></svg>
+          </button>
+          <div id="dd-supplier" data-dropdown-panel class="hidden absolute right-0 z-20 mt-1 w-72 max-w-[calc(100vw-2rem)] bg-[#161616] border border-gray-800 rounded-md p-3 shadow-xl">
+            <div class="mb-2">
+              <label class="inline-flex items-center gap-2">
+                <input type="checkbox" data-select-all="supplier" class="h-4 w-4 rounded border-gray-700 bg-[#121212] text-blue-600 focus:ring-blue-500/40">
+                <span class="text-gray-300">Tất cả NCC</span>
+              </label>
+            </div>
+            <div class="mb-2">
+              <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 text-gray-500 absolute left-2 top-2.5"></i>
+                <input type="text" placeholder="Tìm NCC..." data-filter-input="supplier" class="w-full bg-[#151515] border border-gray-800 rounded pl-8 pr-2 py-1.5 text-sm text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" />
+              </div>
+            </div>
+            <div class="flex flex-col gap-2 max-h-56 overflow-auto" data-group="supplier">
+              {% for s in suppliers %}
+              <label class="inline-flex items-center gap-2">
+                <input type="checkbox" name="supplier" value="{{ s.id }}" class="h-4 w-4 rounded border-gray-700 bg-[#121212] text-blue-600 focus:ring-blue-500/40" {% if s.id|stringformat:"s" in current_filters.supplier %}checked{% endif %}>
+                <span class="text-gray-300">{{ s.name }}</span>
+              </label>
+              {% endfor %}
+            </div>
+            <div class="mt-3 flex justify-end">
+              <button type="button" data-dropdown-close="#dd-supplier" class="px-3 py-1.5 rounded-md border text-xs bg-[#1a1a1a] text-gray-300 border-gray-800 hover:border-gray-700">Đóng</button>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <label for="sort" class="text-sm text-gray-400">Sắp xếp</label>
+          <select id="sort" name="sort" class="bg-[#161616] border border-gray-800 rounded px-2 py-1 text-sm text-gray-200">
+            <option value="created_desc" {% if current_filters.sort == 'created_desc' %}selected{% endif %}>Mới nhất</option>
+            <option value="created_asc" {% if current_filters.sort == 'created_asc' %}selected{% endif %}>Cũ nhất</option>
+            <option value="revenue_desc" {% if current_filters.sort == 'revenue_desc' %}selected{% endif %}>Doanh thu giảm dần</option>
+            <option value="revenue_asc" {% if current_filters.sort == 'revenue_asc' %}selected{% endif %}>Doanh thu tăng dần</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-2 flex-1">
+          <input type="text" name="q" value="{{ current_filters.q }}" placeholder="Tìm mã ĐH hoặc sản phẩm" class="w-full bg-[#161616] border border-gray-800 rounded px-2 py-1 text-sm text-gray-200" />
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="submit" class="px-3 py-1.5 rounded-md border text-sm transition bg-blue-600 text-white border-blue-700 hover:bg-blue-500">Lọc</button>
+          <a href="{% url 'customers:customer_detail' customer.code %}" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">Xóa lọc</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Filter chips -->
+  <div class="flex flex-wrap items-center gap-2 mt-2">
+    {% if current_filters.status %}
+      {% for value,label in order_status_choices %}
+        {% if value in current_filters.status %}
+          <span class="px-2 py-1 text-xs rounded border border-gray-800 bg-[#161616] text-gray-300">{{ label }}</span>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    {% if current_filters.supplier %}
+      {% for s in suppliers %}
+        {% if s.id|stringformat:"s" in current_filters.supplier %}
+          <span class="px-2 py-1 text-xs rounded border border-gray-800 bg-[#1a1a1a] text-gray-300">{{ s.name }}</span>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <!-- Totals summary -->
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-3">
+    <div class="bg-[#161616] border border-gray-800 rounded-lg p-3 text-center">
+      <p class="text-[11px] text-gray-400">Số đơn</p>
+      <p class="text-lg font-semibold text-gray-100">{{ list_totals.order_count|default:0 }}</p>
+    </div>
+    <div class="bg-[#161616] border border-gray-800 rounded-lg p-3 text-center">
+      <p class="text-[11px] text-gray-400">Số lượng</p>
+      <p class="text-lg font-semibold text-gray-100">{{ list_totals.total_amount|default:0 }}</p>
+    </div>
+    <div class="bg-[#161616] border border-gray-800 rounded-lg p-3 text-center">
+      <p class="text-[11px] text-gray-400">Doanh thu</p>
+      <p class="text-lg font-semibold text-green-400">{{ list_totals.total_revenue|default:0|smart_vnd }}</p>
+    </div>
+    <div class="bg-[#161616] border border-gray-800 rounded-lg p-3 text-center">
+      <p class="text-[11px] text-gray-400">Chiết khấu</p>
+      <p class="text-lg font-semibold text-yellow-300">{{ list_totals.total_discount|default:0|smart_vnd }}</p>
+    </div>
+    <div class="bg-[#161616] border border-gray-800 rounded-lg p-3 text-center">
+      <p class="text-[11px] text-gray-400">Doanh thu thuần</p>
+      <p class="text-lg font-semibold text-emerald-400">{{ list_totals.total_net_profit|default:0|smart_vnd }}</p>
+    </div>
+  </div>
+
+  <!-- Bulk update form -->
+  <form id="bulk-form" method="post" action="{% url 'orders:bulk_update_order_status' %}" class="mb-3 hidden">
+    {% csrf_token %}
+    <div id="bulk-actions" class="bg-[#121212] border border-gray-800 rounded-lg p-3 flex items-center gap-3">
+      <div class="text-sm text-gray-300">Áp dụng trạng thái cho đơn đã chọn</div>
+      <select name="status" id="bulk-status" class="bg-[#161616] border border-gray-800 rounded px-3 py-2 text-sm text-gray-200">
+        {% for value,label in order_status_choices %}
+          <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" id="bulk-submit" class="px-3 py-2 rounded-md border text-sm bg-blue-600 text-white border-blue-700 hover:bg-blue-500">Cập nhật trạng thái</button>
+      <div id="bulk-ids"></div>
+    </div>
+    <input type="hidden" name="_bulk" value="1" />
+    <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+  </form>
+
+  <!-- Orders Table -->
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-800">
+      <thead class="bg-[#161616]">
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider multi-only hidden">Chọn</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Mã ĐH</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Sản phẩm</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Màu/Size</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Số lượng</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Đơn giá</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Chiết khấu</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Doanh thu</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Doanh thu thuần</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Trạng thái</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Ghi chú</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Ngày tạo</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-800">
+        {% for o in recent_orders %}
+        <tr class="hover:bg-[#171717]">
+          <td class="px-4 py-3 text-sm multi-only hidden">
+            <input type="checkbox" class="order-check cursor-pointer" data-id="{{ o.id }}" style="transform: scale(1.25); transform-origin: left center;" />
+          </td>
+          <td class="px-4 py-3 text-blue-400 whitespace-nowrap">
+            <a href="{% url 'orders:order_detail' o.pk %}" class="hover:underline">{{ o.code }}</a>
+          </td>
+          <td class="px-4 py-3 text-sm text-gray-300">
+            <div class="flex items-center gap-2">
+              {% if o.product.image %}
+                <img src="{{ o.product.image|safe_image_url }}" alt="{{ o.product.name }}" class="w-10 h-10 object-cover rounded border border-gray-800">
+              {% else %}
+                <div class="w-10 h-10 bg-[#1e1e1e] rounded border border-gray-800 flex items-center justify-center text-gray-500">
+                  <i data-lucide="image" class="w-4 h-4"></i>
+                </div>
+              {% endif %}
+              <div>
+                <div>
+                  <a href="{% url 'products:product_detail' o.product.pk %}" class="text-blue-400 hover:text-blue-300 hover:underline underline-offset-2">{{ o.product.name }}</a>
+                </div>
+                <div class="text-xs text-gray-500"><span class="text-gray-400">{{ o.product.code|default:'-' }}</span></div>
+                <div class="text-xs text-gray-500">{{ o.product.supplier.name|default:'-' }}</div>
+              </div>
+            </div>
+          </td>
+          <td class="px-4 py-3 text-sm text-gray-300 whitespace-nowrap">
+            <div class="text-sm">
+              <span class="text-gray-300">{{ o.color.name|default:'-' }}</span>
+              <span class="text-gray-500">/</span>
+              <span class="text-gray-300">{{ o.size.name|default:'-' }}</span>
+            </div>
+          </td>
+          <td class="px-4 py-3 text-sm text-gray-300 whitespace-nowrap">{{ o.amount }}</td>
+          <td class="px-4 py-3 text-sm whitespace-nowrap"><span class="text-blue-400 font-medium">{{ o.sale_price|default:0|smart_vnd }}</span></td>
+          <td class="px-4 py-3 text-sm whitespace-nowrap"><span class="text-yellow-300 font-medium">{{ o.discount_safe|default:0|smart_vnd }}</span></td>
+          <td class="px-4 py-3 text-sm whitespace-nowrap"><span class="text-green-400 font-medium">{{ o.revenue|default:0|smart_vnd }}</span></td>
+          <td class="px-4 py-3 text-sm whitespace-nowrap"><span class="text-emerald-400 font-medium">{{ o.net_profit|default:0|smart_vnd }}</span></td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <form method="post" action="{% url 'orders:update_order_status' o.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+              <select name="status" class="bg-[#161616] border border-gray-800 rounded px-2 py-1 text-xs text-gray-200" onchange="this.form.submit()">
+                {% for value,label in order_status_choices %}
+                  <option value="{{ value }}" {% if o.status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </form>
+          </td>
+          <td class="px-4 py-3 text-sm text-gray-300 whitespace-nowrap">{{ o.note|default:'-' }}</td>
+          <td class="px-4 py-3 text-sm text-gray-400 whitespace-nowrap">{{ o.created_at|date:'d/m/Y H:i' }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="12" class="px-4 py-6 text-center text-gray-400">Chưa có đơn hàng nào.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Delete modal -->
+<div id="modal-delete" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-50">
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-5 w-full max-w-md">
+    <div class="flex items-start gap-3">
+      <i data-lucide="alert-triangle" class="w-6 h-6 text-red-400 mt-0.5"></i>
+      <div>
+        <h4 class="text-lg font-semibold text-gray-100">Xóa khách hàng?</h4>
+        <p class="text-gray-400 text-sm mt-1">Thao tác này không thể hoàn tác. Tất cả đơn hàng liên quan cũng có thể bị ảnh hưởng.</p>
+      </div>
+    </div>
+    <form method="post" action="{% url 'customers:customer_delete' customer.code %}" class="mt-4 flex justify-end gap-2">
+      {% csrf_token %}
+      <button type="button" id="btn-cancel-delete" class="px-4 py-2 rounded-md border text-sm bg-[#121212] text-gray-300 border-gray-800 hover:border-gray-700">Hủy</button>
+      <button type="submit" class="px-4 py-2 rounded-md border text-sm bg-red-600 text-white border-red-700 hover:bg-red-500">Xóa</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  lucide.createIcons();
+
+  // Dropdown multi-select handlers
+  (function() {
+    function toggle(el) { el.classList.toggle('hidden'); }
+    document.querySelectorAll('[data-dropdown-toggle]').forEach(function(btn){
+      var target = document.querySelector(btn.getAttribute('data-dropdown-toggle'));
+      btn.addEventListener('click', function(e){ e.stopPropagation(); toggle(target); });
+    });
+    document.querySelectorAll('[data-dropdown-panel]').forEach(function(panel){
+      panel.addEventListener('click', function(e){ e.stopPropagation(); });
+    });
+    document.addEventListener('click', function(){
+      document.querySelectorAll('[id^="dd-"]').forEach(function(p){ if(!p.classList.contains('hidden')) p.classList.add('hidden'); });
+    });
+    document.querySelectorAll('[data-dropdown-close]').forEach(function(btn){
+      var target = document.querySelector(btn.getAttribute('data-dropdown-close'));
+      btn.addEventListener('click', function(e){ e.stopPropagation(); if(target) target.classList.add('hidden'); });
+    });
+    document.querySelectorAll('[data-select-all]').forEach(function(all){
+      var group = all.getAttribute('data-select-all');
+      var container = all.closest('[data-dropdown]');
+      var list = container ? container.querySelector('[data-group="'+group+'"]') : null;
+      function syncAllState(){
+        if(!list) return;
+        var boxes = list.querySelectorAll('input[type="checkbox"]');
+        var checked = Array.from(boxes).every(function(b){ return b.checked; });
+        all.checked = checked;
+      }
+
+  // Transaction choice modal
+  (function(){
+    const txModal = document.getElementById('modal-tx');
+    const openTxBtn = document.getElementById('btn-open-tx-modal');
+    const cancelTxBtn = document.getElementById('btn-cancel-tx');
+    if (openTxBtn && txModal){
+      openTxBtn.addEventListener('click', function(){
+        txModal.classList.remove('hidden');
+        txModal.classList.add('flex');
+      });
+    }
+    if (cancelTxBtn && txModal){
+      cancelTxBtn.addEventListener('click', function(){
+        txModal.classList.add('hidden');
+        txModal.classList.remove('flex');
+      });
+    }
+    if (txModal){
+      txModal.addEventListener('click', function(e){
+        if (e.target === txModal){
+          txModal.classList.add('hidden');
+          txModal.classList.remove('flex');
+        }
+      });
+    }
+  })();
+      if(list){
+        all.addEventListener('change', function(){
+          var boxes = list.querySelectorAll('input[type="checkbox"]');
+          boxes.forEach(function(b){ b.checked = all.checked; });
+        });
+        list.addEventListener('change', syncAllState);
+        syncAllState();
+      }
+    });
+    // Live filter for supplier list
+    document.querySelectorAll('[data-filter-input]').forEach(function(inp){
+      var group = inp.getAttribute('data-filter-input');
+      var container = inp.closest('[data-dropdown]');
+      var list = container ? container.querySelector('[data-group="'+group+'"]') : null;
+      if(!list) return;
+      inp.addEventListener('input', function(){
+        var q = (inp.value || '').toLowerCase().trim();
+        list.querySelectorAll('label').forEach(function(lbl){
+          var text = (lbl.textContent || '').toLowerCase();
+          lbl.classList.toggle('hidden', q && text.indexOf(q) === -1);
+        });
+      });
+    });
+  })();
+
+  // Multi-select orders
+  (function() {
+    const toggleBtn = document.getElementById('btn-toggle-multi');
+    const selectAllBtn = document.getElementById('btn-select-all');
+    const bulkForm = document.getElementById('bulk-form');
+    const bulkIds = document.getElementById('bulk-ids');
+    function getChecks() { return document.querySelectorAll('.order-check'); }
+    function getMultiOnly() { return document.querySelectorAll('.multi-only'); }
+    function setMultiMode(on) {
+      getMultiOnly().forEach(el => el.classList.toggle('hidden', !on));
+      if (bulkForm) bulkForm.classList.toggle('hidden', !on);
+    }
+    function syncHiddenInputs() {
+      if (!bulkIds) return;
+      bulkIds.innerHTML = '';
+      getChecks().forEach(cb => {
+        if (cb.checked) {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'order_ids';
+          input.value = cb.getAttribute('data-id');
+          bulkIds.appendChild(input);
+        }
+      });
+    }
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        const anyHidden = Array.from(getMultiOnly()).some(el => el.classList.contains('hidden'));
+        setMultiMode(anyHidden);
+      });
+    }
+    if (selectAllBtn) {
+      selectAllBtn.addEventListener('click', () => {
+        getChecks().forEach(cb => { if (!cb.checked) cb.checked = true; });
+        syncHiddenInputs();
+      });
+    }
+    document.addEventListener('change', (e) => {
+      if (e.target && e.target.classList && e.target.classList.contains('order-check')) {
+        syncHiddenInputs();
+      }
+    });
+    if (bulkForm) {
+      bulkForm.addEventListener('submit', (e) => {
+        syncHiddenInputs();
+        if (!bulkIds || bulkIds.children.length === 0) {
+          e.preventDefault();
+          alert('Vui lòng chọn ít nhất một đơn hàng.');
+        }
+      });
+    }
+    setMultiMode(false);
+  })();
+
+  // Delete modal
+  const modal = document.getElementById('modal-delete');
+  const openBtn = document.getElementById('btn-open-delete');
+  const cancelBtn = document.getElementById('btn-cancel-delete');
+  if (openBtn && modal) {
+    openBtn.addEventListener('click', () => {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    });
+  }
+  if (cancelBtn && modal) {
+    cancelBtn.addEventListener('click', () => {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    });
+  }
+  // Create Bill: open modal to deduct deposit (if any)
+  (function(){
+    var btn = document.getElementById('btn-create-bill');
+    var modal = document.getElementById('modal-bill-deposit');
+    var closeBtn = document.getElementById('bill-deposit-close');
+    var noneBtn = document.getElementById('bill-deposit-none');
+    var fullBtn = document.getElementById('bill-deposit-full');
+    var applyBtn = document.getElementById('bill-deposit-apply');
+    var input = document.getElementById('bill-deposit-input');
+    var totalEl = document.getElementById('bill-deposit-total');
+    function open(){ if(modal){ modal.classList.remove('hidden'); modal.classList.add('flex'); } }
+    function close(){ if(modal){ modal.classList.add('hidden'); modal.classList.remove('flex'); } }
+    function toVND(n){ try{ return Number(n||0).toLocaleString('vi-VN') + 'đ'; }catch(e){ return n + 'đ'; } }
+    function parseAmount(s){ if(!s) return 0; var v = String(s).replace(/[^0-9]/g,''); return parseInt(v||'0',10) || 0; }
+    if (!btn) return;
+    btn.addEventListener('click', function(e){
+      var depRaw = parseFloat(btn.getAttribute('data-deposit') || '0');
+      if (!(depRaw > 0)) return; // no deposit -> follow link
+      e.preventDefault();
+      if (totalEl) totalEl.textContent = toVND(depRaw);
+      if (input) input.value = String(Math.floor(depRaw));
+      open();
+    });
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (modal) modal.addEventListener('click', function(e){ if(e.target === modal) close(); });
+    if (noneBtn) noneBtn.addEventListener('click', function(){
+      var base = btn.getAttribute('href') || '';
+      var sep = base.indexOf('?') === -1 ? '?' : '&';
+      var target = base + sep + 'paid_override=0';
+      window.location.href = target;
+    });
+    if (fullBtn) fullBtn.addEventListener('click', function(){
+      var depRaw = parseFloat(btn.getAttribute('data-deposit') || '0');
+      var base = btn.getAttribute('href') || '';
+      var sep = base.indexOf('?') === -1 ? '?' : '&';
+      var target = base + sep + 'paid_override=' + encodeURIComponent(Math.floor(depRaw));
+      window.location.href = target;
+    });
+    if (applyBtn) applyBtn.addEventListener('click', function(){
+      var depRaw = parseFloat(btn.getAttribute('data-deposit') || '0');
+      var val = parseAmount(input && input.value);
+      if (val < 0) val = 0;
+      if (val > depRaw) val = Math.floor(depRaw);
+      var base = btn.getAttribute('href') || '';
+      var sep = base.indexOf('?') === -1 ? '?' : '&';
+      // If user sets 0, redirect without override (equivalent to none)
+      var target = val > 0 ? (base + sep + 'paid_override=' + encodeURIComponent(val)) : base;
+      window.location.href = target;
+    });
+  })();
+</script>
+{% endblock %}

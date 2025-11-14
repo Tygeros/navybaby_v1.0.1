@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}NavyBaby{% endblock %}</title>
+
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="min-h-screen flex text-gray-200 bg-[#1b1b1b]">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="w-64 bg-[#121212] border-r border-gray-800 min-h-screen p-4 fixed lg:sticky lg:top-0 lg:h-screen inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-in-out z-50">
+    <!-- Logo -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center space-x-3">
+        <div class="bg-blue-600 text-white rounded-full px-3 py-2 font-bold shadow shadow-blue-800/40">NB</div>
+        <div>
+          <h3 class="text-lg font-bold text-gray-100">NavyBaby</h3>
+          <p class="text-sm text-gray-400">Management System</p>
+        </div>
+      </div>
+      <button id="closeSidebar" class="lg:hidden text-gray-400 hover:text-gray-200">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+      <ul class="space-y-2">
+        <li>
+          <a href="{% url 'home' %}" class="group flex items-center space-x-3 p-2 rounded-md text-gray-300 hover:bg-zinc-800/70 hover:text-white transition {% if request.path == '/' %}bg-blue-900/30 text-blue-400{% endif %}">
+            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+            <span class="transition-transform group-hover:translate-x-0.5">Báo cáo tổng quan</span>
+          </a>
+        </li>
+        <li>
+          <a href="/khach-hang" class="group flex items-center space-x-3 p-2 rounded-md text-gray-300 hover:bg-zinc-800/70 hover:text-white transition">
+            <i data-lucide="users" class="w-5 h-5"></i>
+            <span class="transition-transform group-hover:translate-x-0.5">Khách hàng</span>
+          </a>
+        </li>
+        <li>
+          <a href="/san-pham" class="group flex items-center space-x-3 p-2 rounded-md text-gray-300 hover:bg-zinc-800/70 hover:text-white transition">
+            <i data-lucide="warehouse" class="w-5 h-5"></i>
+            <span class="transition-transform group-hover:translate-x-0.5">Sản phẩm</span>
+          </a>
+        </li>
+        <li>
+          <a href="/don-hang" class="group flex items-center space-x-3 p-2 rounded-md text-gray-300 hover:bg-zinc-800/70 hover:text-white transition">
+            <i data-lucide="file-text" class="w-5 h-5"></i>
+            <span class="transition-transform group-hover:translate-x-0.5">Đơn hàng</span>
+          </a>
+        </li>
+        <li>
+          <a href="/danh-muc" class="group flex items-center space-x-3 p-2 rounded-md text-gray-300 hover:bg-zinc-800/70 hover:text-white transition">
+            <i data-lucide="layers" class="w-5 h-5"></i>
+            <span class="transition-transform group-hover:translate-x-0.5">Danh mục</span>
+          </a>
+        </li>
+        <li>
+          <a href="/nha-cung-cap" class="group flex items-center space-x-3 p-2 rounded-md text-gray-300 hover:bg-zinc-800/70 hover:text-white transition">
+            <i data-lucide="truck" class="w-5 h-5"></i>
+            <span class="transition-transform group-hover:translate-x-0.5">Nhà cung cấp</span>
+          </a>
+        </li>
+        <li>
+          <a href="/tai-chinh" class="group flex items-center space-x-3 p-2 rounded-md text-gray-300 hover:bg-zinc-800/70 hover:text-white transition">
+            <i data-lucide="wallet" class="w-5 h-5"></i>
+            <span class="transition-transform group-hover:translate-x-0.5">Tài chính</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Footer -->
+    <div class="mt-8 border-t border-gray-800 pt-4">
+      <a href="#" class="group flex items-center space-x-3 text-gray-400 hover:text-gray-200">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+        <span class="transition-transform group-hover:translate-x-0.5">Cài đặt</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Backdrop for mobile sidebar -->
+  <div id="backdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm lg:hidden hidden z-40"></div>
+
+  <!-- Main Content -->
+  <div class="flex-1 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <header class="bg-[#121212] border-b border-gray-800 sticky top-0 z-40">
+      <div class="flex items-center justify-between px-4 py-3">
+        <button id="openSidebar" class="lg:hidden text-gray-300 hover:text-white">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+        <h1 class="font-semibold text-gray-200 text-lg flex items-center gap-2">
+          <i data-lucide="{% block navbar_icon %}gauge{% endblock %}" class="w-5 h-5 text-blue-500"></i>
+          {% block navbar_title %}Tổng quan{% endblock %}
+        </h1>
+        <div class="flex items-center space-x-3">
+          <div class="relative">
+            <i data-lucide="search" class="absolute left-2 top-1.5 w-4 h-4 text-gray-500"></i>
+            <input type="text" placeholder="Tìm kiếm..." class="bg-[#1f1f1f] border border-gray-700 rounded-md pl-8 pr-3 py-1 text-sm text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-600">
+          </div>
+          <button class="text-gray-300 hover:text-white relative">
+            <i data-lucide="bell" class="w-5 h-5"></i>
+            <span class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] px-1.5 rounded-full">3</span>
+          </button>
+          <button class="text-gray-300 hover:text-white">
+            <i data-lucide="user-circle" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="p-4 lg:p-6">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="mb-3 p-3 rounded-md border border-gray-800 bg-[#161616] text-gray-200">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  <!-- Sidebar JS -->
+  <script>
+    lucide.createIcons();
+    const sidebar = document.getElementById('sidebar');
+    const backdrop = document.getElementById('backdrop');
+    document.getElementById('openSidebar')?.addEventListener('click', () => {
+      sidebar.classList.remove('-translate-x-full');
+      backdrop.classList.remove('hidden');
+    });
+    const close = () => {
+      sidebar.classList.add('-translate-x-full');
+      backdrop.classList.add('hidden');
+    }
+    document.getElementById('closeSidebar')?.addEventListener('click', close);
+    backdrop?.addEventListener('click', close);
+  </script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

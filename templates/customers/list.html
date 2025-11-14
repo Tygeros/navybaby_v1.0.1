@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load number_extras %}
+{% block title %}Khách hàng - NavyBaby{% endblock %}
+{% block navbar_icon %}users{% endblock %}
+{% block navbar_title %}Khách hàng{% endblock %}
+{% block content %}
+
+<!-- Header -->
+<div class="sticky-subheader flex flex-col md:flex-row justify-between items-center mb-6 py-3">
+  <div>
+    <h2 class="text-2xl font-bold flex items-center text-blue-400 mb-1">
+      <i data-lucide="users" class="w-6 h-6 mr-2"></i>Khách hàng
+    </h2>
+    <p class="text-gray-400 text-sm">Quản lý danh sách khách hàng</p>
+  </div>
+  <div class="flex items-center gap-2 mt-3 md:mt-0">
+    <a href="?display=table"
+      class="px-3 py-1.5 rounded-md border text-sm transition
+      {% if display == 'table' %}
+          bg-blue-900/30 text-blue-300 border-blue-800
+      {% else %}
+          bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700
+      {% endif %}">
+      <i data-lucide="table" class="inline w-4 h-4 mr-1"></i>Bảng
+    </a>
+
+    <a href="?display=card"
+      class="px-3 py-1.5 rounded-md border text-sm transition
+      {% if display == 'card' %}
+          bg-blue-900/30 text-blue-300 border-blue-800
+      {% else %}
+          bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700
+      {% endif %}">
+      <i data-lucide="grid" class="inline w-4 h-4 mr-1"></i>Thẻ
+    </a>
+
+    <a href="{% url 'customers:customer_create' %}"
+      class="px-3 py-1.5 rounded-md border text-sm transition bg-blue-600 text-white border-blue-700 hover:bg-blue-500 flex items-center">
+      <i data-lucide="user-plus" class="inline w-4 h-4 mr-1"></i>Thêm khách hàng
+    </a>
+  </div>
+</div>
+
+<!-- Filter -->
+<div class="bg-[#121212] border border-gray-800 rounded-xl p-5 mb-6 shadow-inner shadow-black/20">
+  <form method="get" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="md:col-span-2 relative">
+      <i data-lucide="search" class="w-4 h-4 text-gray-500 absolute left-2.5 top-2.5"></i>
+      <input type="text" name="q" value="{{ search_query }}" placeholder="Tìm theo tên, mã, SĐT..."
+        class="w-full bg-[#161616] border border-gray-800 rounded-md pl-8 pr-3 py-2 text-sm
+               text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2
+               focus:ring-blue-500/30 focus:border-gray-700 transition">
+    </div>
+    <div>
+      <select name="sort"
+        class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-sm text-gray-200
+               focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700 transition">
+        <option value="created_desc" {% if sort == 'created_desc' %}selected{% endif %}>Mới nhất</option>
+        <option value="created_asc" {% if sort == 'created_asc' %}selected{% endif %}>Cũ nhất</option>
+        <option value="revenue_desc" {% if sort == 'revenue_desc' %}selected{% endif %}>Doanh thu giảm dần</option>
+        <option value="revenue_asc" {% if sort == 'revenue_asc' %}selected{% endif %}>Doanh thu tăng dần</option>
+      </select>
+    </div>
+    <div class="md:col-span-1 flex items-center gap-2 justify-end">
+      <a href="{% url 'customers:customer_list' %}"
+         class="px-3 py-2 rounded-md border text-sm bg-[#161616] text-gray-300 border-gray-800
+                hover:border-gray-700 hover:text-gray-100 transition">Xóa lọc</a>
+      <button
+         class="px-3 py-2 rounded-md border text-sm bg-blue-600 text-white border-blue-700
+                hover:bg-blue-500 shadow hover:shadow-blue-700/30 transition">Lọc</button>
+    </div>
+  </form>
+ </div>
+
+{% if display == 'card' %}
+  <!-- Card mode -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    {% for c in customers %}
+      <div class="bg-[#161616] border border-gray-800 rounded-xl p-5 transition hover:-translate-y-0.5 hover:border-gray-700 space-y-3">
+        <div class="flex items-start justify-between">
+          <div class="space-y-1.5 leading-relaxed">
+            <div class="flex items-center gap-2">
+              <h3 class="font-semibold text-gray-100 text-lg">{{ c.name }}</h3>
+              {% if c.is_affiliate %}
+                <span class="text-[11px] px-1.5 py-0.5 rounded bg-blue-900/40 border border-blue-800 text-blue-300">CTV</span>
+              {% endif %}
+            </div>
+            <p class="text-gray-400 text-sm">
+              Mã KH:
+              <a href="{% url 'customers:customer_detail' c.code %}" class="text-blue-400 hover:text-blue-300 hover:underline underline-offset-2">{{ c.code }}</a>
+            </p>
+            <p class="text-gray-400 text-sm">SĐT: <span class="text-gray-300">{{ c.phone_number }}</span></p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-2 gap-3 pt-2">
+          <div class="bg-[#121212] border border-gray-800 rounded-lg p-3 text-center">
+            <p class="text-xs text-gray-400 uppercase tracking-wide">Số đơn</p>
+            <p class="text-gray-200 font-semibold text-sm">{{ c.total_orders|default:0 }}</p>
+          </div>
+          <div class="bg-[#121212] border border-gray-800 rounded-lg p-3 text-center">
+            <p class="text-xs text-gray-400 uppercase tracking-wide">Chiết khấu</p>
+            <p class="text-gray-200 font-semibold text-sm">{{ c.total_discount|default:0|smart_vnd }}</p>
+          </div>
+          <div class="bg-[#121212] border border-gray-800 rounded-lg p-3 text-center">
+            <p class="text-xs text-gray-400 uppercase tracking-wide">Doanh thu</p>
+            <p class="text-gray-200 font-semibold text-sm">{{ c.total_revenue|default:0|smart_vnd }}</p>
+          </div>
+          <div class="bg-[#121212] border border-gray-800 rounded-lg p-3 text-center">
+            <p class="text-xs text-gray-400 uppercase tracking-wide">Doanh thu thuần</p>
+            {% with profit=c.net_profit|default:0 %}
+              <p class="{% if profit < 0 %}text-red-400{% else %}text-green-400{% endif %} font-semibold text-sm">
+                {{ profit|smart_vnd }}
+              </p>
+            {% endwith %}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-span-full bg-[#161616] border border-gray-800 rounded-lg p-6 text-center text-gray-400">Chưa có khách hàng nào.</div>
+    {% endfor %}
+  </div>
+
+{% else %}
+  <!-- Table mode -->
+  <div class="bg-[#121212] border border-gray-800 rounded-xl overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-800">
+        <thead class="bg-[#161616]">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Mã KH</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Tên KH</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">SĐT</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Số đơn</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Tổng chiết khấu</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Doanh thu</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Doanh thu thuần</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-800">
+          {% for c in customers %}
+            {% with profit=c.net_profit|default:0 %}
+            <tr class="hover:bg-[#171717] transition">
+              <td class="px-4 py-3 text-gray-300 whitespace-nowrap">
+                <a href="{% url 'customers:customer_detail' c.code %}" class="text-blue-400 hover:text-blue-300 hover:underline underline-offset-2">{{ c.code }}</a>
+              </td>
+              <td class="px-4 py-3 text-gray-200 whitespace-nowrap">
+                <span class="font-medium">{{ c.name }}</span>
+                {% if c.is_affiliate %}
+                  <span class="ml-2 text-[11px] px-1.5 py-0.5 rounded bg-blue-900/40 border border-blue-800 text-blue-300">CTV</span>
+                {% endif %}
+              </td>
+              <td class="px-4 py-3 text-gray-300 whitespace-nowrap">{{ c.phone_number }}</td>
+              <td class="px-4 py-3 text-gray-200 whitespace-nowrap">{{ c.total_orders|default:0 }}</td>
+              <td class="px-4 py-3 text-gray-200 whitespace-nowrap">{{ c.total_discount|default:0|smart_vnd }}</td>
+              <td class="px-4 py-3 text-gray-200 whitespace-nowrap">{{ c.total_revenue|default:0|smart_vnd }}</td>
+              <td class="px-4 py-3 font-semibold whitespace-nowrap {% if profit < 0 %}text-red-400{% else %}text-green-400{% endif %}">
+                {{ profit|smart_vnd }}
+              </td>
+            </tr>
+            {% endwith %}
+          {% empty %}
+            <tr>
+              <td colspan="7" class="px-4 py-6 text-center text-gray-400">Chưa có khách hàng nào.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endif %}
+
+{% if is_paginated %}
+<div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm">
+  <div class="text-gray-400">
+    Trang <span class="text-gray-200 font-medium">{{ page_obj.number }}</span> / {{ page_obj.paginator.num_pages }} · Tổng <span class="text-gray-200 font-medium">{{ page_obj.paginator.count }}</span>
+  </div>
+  <div class="flex items-center gap-1">
+    {% if page_obj.has_previous %}
+      <a class="px-2 py-1 rounded border border-gray-800 bg-[#161616] text-gray-300 hover:border-gray-700" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page=1">« Đầu</a>
+      <a class="px-2 py-1 rounded border border-gray-800 bg-[#161616] text-gray-300 hover:border-gray-700" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}">‹ Trước</a>
+    {% else %}
+      <span class="px-2 py-1 rounded border border-gray-900 bg-[#111] text-gray-600">« Đầu</span>
+      <span class="px-2 py-1 rounded border border-gray-900 bg-[#111] text-gray-600">‹ Trước</span>
+    {% endif %}
+
+    {% for i in page_obj.paginator.page_range %}
+      {% if i >= page_obj.number|add:-2 and i <= page_obj.number|add:2 %}
+        {% if page_obj.number == i %}
+          <span class="px-3 py-1 rounded border border-blue-800 bg-blue-900/30 text-blue-300">{{ i }}</span>
+        {% else %}
+          <a class="px-3 py-1 rounded border border-gray-800 bg-[#161616] text-gray-300 hover:border-gray-700" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ i }}">{{ i }}</a>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <a class="px-2 py-1 rounded border border-gray-800 bg-[#161616] text-gray-300 hover:border-gray-700" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">Tiếp ›</a>
+      <a class="px-2 py-1 rounded border border-gray-800 bg-[#161616] text-gray-300 hover:border-gray-700" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.paginator.num_pages }}">Cuối »</a>
+    {% else %}
+      <span class="px-2 py-1 rounded border border-gray-900 bg-[#111] text-gray-600">Tiếp ›</span>
+      <span class="px-2 py-1 rounded border border-gray-900 bg-[#111] text-gray-600">Cuối »</span>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>lucide.createIcons();</script>
+{% endblock %}

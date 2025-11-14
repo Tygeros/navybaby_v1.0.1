@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Xóa danh mục{% endblock %}
+{% block navbar_icon %}wallet{% endblock %}
+{% block navbar_title %}Tài chính{% endblock %}
+
+{% block content %}
+<div class="bg-[#121212] border border-gray-800 rounded-lg p-6 max-w-xl">
+  <h2 class="text-xl font-semibold text-red-400 mb-2">Xác nhận xóa</h2>
+  <p class="text-gray-300">Bạn có chắc chắn muốn xóa danh mục "<span class="font-medium">{{ object.name }}</span>"?</p>
+  <p class="text-sm text-gray-500 mt-1">Loại: {{ object.get_type_display }}</p>
+
+  <form method="post" class="mt-6 flex items-center gap-2">
+    {% csrf_token %}
+    <a href="{% url 'finance:category_list' %}" class="px-4 py-2 rounded-md border text-sm bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">Hủy</a>
+    <button type="submit" class="px-4 py-2 rounded-md border text-sm bg-red-600 text-white border-red-700 hover:bg-red-500">Xóa</button>
+  </form>
+</div>
+{% endblock %}

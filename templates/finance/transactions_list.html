@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% load number_extras %}
+
+{% block title %}Nhật ký giao dịch - NavyBaby{% endblock %}
+{% block navbar_icon %}wallet{% endblock %}
+{% block navbar_title %}Tài chính{% endblock %}
+
+{% block content %}
+<div class="sticky-subheader flex flex-col md:flex-row justify-between items-center mb-6 py-3">
+  <div>
+    <h2 class="text-2xl font-bold flex items-center text-blue-400">
+      <i data-lucide="list" class="w-6 h-6 mr-2"></i>Nhật ký giao dịch
+    </h2>
+    <p class="text-gray-400">Theo dõi tất cả khoản thu/chi</p>
+  </div>
+  <div class="flex items-center gap-2">
+    <a href="{% url 'finance:income_create' %}" class="px-3 py-1.5 rounded-md border text-sm transition bg-green-600 text-white border-green-700 hover:bg-green-500 flex items-center">
+      <i data-lucide="plus" class="w-4 h-4 mr-1"></i>Thêm khoản thu
+    </a>
+    <a href="{% url 'finance:expense_create' %}" class="px-3 py-1.5 rounded-md border text-sm transition bg-red-600 text-white border-red-700 hover:bg-red-500 flex items-center">
+      <i data-lucide="minus" class="w-4 h-4 mr-1"></i>Thêm khoản chi
+    </a>
+    <a href="{% url 'finance:category_list' %}" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 flex items-center">
+      <i data-lucide="tags" class="w-4 h-4 mr-1"></i>Danh mục
+    </a>
+  </div>
+</div>
+
+<div class="bg-[#121212] border border-gray-800 rounded-lg p-4 mb-4 overflow-visible">
+  <form method="get" class="flex items-center gap-3 overflow-visible flex-nowrap">
+    <input type="text" name="q" value="{{ q }}" placeholder="Tìm KH (tên / SĐT / mã)" class="min-w-[240px] bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200" />
+    <select name="type" class="min-w-[180px] bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200">
+      <option value="">-- Tất cả loại --</option>
+      <option value="INCOME" {% if type == 'INCOME' %}selected{% endif %}>Khoản thu</option>
+      <option value="EXPENSE" {% if type == 'EXPENSE' %}selected{% endif %}>Khoản chi</option>
+    </select>
+    <div class="relative min-w-[200px]" data-dropdown="category">
+      <button type="button" data-dropdown-toggle="#dd-category" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-sm text-gray-200 text-left flex items-center justify-between hover:border-gray-700 transition">
+        <span>Danh mục{% if category_filter %} ({{ category_filter|length }}){% endif %}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" /></svg>
+      </button>
+      <div id="dd-category" data-dropdown-panel class="hidden absolute left-0 top-full z-50 mt-1 w-[22rem] max-w-[calc(100vw-2rem)] bg-[#161616] border border-gray-800 rounded-md p-3 shadow-xl">
+        <div class="mb-2">
+          <label class="inline-flex items-center gap-2">
+            <input type="checkbox" data-select-all="category" class="nb-checkbox h-4 w-4 rounded border-gray-700 bg-[#121212] text-blue-600 focus:ring-blue-500/40">
+            <span class="text-gray-300">Tất cả danh mục</span>
+          </label>
+        </div>
+        <div class="grid grid-cols-2 gap-2 max-h-56 overflow-auto" data-group="category">
+          {% if categories %}
+            {% for c in categories %}
+              <label class="inline-flex items-center gap-2">
+                <input type="checkbox" name="category" value="{{ c.id }}" class="nb-checkbox h-4 w-4 rounded border-gray-700 bg-[#121212] text-blue-600 focus:ring-blue-500/40" {% if c.id|stringformat:"s" in category_filter %}checked{% endif %}>
+                <span class="text-gray-300">{{ c.name }}</span>
+              </label>
+            {% endfor %}
+          {% else %}
+            <div class="col-span-2 text-sm text-gray-400">Chưa có danh mục nào.</div>
+          {% endif %}
+        </div>
+        <div class="mt-3 flex justify-end">
+          <button type="button" data-dropdown-close="#dd-category" class="px-3 py-1.5 rounded-md border text-xs bg-[#1a1a1a] text-gray-300 border-gray-800 hover:border-gray-700">Đóng</button>
+        </div>
+      </div>
+    </div>
+    <input type="date" name="date_from" value="{{ date_from }}" class="min-w-[160px] bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200" />
+    <input type="date" name="date_to" value="{{ date_to }}" class="min-w-[160px] bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200" />
+    <select name="sort" class="min-w-[200px] bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200">
+      <option value="created_desc" {% if sort == 'created_desc' %}selected{% endif %}>Thời gian: Mới nhất</option>
+      <option value="created_asc" {% if sort == 'created_asc' %}selected{% endif %}>Thời gian: Cũ nhất</option>
+      <option value="amount_desc" {% if sort == 'amount_desc' %}selected{% endif %}>Giá trị: Giảm dần</option>
+      <option value="amount_asc" {% if sort == 'amount_asc' %}selected{% endif %}>Giá trị: Tăng dần</option>
+    </select>
+    <div class="flex gap-2">
+      <button type="submit" class="px-3 py-2 rounded-md border text-sm bg-blue-600 text-white border-blue-700 hover:bg-blue-500">Lọc</button>
+      <a href="{% url 'finance:transactions_list' %}" class="px-3 py-2 rounded-md border text-sm bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">Xóa lọc</a>
+    </div>
+  </form>
+  {% if category_filter %}
+  <div class="flex flex-wrap items-center gap-2 mt-3">
+    {% for c in categories %}
+      {% if c.id|stringformat:"s" in category_filter %}
+        <span class="px-2 py-1 text-xs rounded border border-gray-800 bg-[#161616] text-gray-300">{{ c.name }}</span>
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  (function() {
+    function toggle(el) { if (!el) return; el.classList.toggle('hidden'); }
+    document.querySelectorAll('[data-dropdown-toggle]').forEach(function(btn){
+      var target = document.querySelector(btn.getAttribute('data-dropdown-toggle'));
+      btn.addEventListener('click', function(e){ e.stopPropagation(); toggle(target); });
+    });
+    // Prevent closing when clicking inside the dropdown panel
+    document.querySelectorAll('[data-dropdown-panel]').forEach(function(panel){
+      panel.addEventListener('click', function(e){ e.stopPropagation(); });
+    });
+    // Close all when clicking outside
+    document.addEventListener('click', function(){
+      document.querySelectorAll('[id^="dd-"]').forEach(function(p){ if(!p.classList.contains('hidden')) p.classList.add('hidden'); });
+    });
+    // Explicit close buttons
+    document.querySelectorAll('[data-dropdown-close]').forEach(function(btn){
+      var target = document.querySelector(btn.getAttribute('data-dropdown-close'));
+      btn.addEventListener('click', function(e){ e.stopPropagation(); if(target) target.classList.add('hidden'); });
+    });
+    // Select all per group
+    document.querySelectorAll('[data-select-all]').forEach(function(all){
+      var group = all.getAttribute('data-select-all');
+      var container = all.closest('[data-dropdown]');
+      var list = container ? container.querySelector('[data-group="'+group+'"]') : null;
+      function syncAllState(){
+        if(!list) return;
+        var boxes = list.querySelectorAll('input[type="checkbox"]');
+        var checked = boxes.length > 0 && Array.from(boxes).every(function(b){ return b.checked; });
+        all.checked = checked;
+      }
+      if(list){
+        all.addEventListener('change', function(){
+          var boxes = list.querySelectorAll('input[type="checkbox"]');
+          boxes.forEach(function(b){ b.checked = all.checked; });
+        });
+        list.addEventListener('change', syncAllState);
+        syncAllState();
+      }
+    });
+  })();
+  if (window.lucide) { try { lucide.createIcons(); } catch (e) {} }
+</script>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-3 text-center">
+    <p class="text-[11px] text-gray-400">Số giao dịch</p>
+    <p class="text-lg font-semibold text-gray-100">{{ stats.count|default:0 }}</p>
+  </div>
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-3 text-center">
+    <p class="text-[11px] text-gray-400">Dòng tiền vào</p>
+    <p class="text-lg font-semibold text-green-400">{{ stats.inflow|default:0|smart_vnd }}</p>
+  </div>
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-3 text-center">
+    <p class="text-[11px] text-gray-400">Dòng tiền ra</p>
+    <p class="text-lg font-semibold text-red-400">{{ stats.outflow|default:0|smart_vnd }}</p>
+  </div>
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-3 text-center">
+    <p class="text-[11px] text-gray-400">Thu nhập thuần</p>
+    <p class="text-lg font-semibold text-emerald-400">{{ stats.net|default:0|smart_vnd }}</p>
+  </div>
+</div>
+
+<div class="bg-[#121212] border border-gray-800 rounded-lg overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-800">
+      <thead class="bg-[#161616]">
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Thời gian</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Loại</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Danh mục</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Khách hàng</th>
+          <th class="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Số tiền</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Ghi chú</th>
+          <th class="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Hành động</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-800">
+        {% for t in transactions %}
+          <tr class="hover:bg-[#171717]">
+            <td class="px-4 py-3 text-gray-400 text-sm">{{ t.created_at|date:"d/m/Y H:i" }}</td>
+            <td class="px-4 py-3">
+              {% if t.category.type == 'INCOME' %}
+                <span class="text-[11px] px-1.5 py-0.5 rounded bg-green-900/30 border border-green-800 text-green-300">Khoản thu</span>
+              {% else %}
+                <span class="text-[11px] px-1.5 py-0.5 rounded bg-red-900/30 border border-red-800 text-red-300">Khoản chi</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-gray-200">{{ t.category.name|default:'-' }}</td>
+            <td class="px-4 py-3 text-gray-300">
+              {% if t.customer %}
+                <div>
+                  <a href="{% url 'customers:customer_detail' t.customer.code %}" class="text-blue-400 hover:text-blue-300 hover:underline underline-offset-2">{{ t.customer.name }}</a>
+                  <div class="text-xs text-gray-500"><span class="text-gray-400">{{ t.customer.code }}</span></div>
+                  <div class="text-xs text-gray-500 flex items-center gap-1"><i data-lucide="phone" class="w-3.5 h-3.5 text-gray-500"></i><span>{{ t.customer.phone_number|default:'-' }}</span></div>
+                </div>
+              {% else %}
+                <span class="text-gray-400">-</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-right font-semibold {% if t.category.type == 'INCOME' %}text-green-300{% else %}text-red-300{% endif %}">
+              {% if t.category.type == 'INCOME' %}+{% else %}-{% endif %}{{ t.amount|smart_vnd }}
+            </td>
+            <td class="px-4 py-3 text-gray-300">{{ t.note|link_customer_codes|default:'-' }}</td>
+            <td class="px-4 py-3 text-right whitespace-nowrap">
+              <a href="{% url 'finance:transaction_update' t.pk %}" class="text-blue-400 hover:text-blue-300 mr-4">
+                <i data-lucide="edit" class="w-4 h-4 inline"></i>
+              </a>
+              <a href="{% url 'finance:transaction_delete' t.pk %}" class="text-red-400 hover:text-red-300">
+                <i data-lucide="trash-2" class="w-4 h-4 inline"></i>
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" class="px-4 py-6 text-center text-gray-400">Chưa có giao dịch nào.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% if is_paginated %}
+<div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm">
+  <div class="text-gray-400">
+    Trang <span class="text-gray-200 font-medium">{{ page_obj.number }}</span> / {{ page_obj.paginator.num_pages }} · Tổng <span class="text-gray-200 font-medium">{{ page_obj.paginator.count }}</span>
+  </div>
+  <div class="flex items-center gap-1">
+    {% if page_obj.has_previous %}
+      <a class="px-2 py-1 rounded border border-gray-800 bg-[#161616] text-gray-300 hover:border-gray-700" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page=1">« Đầu</a>
+      <a class="px-2 py-1 rounded border border-gray-800 bg-[#161616] text-gray-300 hover:border-gray-700" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}">‹ Trước</a>
+    {% else %}
+      <span class="px-2 py-1 rounded border border-gray-900 bg-[#111] text-gray-600">« Đầu</span>
+      <span class="px-2 py-1 rounded border border-gray-900 bg-[#111] text-gray-600">‹ Trước</span>
+    {% endif %}
+
+    {% for i in page_obj.paginator.page_range %}
+      {% if i >= page_obj.number|add:-2 and i <= page_obj.number|add:2 %}
+        {% if page_obj.number == i %}
+          <span class="px-3 py-1 rounded border border-blue-800 bg-blue-900/30 text-blue-300">{{ i }}</span>
+        {% else %}
+          <a class="px-3 py-1 rounded border border-gray-800 bg-[#161616] text-gray-300 hover:border-gray-700" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ i }}">{{ i }}</a>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <a class="px-2 py-1 rounded border border-gray-800 bg-[#161616] text-gray-300 hover:border-gray-700" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">Tiếp ›</a>
+      <a class="px-2 py-1 rounded border border-gray-800 bg-[#161616] text-gray-300 hover:border-gray-700" href="?{% if request.GET %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.paginator.num_pages }}">Cuối »</a>
+    {% else %}
+      <span class="px-2 py-1 rounded border border-gray-900 bg-[#111] text-gray-600">Tiếp ›</span>
+      <span class="px-2 py-1 rounded border border-gray-900 bg-[#111] text-gray-600">Cuối »</span>
+    {% endif %}
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>lucide.createIcons();</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Xóa sản phẩm - NavyBaby{% endblock %}
+{% block navbar_icon %}warehouse{% endblock %}
+{% block navbar_title %}Sản phẩm{% endblock %}
+{% block content %}
+
+<div class="flex flex-col md:flex-row justify-between items-center mb-6">
+  <div>
+    <h2 class="text-2xl font-bold flex items-center text-red-400">
+      <i data-lucide="trash-2" class="w-6 h-6 mr-2"></i>Xóa sản phẩm
+    </h2>
+    <p class="text-gray-400">Bạn có chắc muốn xóa sản phẩm này? Hành động này không thể hoàn tác.</p>
+  </div>
+  <a href="{% url 'products:product_detail' object.pk %}" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">
+    <i data-lucide="arrow-left" class="inline w-4 h-4 mr-1"></i>Quay lại chi tiết
+  </a>
+</div>
+
+<div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+  <div class="mb-4">
+    <h3 class="text-lg font-semibold text-gray-100">{{ object.name }}</h3>
+    <p class="text-gray-400 text-sm">Mã SP: <span class="text-blue-300">{{ object.code }}</span></p>
+    {% if object.category %}<p class="text-gray-400 text-sm">Danh mục: <span class="text-gray-300">{{ object.category.name }}</span></p>{% endif %}
+    {% if object.supplier %}<p class="text-gray-400 text-sm">Nhà cung cấp: <span class="text-gray-300">{{ object.supplier.name }}</span></p>{% endif %}
+  </div>
+  <form method="post" class="flex items-center justify-end gap-2">
+    {% csrf_token %}
+    <a href="{% url 'products:product_detail' object.pk %}" class="px-4 py-2 rounded-md border text-sm bg-[#121212] text-gray-300 border-gray-800 hover:border-gray-700">Hủy</a>
+    <button type="submit" class="px-4 py-2 rounded-md border text-sm bg-red-600 text-white border-red-700 hover:bg-red-500">Xóa</button>
+  </form>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script>lucide.createIcons();</script>
+{% endblock %}

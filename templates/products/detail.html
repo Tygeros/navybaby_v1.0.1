@@ -1,0 +1,559 @@
+{% extends 'base.html' %}
+{% load number_extras %}
+{% load media_extras %}
+{% block title %}{{ title }}{% endblock %}
+{% block navbar_icon %}warehouse{% endblock %}
+{% block navbar_title %}Sản phẩm{% endblock %}
+{% block content %}
+
+<div class="flex flex-col md:flex-row justify-between items-center mb-6">
+  <div>
+    <h2 class="text-2xl font-bold flex items-center text-blue-400">
+      <i data-lucide="package" class="w-6 h-6 mr-2"></i>Chi tiết sản phẩm
+    </h2>
+    <p class="text-gray-400">Mã SP: <span class="text-blue-300">{{ product.code }}</span></p>
+  </div>
+  <div class="flex items-center gap-2">
+    <a href="{% url 'products:product_list' %}" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">
+      <i data-lucide="arrow-left" class="inline w-4 h-4 mr-1"></i>Quay lại danh sách
+    </a>
+    <a href="{% url 'products:product_update' product.pk %}" class="px-3 py-1.5 rounded-md border text-sm transition bg-blue-600 text-white border-blue-700 hover:bg-blue-500">
+      <i data-lucide="pencil" class="inline w-4 h-4 mr-1"></i>Chỉnh sửa
+    </a>
+    <a href="{% url 'products:product_delete' product.pk %}" class="px-3 py-1.5 rounded-md border text-sm transition bg-red-600 text-white border-red-700 hover:bg-red-500">
+      <i data-lucide="trash-2" class="inline w-4 h-4 mr-1"></i>Xóa
+    </a>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-4 mb-6">
+  <div class="lg:col-span-2 bg-[#121212] border border-gray-800 rounded-lg p-4">
+    <div class="flex items-start gap-4">
+      <div class="w-2/5 flex-none shrink-0">
+        {% if product.image %}
+          <img src="{{ product.image|safe_image_url }}" alt="{{ product.name }}" class="w-full h-auto object-cover rounded border border-gray-800 shrink-0 flex-none">
+        {% else %}
+          <div class="w-full aspect-square flex items-center justify-center rounded border border-gray-800 bg-[#161616] text-gray-500 shrink-0 flex-none">
+            <i data-lucide="image" class="w-6 h-6"></i>
+          </div>
+        {% endif %}
+      </div>
+      <div class="w-3/5 min-w-0">
+        <h3 class="text-lg font-semibold text-gray-100">{{ product.name }}</h3>
+        {% if product.private_order %}
+          <span class="mt-1 inline-block text-[11px] px-1.5 py-0.5 rounded bg-yellow-900/30 border border-yellow-800 text-yellow-300">Đặt riêng</span>
+        {% endif %}
+        {% if product.category %}
+          <p class="text-gray-400 text-sm mt-2">Danh mục: <span class="text-gray-300">{{ product.category.name }}</span></p>
+        {% endif %}
+        {% if product.supplier %}
+          <p class="text-gray-400 text-sm">Nhà cung cấp: <span class="text-gray-300">{{ product.supplier.name }}</span></p>
+        {% endif %}
+        <!-- Colors & Sizes (labeled + collapsible) -->
+        <div class="mt-2 space-y-2">
+          <div>
+            <p class="text-[11px] text-gray-400 mb-1 flex items-center gap-1">
+              <i data-lucide="palette" class="w-3.5 h-3.5"></i><span>Màu sắc</span>
+            </p>
+            <div id="color-tags" class="flex flex-wrap gap-1.5">
+              {% for c in product.colors.all %}
+                <span class="tag-chip text-[11px] px-1.5 py-0.5 rounded bg-[#121212] border border-gray-800 text-gray-300">{{ c.name }}</span>
+              {% empty %}
+                <span class="text-xs text-gray-500 italic">Không có màu</span>
+              {% endfor %}
+            </div>
+            <button type="button" id="toggle-colors" class="mt-1 text-xs text-blue-400 hover:text-blue-300 hidden">Xem thêm</button>
+          </div>
+          <div class="mt-2">
+            <p class="text-[11px] text-gray-400 mb-1 flex items-center gap-1">
+              <i data-lucide="ruler" class="w-3.5 h-3.5"></i><span>Kích thước</span>
+            </p>
+            <div id="size-tags" class="flex flex-wrap gap-1.5">
+              {% for s in product.sizes.all %}
+                <span class="tag-chip text-[11px] px-1.5 py-0.5 rounded bg-[#121212] border border-gray-800 text-gray-300">{{ s.name }}</span>
+              {% empty %}
+                <span class="text-xs text-gray-500 italic">Không có size</span>
+              {% endfor %}
+            </div>
+            <button type="button" id="toggle-sizes" class="mt-1 text-xs text-blue-400 hover:text-blue-300 hidden">Xem thêm</button>
+          </div>
+        </div>
+        <p class="text-gray-400 text-sm pt-5">Giá bán: <span class="text-gray-200 font-semibold">{{ product.price|smart_vnd }}</span></p>
+      </div>
+    </div>
+    <div class="mt-3 text-xs text-gray-500">
+      Tạo: {{ product.created_at|date:'d/m/Y H:i' }} · Cập nhật: {{ product.updated_at|date:'d/m/Y H:i' }}
+    </div>
+    {% if product.note %}
+      <div class="mt-4">
+        <div class="bg-[#161616] border border-gray-800 rounded-lg p-3">
+          <div class="flex items-center gap-2 mb-1">
+            <i data-lucide="sticky-note" class="w-4 h-4 text-blue-400"></i>
+            <h4 class="font-semibold text-gray-200 text-sm">Ghi chú</h4>
+          </div>
+          <div id="product-note" class="text-gray-300 text-sm whitespace-pre-wrap break-words leading-relaxed">{{ product.note|urlize|linebreaksbr }}</div>
+        </div>
+      </div>
+    {% endif %}
+    <div class="flex justify-center mt-4 pt-3 border-t border-gray-800">
+      <div class="flex flex-wrap items-center gap-2">
+        <a href="{% url 'orders:order_create' %}?product={{ product.pk }}" class="px-3 py-2 rounded-md border text-sm transition bg-blue-600 text-white border-blue-700 hover:bg-blue-500 flex items-center">
+          <i data-lucide="shopping-cart" class="inline w-4 h-4 mr-1"></i>Tạo đơn hàng mới
+        </a>
+        <button type="button" title="Tính năng chưa triển khai" class="px-3 py-2 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 flex items-center cursor-not-allowed">
+          <i data-lucide="bar-chart-2" class="inline w-4 h-4 mr-1"></i>Xem báo cáo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-1 gap-3">
+    <!-- Stats -->
+    <div class="md:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-3">
+      <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-5">
+        <i data-lucide="shopping-cart" class="w-6 h-6 text-yellow-400 mb-2"></i>
+        <h4 class="font-bold text-xl text-gray-100">{{ stats.order_count|default:0 }}</h4>
+        <p class="text-gray-400 text-sm mt-1">Tổng số đơn</p>
+      </div>
+      <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-5">
+        <i data-lucide="badge-percent" class="w-6 h-6 text-purple-400 mb-2"></i>
+        <h4 class="font-bold text-xl text-gray-100">{{ stats.total_discount|default:0|smart_vnd }}</h4>
+        <p class="text-gray-400 text-sm mt-1">Chiết khấu</p>
+      </div>
+      <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-5">
+        <i data-lucide="coins" class="w-6 h-6 text-green-400 mb-2"></i>
+        <h4 class="font-bold text-xl text-gray-100">{{ stats.revenue|default:0|smart_vnd }}</h4>
+        <p class="text-gray-400 text-sm mt-1">Doanh thu</p>
+      </div>
+    </div>
+    
+
+    <div class="md:col-span-2">
+      <div class="bg-[#161616] border border-gray-800 rounded-lg p-4 flex flex-col min-h-[260px]" id="color-size-stats">
+        <h4 class="flex justify-center font-semibold text-gray-200 mb-3">Thống kê số lượng theo Màu/Size</h4>
+          <div class="overflow-x-auto flex-1">
+            <table class="min-w-full divide-y divide-gray-800">
+              <thead>
+                <tr class="text-xs uppercase text-gray-400">
+                  <th class="px-3 py-2 text-left">Màu</th>
+                  <th class="px-3 py-2 text-left">Size</th>
+                  <th class="px-3 py-2 text-right">Số đơn</th>
+                  <th class="px-3 py-2 text-right">Số lượng</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-800">
+                {% for row in recent_orders|group_color_size %}
+                  <tr class="text-sm stat-row">
+                    <td class="px-3 py-2 text-gray-200 whitespace-nowrap">{{ row.color }}</td>
+                    <td class="px-3 py-2 text-gray-200 whitespace-nowrap">{{ row.size }}</td>
+                    <td class="px-3 py-2 text-gray-100 text-right">{{ row.order_count }}</td>
+                    <td class="px-3 py-2 text-gray-100 text-right font-semibold">{{ row.amount_sum }}</td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="4" class="px-3 py-4 text-center text-gray-400">Chưa có dữ liệu thống kê theo màu/size.</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-3 flex justify-end">
+            <button type="button" id="toggle-stats" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">Xem thêm</button>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent orders -->
+<div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+  <div class="flex items-center justify-between mb-3">
+    <h3 class="text-lg font-semibold text-gray-100 flex items-center">
+      <i data-lucide="clock" class="w-5 h-5 mr-2 text-blue-400"></i>Đơn hàng gần đây
+    </h3>
+    <div class="flex items-center gap-2">
+      <button type="button" id="btn-toggle-multi" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">
+        <i data-lucide="check-square" class="inline w-4 h-4 mr-1"></i>Chọn nhiều đơn hàng
+      </button>
+      <button type="button" id="btn-select-all" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 multi-only hidden">
+        <i data-lucide="check" class="inline w-4 h-4 mr-1"></i>Chọn toàn bộ
+      </button>
+    </div>
+  </div>
+  <div class="bg-[#121212] border border-gray-800 rounded-xl p-4 mb-4">
+    <form method="get" class="grid grid-cols-1 md:grid-cols-6 gap-4">
+      <div class="md:col-span-2 relative">
+        <i data-lucide="search" class="w-4 h-4 text-gray-500 absolute left-2.5 top-2.5"></i>
+        <input type="text" name="q" value="{{ search_query }}" placeholder="Tìm theo mã đơn, khách hàng, trạng thái..."
+          class="w-full bg-[#161616] border border-gray-800 rounded-md pl-8 pr-3 py-2 text-sm text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700 transition">
+      </div>
+      <div class="relative" data-dropdown="status">
+        <button type="button" data-dropdown-toggle="#dd-status" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-sm text-gray-200 text-left flex items-center justify-between hover:border-gray-700 transition">
+          <span>Trạng thái{% if status_filter %} ({{ status_filter|length }}){% endif %}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd" /></svg>
+        </button>
+        <div id="dd-status" data-dropdown-panel class="hidden absolute z-20 mt-1 w-[22rem] max-w-[calc(100vw-2rem)] bg-[#161616] border border-gray-800 rounded-md p-3 shadow-xl">
+          <div class="mb-2">
+            <label class="inline-flex items-center gap-2">
+              <input type="checkbox" data-select-all="status" class="h-4 w-4 rounded border-gray-700 bg-[#121212] text-blue-600 focus:ring-blue-500/40">
+              <span class="text-gray-300">Tất cả các trạng thái</span>
+            </label>
+          </div>
+          <div class="grid grid-cols-2 gap-2 max-h-56 overflow-auto" data-group="status">
+            {% for value,label in status_choices.items %}
+              <label class="inline-flex items-center gap-2">
+                <input type="checkbox" name="status" value="{{ value }}" class="h-4 w-4 rounded border-gray-700 bg-[#121212] text-blue-600 focus:ring-blue-500/40" {% if value in status_filter %}checked{% endif %}>
+                <span class="text-gray-300">{{ label }}</span>
+              </label>
+            {% endfor %}
+          </div>
+          <div class="mt-3 flex justify-end">
+            <button type="button" data-dropdown-close="#dd-status" class="px-3 py-1.5 rounded-md border text-xs bg-[#1a1a1a] text-gray-300 border-gray-800 hover:border-gray-700">Đóng</button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <select name="color" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700 transition">
+          <option value="" {% if not color_filter %}selected{% endif %}>Tất cả màu</option>
+          {% for c in product.colors.all %}
+            <option value="{{ c.id }}" {% if color_filter == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <select name="size" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700 transition">
+          <option value="" {% if not size_filter %}selected{% endif %}>Tất cả size</option>
+          {% for s in product.sizes.all %}
+            <option value="{{ s.id }}" {% if size_filter == s.id|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <select name="sort" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700 transition">
+          <option value="created_desc" {% if sort == 'created_desc' %}selected{% endif %}>Mới nhất</option>
+          <option value="created_asc" {% if sort == 'created_asc' %}selected{% endif %}>Cũ nhất</option>
+          <option value="revenue_desc" {% if sort == 'revenue_desc' %}selected{% endif %}>Doanh thu giảm dần</option>
+          <option value="revenue_asc" {% if sort == 'revenue_asc' %}selected{% endif %}>Doanh thu tăng dần</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="date" name="date_from" value="{{ date_from }}" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700 transition" />
+        <span class="text-gray-500">-</span>
+        <input type="date" name="date_to" value="{{ date_to }}" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700 transition" />
+      </div>
+      <div class="md:col-span-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
+        <div class="flex justify-end gap-2">
+          <a href="{% url 'products:product_detail' product.pk %}" class="px-3 py-2 rounded-md border text-sm bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 transition">Xóa lọc</a>
+          <button class="px-3 py-2 rounded-md border text-sm bg-blue-600 text-white border-blue-700 hover:bg-blue-500 transition">Lọc</button>
+        </div>
+      </div>
+    </form>
+    {% if status_filter %}
+    <div class="mt-2 flex flex-wrap items-center gap-2">
+      {% for value,label in status_choices.items %}
+        {% if value in status_filter %}
+          <span class="px-2 py-1 text-xs rounded border border-gray-800 bg-[#161616] text-gray-300">{{ label }}</span>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  <!-- Totals summary for filtered list -->
+  <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-3">
+    <div class="bg-[#161616] border border-gray-800 rounded-lg p-3 text-center">
+      <p class="text-[11px] text-gray-400">Số đơn</p>
+      <p class="text-lg font-semibold text-gray-100">{{ list_totals.order_count|default:0 }}</p>
+    </div>
+    <div class="bg-[#161616] border border-gray-800 rounded-lg p-3 text-center">
+      <p class="text-[11px] text-gray-400">Số lượng</p>
+      <p class="text-lg font-semibold text-gray-100">{{ list_totals.total_amount|default:0 }}</p>
+    </div>
+    <div class="bg-[#161616] border border-gray-800 rounded-lg p-3 text-center">
+      <p class="text-[11px] text-gray-400">Doanh thu</p>
+      <p class="text-lg font-semibold text-green-400">{{ list_totals.total_revenue|default:0|smart_vnd }}</p>
+    </div>
+    <div class="bg-[#161616] border border-gray-800 rounded-lg p-3 text-center">
+      <p class="text-[11px] text-gray-400">Chiết khấu</p>
+      <p class="text-lg font-semibold text-yellow-300">{{ list_totals.total_discount|default:0|smart_vnd }}</p>
+    </div>
+    <div class="bg-[#161616] border border-gray-800 rounded-lg p-3 text-center">
+      <p class="text-[11px] text-gray-400">Doanh thu thuần</p>
+      <p class="text-lg font-semibold text-emerald-400">{{ list_totals.total_net_profit|default:0|smart_vnd }}</p>
+    </div>
+  </div>
+  <form id="bulk-form" method="post" action="{% url 'orders:bulk_update_order_status' %}" class="mb-3 hidden">
+    {% csrf_token %}
+    <div id="bulk-actions" class="bg-[#121212] border border-gray-800 rounded-lg p-3 flex items-center gap-3">
+      <div class="text-sm text-gray-300">Áp dụng trạng thái cho đơn đã chọn</div>
+      <select name="status" id="bulk-status" class="bg-[#161616] border border-gray-800 rounded px-3 py-2 text-sm text-gray-200">
+        {% for value,label in status_choices.items %}
+          <option value="{{ value }}">{{ label }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" id="bulk-submit" class="px-3 py-2 rounded-md border text-sm bg-blue-600 text-white border-blue-700 hover:bg-blue-500">Cập nhật trạng thái</button>
+      <div id="bulk-ids"></div>
+    </div>
+    <input type="hidden" name="_bulk" value="1" />
+    <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+  </form>
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-800">
+      <thead class="bg-[#161616]">
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider multi-only hidden">Chọn</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Mã ĐH</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Khách hàng</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Màu/Size</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Số lượng</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Đơn giá</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Chiết khấu</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Doanh thu</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Doanh thu thuần</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Trạng thái</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Ghi chú</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Ngày tạo</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-800">
+        {% for o in recent_orders %}
+        <tr class="hover:bg-[#171717] transition">
+          <td class="px-4 py-3 text-sm multi-only hidden">
+            <input type="checkbox" class="order-check cursor-pointer" data-id="{{ o.id }}" style="transform: scale(1.25); transform-origin: left center;" />
+          </td>
+          <td class="px-4 py-3 text-blue-400 whitespace-nowrap">
+            <a href="{% url 'orders:order_detail' o.pk %}" class="hover:underline">{{ o.code }}</a>
+          </td>
+          <td class="px-4 py-3 text-sm text-gray-300">
+            {% if o.customer %}
+              <div>
+                <a href="{% url 'customers:customer_detail' o.customer.code %}" class="text-blue-400 hover:text-blue-300 hover:underline underline-offset-2">{{ o.customer.name }}</a>
+                <div class="text-xs text-gray-500"><span class="text-gray-400">{{ o.customer.code }}</span></div>
+                <div class="text-xs text-gray-500 flex items-center gap-1"><i data-lucide="phone" class="w-3.5 h-3.5 text-gray-500"></i><span>{{ o.customer.phone_number|default:'-' }}</span></div>
+              </div>
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td class="px-4 py-3 text-gray-200 whitespace-nowrap">{{ o.color.name|default:'-' }} / {{ o.size.name|default:'-' }}</td>
+          <td class="px-4 py-3 text-gray-200 whitespace-nowrap">{{ o.amount }}</td>
+          <td class="px-4 py-3 whitespace-nowrap"><span class="text-blue-400 font-medium">{{ o.sale_price|default:0|smart_vnd }}</span></td>
+          <td class="px-4 py-3 whitespace-nowrap"><span class="text-yellow-300 font-medium">{{ o.discount_safe|default:0|smart_vnd }}</span></td>
+          <td class="px-4 py-3 whitespace-nowrap"><span class="text-green-400 font-medium">{{ o.revenue|default:0|smart_vnd }}</span></td>
+          <td class="px-4 py-3 whitespace-nowrap"><span class="text-emerald-400 font-medium">{{ o.net_profit|default:0|smart_vnd }}</span></td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <form method="post" action="{% url 'orders:update_order_status' o.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+              <select name="status" class="bg-[#161616] border border-gray-800 rounded px-2 py-1 text-xs text-gray-200" onchange="this.form.submit()">
+                {% for value,label in product.orders.model.STATUS_CHOICES %}
+                  <option value="{{ value }}" {% if o.status == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </form>
+          </td>
+          <td class="px-4 py-3 text-gray-300 whitespace-nowrap">{{ o.note|default:'-' }}</td>
+          <td class="px-4 py-3 text-gray-400 whitespace-nowrap">{{ o.created_at|date:'d/m/Y H:i' }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="12" class="px-4 py-6 text-center text-gray-400">Chưa có đơn hàng nào.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+  if (window.lucide) { try { lucide.createIcons(); } catch (e) {} }
+  // Dropdown multi-select handlers for status
+  (function() {
+    function toggle(el) { el.classList.toggle('hidden'); }
+    document.querySelectorAll('[data-dropdown-toggle]').forEach(function(btn){
+      var target = document.querySelector(btn.getAttribute('data-dropdown-toggle'));
+      btn.addEventListener('click', function(e){ e.stopPropagation(); toggle(target); });
+    });
+    document.querySelectorAll('[data-dropdown-panel]').forEach(function(panel){
+      panel.addEventListener('click', function(e){ e.stopPropagation(); });
+    });
+    document.addEventListener('click', function(){
+      document.querySelectorAll('[id^="dd-"]').forEach(function(p){ if(!p.classList.contains('hidden')) p.classList.add('hidden'); });
+    });
+    document.querySelectorAll('[data-dropdown-close]').forEach(function(btn){
+      var target = document.querySelector(btn.getAttribute('data-dropdown-close'));
+      btn.addEventListener('click', function(e){ e.stopPropagation(); if(target) target.classList.add('hidden'); });
+    });
+    document.querySelectorAll('[data-select-all]').forEach(function(all){
+      var group = all.getAttribute('data-select-all');
+      var container = all.closest('[data-dropdown]');
+      var list = container ? container.querySelector('[data-group="'+group+'"]') : null;
+      function syncAllState(){
+        if(!list) return;
+        var boxes = list.querySelectorAll('input[type="checkbox"]');
+        var checked = Array.from(boxes).every(function(b){ return b.checked; });
+        all.checked = checked;
+      }
+      if(list){
+        all.addEventListener('change', function(){
+          var boxes = list.querySelectorAll('input[type="checkbox"]');
+          boxes.forEach(function(b){ b.checked = all.checked; });
+        });
+        list.addEventListener('change', syncAllState);
+        syncAllState();
+      }
+    });
+  })();
+  (function() {
+    const toggleBtn = document.getElementById('btn-toggle-multi');
+    const selectAllBtn = document.getElementById('btn-select-all');
+    const bulkForm = document.getElementById('bulk-form');
+    const bulkIds = document.getElementById('bulk-ids');
+    function getChecks() { return document.querySelectorAll('.order-check'); }
+    function getMultiOnly() { return document.querySelectorAll('.multi-only'); }
+    function setMultiMode(on) {
+      getMultiOnly().forEach(el => el.classList.toggle('hidden', !on));
+      if (bulkForm) bulkForm.classList.toggle('hidden', !on);
+    }
+    function syncHiddenInputs() {
+      if (!bulkIds) return;
+      bulkIds.innerHTML = '';
+      getChecks().forEach(cb => {
+        if (cb.checked) {
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'order_ids';
+          input.value = cb.getAttribute('data-id');
+          bulkIds.appendChild(input);
+        }
+      });
+    }
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        const anyHidden = Array.from(getMultiOnly()).some(el => el.classList.contains('hidden'));
+        setMultiMode(anyHidden);
+      });
+    }
+    if (selectAllBtn) {
+      selectAllBtn.addEventListener('click', () => {
+        getChecks().forEach(cb => { if (!cb.checked) cb.checked = true; });
+        syncHiddenInputs();
+      });
+    }
+    document.addEventListener('change', (e) => {
+      if (e.target && e.target.classList && e.target.classList.contains('order-check')) {
+        syncHiddenInputs();
+      }
+    });
+    if (bulkForm) {
+      bulkForm.addEventListener('submit', (e) => {
+        syncHiddenInputs();
+        if (!bulkIds || bulkIds.children.length === 0) {
+          e.preventDefault();
+          alert('Vui lòng chọn ít nhất một đơn hàng.');
+        }
+      });
+    }
+    setMultiMode(false);
+  })();
+  (function() {
+    var note = document.getElementById('product-note');
+    if (note) {
+      note.querySelectorAll('a').forEach(function(a){
+        try {
+          a.setAttribute('target','_blank');
+          a.setAttribute('rel','noopener noreferrer');
+          a.classList.add('text-blue-400','hover:underline');
+
+          var href = a.getAttribute('href') || '';
+          var fullText = (a.textContent || '').trim();
+          if (!fullText) fullText = href;
+
+          var display = fullText;
+          // Prefer showing hostname if the text is the full URL
+          try {
+            var u = new URL(href, window.location.origin);
+            if (fullText === href || fullText.startsWith('http')) {
+              display = u.hostname + (u.pathname && u.pathname !== '/' ? u.pathname : '');
+            }
+          } catch (e) {}
+
+          var maxLen = 40;
+          if (display.length > maxLen) {
+            display = display.slice(0, maxLen - 1) + '…';
+          }
+          a.textContent = display;
+          a.setAttribute('title', fullText);
+        } catch (e) {}
+      });
+    }
+  })();
+  (function(){
+    var tableWrap = document.getElementById('color-size-stats');
+    if (!tableWrap) return;
+    var rows = tableWrap.querySelectorAll('tbody .stat-row');
+    var btn = document.getElementById('toggle-stats');
+    if (!rows || rows.length === 0) return;
+    var maxShow = 3;
+    var expanded = false;
+
+    function apply() {
+      rows.forEach(function(tr, idx){
+        tr.classList.toggle('hidden', !expanded && idx >= maxShow);
+      });
+      if (btn) btn.textContent = expanded ? 'Thu gọn' : 'Xem thêm';
+    }
+
+    // Initial state
+    if (rows.length <= maxShow) {
+      if (btn) btn.classList.add('hidden');
+    } else {
+      expanded = false;
+      apply();
+      if (btn) {
+        btn.addEventListener('click', function(){
+          expanded = !expanded;
+          apply();
+        });
+      }
+    }
+  })();
+
+  // Collapse/expand for Colors & Sizes tag lists
+  (function(){
+    function setupCollapsible(containerId, buttonId, maxVisible){
+      var wrap = document.getElementById(containerId);
+      var btn = document.getElementById(buttonId);
+      if (!wrap || !btn) return;
+      var items = Array.from(wrap.querySelectorAll('.tag-chip'));
+      if (!items.length) return;
+      var expanded = false;
+      var limit = Math.max(6, maxVisible || 12);
+
+      function apply(){
+        items.forEach(function(el, idx){
+          el.classList.toggle('hidden', !expanded && idx >= limit);
+        });
+        var hiddenCount = items.filter(function(_, idx){ return idx >= limit; }).length;
+        if (hiddenCount > 0){
+          btn.classList.remove('hidden');
+          btn.textContent = expanded ? 'Thu gọn' : ('Xem thêm (' + hiddenCount + ')');
+        } else {
+          btn.classList.add('hidden');
+        }
+      }
+
+      apply();
+      btn.addEventListener('click', function(){
+        expanded = !expanded;
+        apply();
+      });
+    }
+
+    // Colors and Sizes
+    setupCollapsible('color-tags', 'toggle-colors', 12);
+    setupCollapsible('size-tags', 'toggle-sizes', 12);
+  })();
+</script>
+{% endblock %}

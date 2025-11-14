@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load media_extras %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block navbar_icon %}warehouse{% endblock %}
+{% block navbar_title %}Sản phẩm{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row justify-between items-center mb-6">
+  <div>
+    <h2 class="text-2xl font-bold flex items-center text-blue-400">
+      <i data-lucide="package-plus" class="w-6 h-6 mr-2"></i>
+      {% if action == 'update' %}Cập nhật sản phẩm{% else %}Thêm sản phẩm{% endif %}
+    </h2>
+    <p class="text-gray-400">{% if action == 'update' %}Chỉnh sửa thông tin sản phẩm{% else %}Nhập thông tin sản phẩm mới{% endif %}</p>
+  </div>
+  <a href="{% url 'products:product_list' %}" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">
+    <i data-lucide="arrow-left" class="inline w-4 h-4 mr-1"></i>Quay lại danh sách
+  </a>
+</div>
+
+<div class="bg-[#121212] border border-gray-800 rounded-lg overflow-hidden">
+  <form method="post" enctype="multipart/form-data" class="p-6">
+    {% csrf_token %}
+    
+    {% if form.non_field_errors %}
+    <div class="mb-4 p-3 bg-red-900/30 border border-red-800 text-red-200 text-sm rounded">
+      {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Left Column -->
+      <div class="space-y-4">
+        <!-- Product Code (optional) -->
+        <div>
+          <label for="{{ form.code.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+            Mã SP (tùy chọn)
+          </label>
+          {% render_field form.code class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+          <p class="mt-1 text-xs text-gray-500">Để trống nếu muốn hệ thống tự sinh mã.</p>
+        </div>
+        <!-- Product Name -->
+        <div>
+          <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+            Tên sản phẩm <span class="text-red-500">*</span>
+          </label>
+          {% render_field form.name class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+          {% if form.name.errors %}
+            <p class="mt-1 text-sm text-red-400">{{ form.name.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Price -->
+        <div>
+          <label for="{{ form.price.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+            Giá (VNĐ) <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="text-gray-400">₫</span>
+            </div>
+            {% render_field form.price class="pl-8 w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+          </div>
+          {% if form.price.errors %}
+            <p class="mt-1 text-sm text-red-400">{{ form.price.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Category -->
+        <div>
+          <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+            Danh mục <span class="text-red-500">*</span>
+          </label>
+          {% render_field form.category class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+          {% if form.category.errors %}
+            <p class="mt-1 text-sm text-red-400">{{ form.category.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Supplier -->
+        <div>
+          <label for="{{ form.supplier.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+            Nhà cung cấp
+          </label>
+          {% render_field form.supplier class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+          {% if form.supplier.errors %}
+            <p class="mt-1 text-sm text-red-400">{{ form.supplier.errors.0 }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Right Column -->
+      <div class="space-y-4">
+        <!-- Colors -->
+        <div>
+          <label for="{{ form.colors.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+            Màu sắc
+          </label>
+          {% render_field form.colors class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+          {% if form.fields.colors.help_text %}
+            <p class="mt-1 text-xs text-gray-400">{{ form.fields.colors.help_text }}</p>
+          {% endif %}
+          {% if form.colors.errors %}
+            <p class="mt-1 text-sm text-red-400">{{ form.colors.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Sizes -->
+        <div>
+          <label for="{{ form.sizes.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+            Kích thước
+          </label>
+          {% render_field form.sizes class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+          {% if form.fields.sizes.help_text %}
+            <p class="mt-1 text-xs text-gray-400">{{ form.fields.sizes.help_text }}</p>
+          {% endif %}
+          {% if form.sizes.errors %}
+            <p class="mt-1 text-sm text-red-400">{{ form.sizes.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Image Upload -->
+        <div>
+          <label for="{{ form.image.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+            Hình ảnh
+          </label>
+          <div class="mt-1 flex items-center">
+            <label class="cursor-pointer">
+              <span class="inline-flex items-center px-4 py-2 border border-gray-800 rounded-md text-sm font-medium text-gray-300 bg-[#161616] hover:bg-[#1e1e1e] transition">
+                <i data-lucide="upload" class="w-4 h-4 mr-2"></i>
+                Chọn ảnh
+                {{ form.image }}
+              </span>
+            </label>
+            <span id="file-name" class="ml-3 text-sm text-gray-400">Chưa chọn ảnh</span>
+          </div>
+          <div id="image-preview" class="mt-2">
+            {% if form.instance.image %}
+              <img src="{{ form.instance.image|safe_image_url }}" alt="Preview" class="h-40 object-cover rounded border border-gray-800">
+            {% endif %}
+          </div>
+          {% if form.image.errors %}
+            <p class="mt-1 text-sm text-red-400">{{ form.image.errors.0 }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Full Width Fields -->
+      <div class="md:col-span-2">
+        <!-- Description -->
+        <div class="mb-4">
+          <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+            Mô tả
+          </label>
+          {% render_field form.description rows="3" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+          {% if form.description.errors %}
+            <p class="mt-1 text-sm text-red-400">{{ form.description.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Note -->
+        <div class="mb-4">
+          <label for="{{ form.note.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+            Ghi chú
+          </label>
+          {% render_field form.note rows="2" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+          {% if form.note.errors %}
+            <p class="mt-1 text-sm text-red-400">{{ form.note.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Private Order -->
+        <div class="flex items-center">
+          <label class="inline-flex items-center">
+            {% render_field form.private_order class="h-4 w-4 text-blue-600 border-gray-800 rounded focus:ring-blue-500" %}
+            <span class="ml-2 text-sm text-gray-300">Đặt hàng riêng</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="mt-8 pt-4 border-t border-gray-800 flex justify-end space-x-3">
+      <a href="{% url 'products:product_list' %}" class="px-4 py-2 rounded-md border text-sm bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">
+        Hủy
+      </a>
+      <button type="submit" class="px-4 py-2 rounded-md border text-sm bg-blue-600 text-white border-blue-700 hover:bg-blue-500 flex items-center">
+        <i data-lucide="save" class="w-4 h-4 mr-1"></i>
+        Lưu
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  lucide.createIcons();
+  
+  // Preview image when selected
+  document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('{{ form.image.id_for_label }}');
+    const fileNameSpan = document.getElementById('file-name');
+    const imagePreview = document.getElementById('image-preview');
+    
+    if (imageInput) {
+      imageInput.addEventListener('change', function(e) {
+        // Update file name
+        if (this.files && this.files.length > 0) {
+          fileNameSpan.textContent = this.files[0].name;
+          
+          // Show preview
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            imagePreview.innerHTML = `
+              <img src="${e.target.result}" alt="Preview" class="h-40 object-cover rounded border border-gray-800 mt-2">
+            `;
+          }
+          reader.readAsDataURL(this.files[0]);
+        } else {
+          fileNameSpan.textContent = 'Chưa chọn ảnh';
+          imagePreview.innerHTML = '';
+        }
+      });
+    }
+    
+    // Initialize file name on page load
+    if (imageInput && imageInput.files.length > 0) {
+      fileNameSpan.textContent = imageInput.files[0].name;
+    }
+  });
+</script>
+{% endblock %}

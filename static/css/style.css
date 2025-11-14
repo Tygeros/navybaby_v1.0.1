@@ -1,0 +1,23 @@
+/* Custom overrides for NavyBaby */
+
+/* Ensure body background matches Tailwind fallback if CDN is late */
+body { background-color: #1b1b1b; color: #e5e7eb; }
+
+/* Hide focus outlines only for mouse users */
+:focus:not(:focus-visible) { outline: none; }
+
+/* Tables */
+table { border-collapse: separate; border-spacing: 0; }
+
+/* Buttons subtle transitions */
+button, a { transition: background-color .15s ease, border-color .15s ease, color .15s ease, transform .15s ease; }
+
+/* Sticky subheader sits below the sticky navbar (approx 56px height) */
+.sticky-subheader {
+  position: sticky;
+  top: 56px;
+  z-index: 30;
+  background-color: #1b1b1b;
+}
+
+.nb-checkbox { width: 16px; height: 16px; }

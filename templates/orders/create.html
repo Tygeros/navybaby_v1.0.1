@@ -1,0 +1,819 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Tạo đơn hàng mới - NavyBaby{% endblock %}
+{% block navbar_icon %}file-text{% endblock %}
+{% block navbar_title %}Đơn hàng{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row justify-between items-center mb-6">
+  <div>
+    <h2 class="text-2xl font-bold flex items-center text-blue-400">
+      <i data-lucide="shopping-bag" class="w-6 h-6 mr-2"></i>Tạo đơn hàng mới
+    </h2>
+    <p class="text-gray-400">Thông tin đơn hàng</p>
+  </div>
+  <div class="flex items-center gap-2 mt-3 md:mt-0">
+    {% if multi %}
+      <a href="{% url 'orders:order_create' %}"
+         class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 flex items-center">
+        <i data-lucide="layers" class="w-4 h-4 mr-1"></i>Chế độ 1 sản phẩm
+      </a>
+    {% else %}
+      <a href="{% url 'orders:order_create' %}?multi=1"
+         class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 flex items-center">
+        <i data-lucide="layers" class="w-4 h-4 mr-1"></i>Chế độ nhiều sản phẩm
+      </a>
+    {% endif %}
+    <a href="{% url 'orders:order_list' %}" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 flex items-center">
+      <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>Quay lại
+    </a>
+  </div>
+</div>
+
+<div class="bg-[#121212] border border-gray-800 rounded-lg overflow-hidden">
+  <form method="post" class="p-4 md:p-6">
+    {% csrf_token %}
+    
+    {% if form.non_field_errors %}
+    <div class="mb-4 p-3 bg-red-900/30 border border-red-800 text-red-200 text-sm rounded">
+      {% for error in form.non_field_errors %}
+        <p>{{ error }}</p>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <!-- Row 1: Order Code spans 2 cols -->
+      <div class="md:col-span-2">
+        <label for="{{ form.code.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+          Mã ĐH (tùy chọn)
+        </label>
+        {% render_field form.code class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+        <p class="mt-1 text-xs text-gray-500">Để trống nếu muốn hệ thống tự sinh mã.</p>
+      </div>
+
+      <!-- Row 2: Customer | Sale Price -->
+      <div>
+        <label for="{{ form.customer.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+          Khách hàng <span class="text-red-500">*</span>
+        </label>
+        <div class="space-y-2">
+          {% render_field form.customer id="id_customer" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+          <div id="customer-info" class="text-sm text-gray-400 flex items-center gap-2">
+            <span id="customer-meta"></span>
+          </div>
+        </div>
+        {% if form.customer.errors %}
+          <p class="mt-1 text-sm text-red-400">{{ form.customer.errors.0 }}</p>
+        {% endif %}
+      </div>
+      {% if not multi %}
+      <div>
+        <label for="{{ form.sale_price.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">Giá bán</label>
+        {% render_field form.sale_price class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+      </div>
+      {% endif %}
+
+      {% if not multi %}
+        <!-- Row 3: Product | Color+Size -->
+        <div>
+          <label for="{{ form.product.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+            Sản phẩm <span class="text-red-500">*</span>
+          </label>
+          <div class="flex items-center gap-3">
+            <div id="product-thumb" class="w-10 h-10 rounded bg-[#1e1e1e] border border-gray-800 flex items-center justify-center text-gray-500 overflow-hidden">
+              <i data-lucide="image" class="w-5 h-5"></i>
+            </div>
+            <div class="flex-1">
+              {% render_field form.product id="id_product" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+            </div>
+          </div>
+          {% if form.product.errors %}
+            <p class="mt-1 text-sm text-red-400">{{ form.product.errors.0 }}</p>
+          {% endif %}
+        </div>
+        <div>
+          <label for="{{ form.discount.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">Giảm giá</label>
+          {% render_field form.discount id="id_discount" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+          {% if form.discount.errors %}
+            <p class="mt-1 text-sm text-red-400">{{ form.discount.errors.0 }}</p>
+          {% endif %}
+          <p class="mt-1 text-xs text-gray-400">Hiển thị: <span id="discount_display">0 ₫</span></p>
+        </div>
+
+        <!-- Row 4: Amount and Discount span 2 cols -->
+        <div class="md:col-span-2">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="{{ form.amount.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+                Số lượng <span class="text-red-500">*</span>
+              </label>
+              {% render_field form.amount min="1" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+              {% if form.amount.errors %}
+                <p class="mt-1 text-sm text-red-400">{{ form.amount.errors.0 }}</p>
+              {% endif %}
+            </div>
+            <div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label for="{{ form.color.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">Màu sắc</label>
+                  {% render_field form.color id="id_color" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+                  {% if form.color.errors %}
+                    <p class="mt-1 text-sm text-red-400">{{ form.color.errors.0 }}</p>
+                  {% endif %}
+                </div>
+                <div>
+                  <label for="{{ form.size.id_for_label }}" class="block text sm font-medium text-gray-300 mb-1">Kích thước</label>
+                  {% render_field form.size id="id_size" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+                  {% if form.size.errors %}
+                    <p class="mt-1 text-sm text-red-400">{{ form.size.errors.0 }}</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Row 5: Note -->
+        <div class="md:col-span-2">
+          <label for="{{ form.note.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">Ghi chú</label>
+          {% render_field form.note class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" rows="3" placeholder="Ghi chú cho đơn hàng (tùy chọn)" %}
+          {% if form.note.errors %}
+            <p class="mt-1 text-sm text-red-400">{{ form.note.errors.0 }}</p>
+          {% endif %}
+        </div>
+      {% else %}
+        <!-- Multi-line mode: dynamic items list -->
+        <input type="hidden" name="multi" value="1" />
+        <input type="hidden" id="items-count-input" name="items-count" value="0" />
+        <div class="md:col-span-2">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-gray-200 font-semibold">Danh sách sản phẩm</h4>
+          </div>
+          <div id="items-container" class="space-y-3"></div>
+          <div class="flex justify-end mt-3">
+            <button type="button" id="btn-add-item" class="px-3 py-1.5 rounded-md border text-sm bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">
+              + Thêm sản phẩm
+            </button>
+          </div>
+          <template id="item-row-template">
+            <div class="p-3 border border-gray-800 rounded-md bg-[#161616]">
+              <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 w-[360px] lg:w-[440px] flex-none">
+                  <div class="item-thumb w-10 h-10 rounded bg-[#1e1e1e] border border-gray-800 flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <i data-lucide="image" class="w-5 h-5 text-gray-500"></i>
+                  </div>
+                  <select class="item-product w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200" name="items-__i__-product">
+                    <option value="">— Chọn sản phẩm —</option>
+                    {% for opt in form.fields.product.queryset %}
+                      <option value="{{ opt.id }}">{{ opt }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="min-w-[140px]">
+                  <input type="number" class="item-saleprice w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200" min="0" step="1" placeholder="Đơn giá (₫)" name="items-__i__-sale_price">
+                </div>
+                <div class="min-w-[220px]">
+                  <div class="flex items-center gap-2">
+                    <input type="number" class="item-discount w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200" placeholder="Giảm giá (₫)" name="items-__i__-discount">
+                    <span class="item-discount-display text-xs text-gray-400 whitespace-nowrap">0 ₫</span>
+                  </div>
+                </div>
+                <div class="min-w-[120px]">
+                  <input type="number" class="item-amount w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200" min="1" placeholder="Số lượng (mặc định = 1)" name="items-__i__-amount">
+                </div>
+                <div class="min-w-[120px]">
+                  <select class="item-color w-full bg-[#161616] border border-gray-800 rounded-md px-2 py-2 text-gray-200" name="items-__i__-color">
+                    <option value="">Chọn màu</option>
+                  </select>
+                </div>
+                <div class="min-w-[120px]">
+                  <select class="item-size w-full bg-[#161616] border border-gray-800 rounded-md px-2 py-2 text-gray-200" name="items-__i__-size">
+                    <option value="">Chọn kích thước</option>
+                  </select>
+                </div>
+                <div class="min-w-[60px] flex items-center justify-end">
+                  <button type="button" class="btn-remove-item text-red-400 hover:text-red-300 text-sm">Xóa</button>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      {% endif %}
+    </div>
+
+    
+
+    <!-- Form Actions -->
+    <div class="flex items-center justify-end space-x-3 pt-4 border-t border-gray-800">
+      <a href="{% url 'orders:order_list' %}" class="px-4 py-2 rounded-md border text-sm bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">
+        Hủy
+      </a>
+      <button type="submit" class="px-4 py-2 rounded-md border text-sm bg-blue-600 text-white border-blue-700 hover:bg-blue-500 flex items-center">
+        <i data-lucide="save" class="w-4 h-4 mr-1"></i>
+        Lưu đơn hàng
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<style>
+  .select2-results__option { white-space: normal; }
+  .select2-selection__rendered { white-space: normal; }
+  .select2-results__option .name { display: block; }
+  .select2-results__option .code, .select2-results__option .phone { display: block; }
+  .select2-results__option .thumb { flex-shrink: 0; }
+  /* Dark theme polish */
+  .select2-container .select2-selection--single {
+    background-color: #161616;
+    border: 1px solid #262626; /* border-gray-800 */
+    color: #e5e7eb; /* text-gray-200 */
+    min-height: 40px;
+  }
+  .select2-container .select2-selection--single .select2-selection__rendered {
+    color: #e5e7eb; /* text-gray-200 */
+    line-height: 38px;
+    padding-left: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .select2-container .select2-selection--single .select2-selection__placeholder {
+    color: #9ca3af; /* text-gray-400 */
+  }
+  .select2-container .select2-selection--single .select2-selection__arrow {
+    height: 100%;
+    right: 8px;
+  }
+  .select2-dropdown {
+    background-color: #121212; /* bg dark */
+    border: 1px solid #262626; /* border-gray-800 */
+    color: #d1d5db; /* text-gray-300 */
+  }
+  .select2-search--dropdown .select2-search__field {
+    background-color: #161616;
+    border: 1px solid #2d2d2d;
+    color: #e5e7eb;
+    padding: 6px 10px;
+  }
+  .select2-results__option--highlighted.select2-results__option--selectable {
+    background-color: rgba(59,130,246,0.15); /* blue-500/15 */
+    color: #e5e7eb;
+  }
+  .select2-results__option[aria-selected=true] {
+    background-color: #1f2937; /* slate-800 */
+    color: #e5e7eb;
+  }
+  .select2-container--default .select2-results__option--selected {
+    background-color: #1f2937;
+  }
+  .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: rgba(59,130,246,0.2);
+    color: #e5e7eb;
+  }
+  .select2-container--default .select2-results__group {
+    color: #9ca3af;
+  }
+</style>
+<script>
+  // Initialize Lucide icons
+  lucide.createIcons();
+  
+  // Dynamic form behavior
+  document.addEventListener('DOMContentLoaded', function() {
+    // Ensure all selects are full width
+    document.querySelectorAll('select').forEach(s => s.classList.add('w-full'));
+
+    // Auto-format price inputs
+    // Enforce non-negative only for quantity fields (allow negative discounts)
+    const amountInputs = document.querySelectorAll('input.item-amount, input[name="amount"]');
+    amountInputs.forEach(input => {
+      input.addEventListener('input', function() {
+        if (Number(this.value) < 1) this.value = 1;
+      });
+    });
+
+    // Product change handler: fetch details and populate color/size
+    const productSelect = document.getElementById('id_product');
+    const customerSelect = document.getElementById('id_customer');
+    const colorSelect = document.getElementById('id_color');
+    const sizeSelect = document.getElementById('id_size');
+    const salePriceInput = document.getElementById('id_sale_price');
+    const discountInput = document.getElementById('id_discount');
+    const discountDisplay = document.getElementById('discount_display');
+    const productThumb = document.getElementById('product-thumb');
+    const customerMeta = document.getElementById('customer-meta');
+
+    // Currency formatter (VND)
+    function formatVND(value) {
+      if (value === null || value === undefined || value === '') return '';
+      const n = Number(String(value).replace(/[^0-9.-]/g, ''));
+      if (isNaN(n)) return '';
+      return n.toLocaleString('vi-VN') + ' ₫';
+    }
+
+    // Initialize discount formatted display
+    if (discountInput && discountDisplay) {
+      const updateDiscountDisplay = () => {
+        discountDisplay.textContent = formatVND(discountInput.value || 0) || '0 ₫';
+      };
+      discountInput.addEventListener('input', updateDiscountDisplay);
+      updateDiscountDisplay();
+    }
+
+    // Debug: log changes for color/size
+    if (colorSelect) {
+      colorSelect.addEventListener('change', function() {
+        const opt = this.options[this.selectedIndex];
+        console.log('Color changed:', { value: this.value, label: opt ? opt.text : '' });
+      });
+    }
+    if (sizeSelect) {
+      sizeSelect.addEventListener('change', function() {
+        const opt = this.options[this.selectedIndex];
+        console.log('Size changed:', { value: this.value, label: opt ? opt.text : '' });
+      });
+    }
+
+    // Initialize Select2 for Customer with custom templates; search is inside dropdown
+    if (customerSelect && window.jQuery && window.jQuery.fn && window.jQuery.fn.select2) {
+      // enrich option dataset from label (Name — [CODE] — PHONE)
+      Array.from(customerSelect.options).forEach(opt => {
+        if (!opt.value) return;
+        const text = opt.text || '';
+        const parts = text.split('—').map(s => s.trim());
+        const name = parts[0] || text;
+        const codeMatch = text.match(/\[(.*?)\]/);
+        const code = codeMatch ? codeMatch[1] : '';
+        const phone = parts.length >= 3 ? parts[2] : '';
+        opt.dataset.name = name;
+        opt.dataset.code = code;
+        opt.dataset.phone = phone;
+        opt.text = name;
+      });
+      const $cust = window.jQuery(customerSelect);
+      $cust.select2({
+        width: '100%',
+        allowClear: true,
+        placeholder: '— Chọn khách hàng —',
+        minimumResultsForSearch: 0,
+        templateResult: function(customer) {
+          if (!customer.id) return customer.text;
+          const el = customer.element;
+          const name = el?.dataset?.name || customer.text || '';
+          const code = el?.dataset?.code || '';
+          const phone = el?.dataset?.phone || '';
+          const $opt = window.jQuery(
+            '<div class="py-1">\
+               <div class="block font-medium text-gray-100 name"></div>\
+               <div class="block text-xs text-gray-400 code"></div>\
+               <div class="block text-xs text-gray-400 flex items-center gap-1 phone">\
+                 <i data-lucide="phone" class="w-3 h-3"></i><span class="phone-text"></span>\
+               </div>\
+             </div>'
+          );
+          $opt.find('.name').text(name);
+          $opt.find('.code').text(code ? `#${code}` : '');
+          const tel = phone ? `${phone}` : '';
+          $opt.find('.phone-text').text(tel);
+          return $opt;
+        },
+        templateSelection: function(customer) {
+          if (!customer.id) return customer.text;
+          const el = customer.element;
+          const name = el?.dataset?.name || customer.text || '';
+          const code = el?.dataset?.code || '';
+          const phone = el?.dataset?.phone || '';
+          return `${name}${code ? '  #' + code : ''}${phone ? '  · SĐT: ' + phone : ''}`;
+        }
+      });
+      // Render lucide icons inside dropdown when opened/updated
+      $cust.on('select2:open select2:select', function() { lucide.createIcons(); });
+    }
+
+    // Initialize Select2 for Color and Size (simple, no custom templates)
+    function initSelect2ForColorSize() {
+      console.log('initSelect2ForColorSize', { colorSelect, sizeSelect, jQuery: !!window.jQuery, select2Fn: !!(window.jQuery && window.jQuery.fn && window.jQuery.fn.select2) });
+      if (colorSelect && window.jQuery && window.jQuery.fn && window.jQuery.fn.select2) {
+        if (window.jQuery(colorSelect).data('select2')) {
+          window.jQuery(colorSelect).select2('destroy');
+        }
+        window.jQuery(colorSelect).select2({
+          width: '100%',
+          allowClear: true,
+          placeholder: '— Chọn màu sắc —'
+        });
+        console.log('Select2 initialized for color');
+      }
+      if (sizeSelect && window.jQuery && window.jQuery.fn && window.jQuery.fn.select2) {
+        if (window.jQuery(sizeSelect).data('select2')) {
+          window.jQuery(sizeSelect).select2('destroy');
+        }
+        window.jQuery(sizeSelect).select2({
+          width: '100%',
+          allowClear: true,
+          placeholder: '— Chọn kích thước —'
+        });
+        console.log('Select2 initialized for size');
+      }
+    }
+
+    async function onProductChange() {
+      const productId = productSelect && productSelect.value;
+      console.log('onProductChange', { productId });
+      // Preserve current selections
+      const currentColorId = colorSelect ? colorSelect.value : '';
+      const currentSizeId = sizeSelect ? sizeSelect.value : '';
+      if (!productId) {
+        // Reset placeholders
+        if (colorSelect) {
+          colorSelect.innerHTML = '<option value="">Chọn màu</option>';
+        }
+        if (sizeSelect) {
+          sizeSelect.innerHTML = '<option value="">Chọn kích thước</option>';
+        }
+        if (salePriceInput) salePriceInput.value = '';
+        if (productThumb) {
+          productThumb.innerHTML = '<i data-lucide="image" class="w-5 h-5"></i>';
+        }
+        return;
+      }
+      try {
+        const url = `/don-hang/api/product/${productId}/details/`;
+        console.log('Fetching', url);
+        const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+        const data = await res.json();
+        console.log('API response', data);
+        if (data && data.success) {
+          console.table({
+            colors_count: (data.colors || []).length,
+            sizes_count: (data.sizes || []).length,
+            price: data.price,
+            code: data.code,
+            supplier: data.supplier
+          });
+        }
+        if (!data.success) return;
+
+        // Update sale price (raw number for editable input)
+        if (salePriceInput) salePriceInput.value = (data.price || 0);
+
+        // Populate colors (simple select, no Select2)
+        if (colorSelect) {
+          colorSelect.innerHTML = '<option value="">Chọn màu</option>';
+          data.colors.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = c.name;
+            if (c.id == currentColorId) opt.selected = true;
+            colorSelect.appendChild(opt);
+          });
+          // Debug: list populated color options
+          console.log('Populated color options:', Array.from(colorSelect.options).map(o => ({ value: o.value, text: o.text, hidden: o.hidden })));
+        }
+
+        // Populate sizes (simple select, no Select2)
+        if (sizeSelect) {
+          sizeSelect.innerHTML = '<option value="">Chọn kích thước</option>';
+          data.sizes.forEach(s => {
+            const opt = document.createElement('option');
+            opt.value = s.id;
+            opt.textContent = s.name;
+            if (s.id == currentSizeId) opt.selected = true;
+            sizeSelect.appendChild(opt);
+          });
+          // Debug: list populated size options
+          console.log('Populated size options:', Array.from(sizeSelect.options).map(o => ({ value: o.value, text: o.text, hidden: o.hidden })));
+        }
+
+        // Debug: current selections after populate
+        console.log('After populate selections:', {
+          color: colorSelect ? colorSelect.value : null,
+          size: sizeSelect ? sizeSelect.value : null
+        });
+
+        // Update product thumbnail next to product field
+        if (productThumb) {
+          if (data.image_url) {
+            productThumb.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = data.image_url;
+            img.alt = 'Thumb';
+            img.className = 'w-10 h-10 object-cover';
+            productThumb.appendChild(img);
+          } else {
+            productThumb.innerHTML = '<i data-lucide="image" class="w-5 h-5"></i>';
+          }
+        }
+        lucide.createIcons();
+      } catch (e) {
+        console.error('onProductChange error', e);
+      }
+    }
+
+    if (productSelect) {
+      productSelect.addEventListener('change', onProductChange);
+      // Trigger once on load if value exists (edit form)
+      if (productSelect.value) onProductChange();
+    }
+
+    // Select2 for Color/Size is disabled to remove search boxes
+
+    // Update customer meta (code + phone) when selection changes
+    function onCustomerChange() {
+      const opt = customerSelect ? customerSelect.options[customerSelect.selectedIndex] : null;
+      if (!opt) {
+        customerMeta.textContent = '';
+        return;
+      }
+      const code = opt.dataset.code || '';
+      const phone = opt.dataset.phone || '';
+      customerMeta.textContent = `${code ? 'Mã: ' + code + ' · ' : ''}${phone || ''}` || ' ';
+    }
+
+    if (customerSelect) {
+      customerSelect.addEventListener('change', onCustomerChange);
+      if (customerSelect.value) onCustomerChange();
+    }
+
+    // Initialize Select2 for Product with simple custom templates
+    if (productSelect && window.jQuery && window.jQuery.fn && window.jQuery.fn.select2) {
+      const $prod = window.jQuery(productSelect);
+      // try to parse parts from option text: Name — [CODE] — SUPPLIER
+      Array.from(productSelect.options).forEach(opt => {
+        if (!opt.value) return;
+        const text = opt.text || '';
+        const parts = text.split('—').map(s => s.trim());
+        const name = parts[0] || text;
+        const codeMatch = text.match(/\[(.*?)\]/);
+        const code = codeMatch ? codeMatch[1] : '';
+        opt.dataset.name = name;
+        opt.dataset.code = code;
+      });
+      $prod.select2({
+        width: '100%',
+        allowClear: true,
+        placeholder: '— Chọn sản phẩm —',
+        minimumResultsForSearch: 0,
+        templateResult: function(product) {
+          if (!product.id) return product.text;
+          const el = product.element;
+          const name = el?.dataset?.name || product.text || '';
+          const code = el?.dataset?.code || '';
+          const $opt = window.jQuery(
+            '<div class="py-1 flex items-center gap-2>\
+               <div class="thumb w-10 h-10 rounded bg-[#1e1e1e] border border-gray-800 flex items-center justify-center overflow-hidden">\
+                 <i class="lucide-image w-5 h-5 text-gray-500"></i>\
+               </div>\
+               <div class="min-w-0">\
+                 <div class="block font-medium text-gray-100 name truncate"></div>\
+                 <div class="block text-xs text-gray-400 code"></div>\
+               </div>\
+             </div>'
+          );
+          $opt.find('.name').text(name);
+          $opt.find('.code').text(code ? `#${code}` : '');
+          return $opt;
+        },
+        templateSelection: function(product) {
+          if (!product.id) return product.text;
+          const el = product.element;
+          const name = el?.dataset?.name || product.text || '';
+          const code = el?.dataset?.code || '';
+          return `${name}${code ? '  #' + code : ''}`;
+        }
+      });
+      $prod.on('select2:open select2:select', function() { lucide.createIcons(); });
+      // Ensure product change handler runs for Select2 selections
+      $prod.on('select2:select change select2:clear', function() {
+        onProductChange();
+      });
+    }
+
+    // Simple client-side filtering for product select (customer uses Select2 search)
+    function filterSelect(selectEl, query) {
+      const q = (query || '').toLowerCase();
+      Array.from(selectEl.options).forEach(opt => {
+        if (!opt.value) return; // keep placeholder
+        const show = (opt.text || '').toLowerCase().includes(q);
+        opt.hidden = !show;
+      });
+    }
+    const searchProduct = document.getElementById('search-product');
+    if (searchProduct && productSelect) {
+      searchProduct.addEventListener('input', () => filterSelect(productSelect, searchProduct.value));
+    }
+  });
+  
+  // Multi-line mode scripts
+  {% if multi %}
+  document.addEventListener('DOMContentLoaded', function() {
+    const itemsContainer = document.getElementById('items-container');
+    const addBtn = document.getElementById('btn-add-item');
+    const rowTpl = document.getElementById('item-row-template');
+    const formEl = document.querySelector('form');
+    const countEl = document.getElementById('items-count-input');
+
+    function formatVND(value) {
+      if (value === null || value === undefined || value === '') return '';
+      const n = Number(String(value).replace(/[^0-9.-]/g, ''));
+      if (isNaN(n)) return '';
+      return n.toLocaleString('vi-VN') + ' ₫';
+    }
+
+    async function populateRowOptions(rowEl, productId) {
+      const colorSel = rowEl.querySelector('.item-color');
+      const sizeSel = rowEl.querySelector('.item-size');
+      const thumbEl = rowEl.querySelector('.item-thumb');
+      const priceEl = rowEl.querySelector('.item-saleprice');
+      if (!productId) {
+        colorSel.innerHTML = '<option value="">Chọn màu</option>';
+        sizeSel.innerHTML = '<option value="">Chọn kích thước</option>';
+        if (priceEl) priceEl.value = '';
+        if (thumbEl) thumbEl.innerHTML = '<i data-lucide="image" class="w-5 h-5 text-gray-500"></i>';
+        return;
+      }
+      try {
+        const res = await fetch(`/don-hang/api/product/${productId}/details/`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+        const data = await res.json();
+        if (!data.success) return;
+        // colors
+        colorSel.innerHTML = '<option value="">Chọn màu</option>';
+        (data.colors || []).forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.id;
+          opt.textContent = c.name;
+          colorSel.appendChild(opt);
+        });
+        // sizes
+        sizeSel.innerHTML = '<option value="">Chọn kích thước</option>';
+        (data.sizes || []).forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s.id;
+          opt.textContent = s.name;
+          sizeSel.appendChild(opt);
+        });
+        // price (raw number for editable input)
+        if (priceEl) priceEl.value = (data.price || 0);
+        // thumb
+        if (thumbEl) {
+          if (data.image_url) {
+            thumbEl.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = data.image_url;
+            img.alt = 'Thumb';
+            img.className = 'w-10 h-10 object-cover';
+            thumbEl.appendChild(img);
+          } else {
+            thumbEl.innerHTML = '<i data-lucide="image" class="w-5 h-5 text-gray-500"></i>';
+          }
+        }
+      } catch (e) {
+        console.error('populateRowOptions error', e);
+      }
+    }
+
+    function bindRowHandlers(rowEl) {
+      const prodSel = rowEl.querySelector('.item-product');
+      const removeBtn = rowEl.querySelector('.btn-remove-item');
+      const discountInput = rowEl.querySelector('.item-discount');
+      const discountDisplay = rowEl.querySelector('.item-discount-display');
+      prodSel.addEventListener('change', () => populateRowOptions(rowEl, prodSel.value));
+      removeBtn.addEventListener('click', () => {
+        rowEl.remove();
+        renumberRows();
+      });
+      // Discount live display
+      if (discountInput && discountDisplay) {
+        const update = () => { discountDisplay.textContent = formatVND(discountInput.value || 0) || '0 ₫'; };
+        discountInput.addEventListener('input', update);
+        discountInput.addEventListener('change', update);
+        update();
+      }
+      // Initialize Select2 for product with image/name/code (like single form)
+      if (window.jQuery && window.jQuery.fn && window.jQuery.fn.select2 && prodSel) {
+        const $prod = window.jQuery(prodSel);
+        // parse option label to enrich dataset
+        Array.from(prodSel.options).forEach(opt => {
+          if (!opt.value) return;
+          const text = opt.text || '';
+          const parts = text.split('—').map(s => s.trim());
+          const name = parts[0] || text;
+          const codeMatch = text.match(/\[(.*?)\]/);
+          const code = codeMatch ? codeMatch[1] : '';
+          opt.dataset.name = name;
+          opt.dataset.code = code;
+        });
+        $prod.select2({
+          width: '100%',
+          allowClear: true,
+          placeholder: '— Chọn sản phẩm —',
+          minimumResultsForSearch: 0,
+          templateResult: function(product) {
+            if (!product.id) return product.text;
+            const el = product.element;
+            const name = el?.dataset?.name || product.text || '';
+            const code = el?.dataset?.code || '';
+            const $opt = window.jQuery(
+              '<div class="py-1 flex items-center gap-2>\
+                 <div class="thumb w-8 h-8 rounded bg-[#1e1e1e] border border-gray-800 flex items-center justify-center overflow-hidden">\
+                   <i class="lucide-image w-4 h-4 text-gray-500"></i>\
+                 </div>\
+                 <div class="min-w-0">\
+                   <div class="block font-medium text-gray-100 name truncate"></div>\
+                   <div class="block text-xs text-gray-400 code"></div>\
+                 </div>\
+               </div>'
+            );
+            $opt.find('.name').text(name);
+            $opt.find('.code').text(code ? `Mã: ${code}` : '');
+            return $opt;
+          },
+          templateSelection: function(product) {
+            if (!product.id) return product.text;
+            const el = product.element;
+            const name = el?.dataset?.name || product.text || '';
+            const code = el?.dataset?.code || '';
+            return `${name}${code ? '  #' + code : ''}`;
+          }
+        });
+        // Set tooltip on the rendered selection so long names are visible on hover
+        function setSelectionTitle() {
+          const selEl = $prod.next('.select2').find('.select2-selection__rendered');
+          const opt = prodSel.options[prodSel.selectedIndex];
+          if (!opt) return;
+          const name = opt?.dataset?.name || opt?.text || '';
+          const code = opt?.dataset?.code || '';
+          selEl.attr('title', code ? `${name}  #${code}` : name);
+        }
+        setSelectionTitle();
+
+        // ensure change triggers populate and preview, and update tooltip
+        $prod.on('select2:select change select2:clear', function() {
+          populateRowOptions(rowEl, prodSel.value);
+          setSelectionTitle();
+        });
+      }
+    }
+
+    function addRow() {
+      const node = document.importNode(rowTpl.content, true);
+      const wrapper = node.firstElementChild;
+      itemsContainer.appendChild(wrapper);
+      bindRowHandlers(wrapper);
+      renumberRows();
+    }
+
+    function getRows() {
+      return Array.from(itemsContainer.children).filter(el => el.classList && el.classList.contains('p-3'));
+    }
+
+    function renumberRows() {
+      const rows = getRows();
+      rows.forEach((row, idx) => {
+        const prod = row.querySelector('.item-product');
+        const saleprice = row.querySelector('.item-saleprice');
+        const discount = row.querySelector('.item-discount');
+        const amount = row.querySelector('.item-amount');
+        const color = row.querySelector('.item-color');
+        const size = row.querySelector('.item-size');
+        if (prod) prod.setAttribute('name', `items-${idx}-product`);
+        if (saleprice) saleprice.setAttribute('name', `items-${idx}-sale_price`);
+        if (discount) discount.setAttribute('name', `items-${idx}-discount`);
+        if (amount) amount.setAttribute('name', `items-${idx}-amount`);
+        if (color) color.setAttribute('name', `items-${idx}-color`);
+        if (size) size.setAttribute('name', `items-${idx}-size`);
+      });
+      if (countEl) countEl.value = String(rows.length);
+    }
+
+    if (addBtn) addBtn.addEventListener('click', addRow);
+    // Add first row by default
+    addRow();
+
+    // Ensure count is up to date and set defaults before submit
+    if (formEl) {
+      formEl.addEventListener('submit', function() {
+        const rows = getRows();
+        rows.forEach(row => {
+          const discount = row.querySelector('.item-discount');
+          const amount = row.querySelector('.item-amount');
+          if (discount && (discount.value === '' || isNaN(Number(discount.value)))) {
+            discount.value = '0';
+          }
+          if (amount && (amount.value === '' || Number(amount.value) < 1)) {
+            amount.value = '1';
+          }
+        });
+        renumberRows();
+      });
+    }
+  });
+  {% endif %}
+</script>
+{% endblock %}

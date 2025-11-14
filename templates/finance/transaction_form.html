@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}{{ title|default:'Giao dịch' }}{% endblock %}
+{% block navbar_icon %}wallet{% endblock %}
+{% block navbar_title %}Tài chính{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row justify-between items-center mb-6">
+  <div>
+    <h2 class="text-2xl font-bold flex items-center text-blue-400">
+      <i data-lucide="wallet" class="w-6 h-6 mr-2"></i>{% if view_type == 'income' %}Thêm khoản thu{% elif view_type == 'expense' %}Thêm khoản chi{% else %}Giao dịch{% endif %}
+    </h2>
+    <p class="text-gray-400">Chọn danh mục và nhập số tiền</p>
+  </div>
+  <a href="{% url 'finance:transactions_list' %}" class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 flex items-center">
+    <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>Nhật ký giao dịch
+  </a>
+</div>
+
+<div class="bg-[#121212] border border-gray-800 rounded-lg overflow-hidden">
+  <form method="post" class="p-4 md:p-6">
+    {% csrf_token %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">Danh mục</label>
+        {% render_field form.category %}
+        {% if form.category.errors %}<p class="mt-1 text-sm text-red-400">{{ form.category.errors.0 }}</p>{% endif %}
+      </div>
+      <div>
+        <label for="{{ form.customer.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">Khách hàng</label>
+        {% render_field form.customer id="id_customer" %}
+        <div id="customer-info" class="text-xs text-gray-500 mt-1">
+          <span id="customer-meta"></span>
+        </div>
+        {% if form.customer.errors %}<p class="mt-1 text-sm text-red-400">{{ form.customer.errors.0 }}</p>{% endif %}
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+      <div>
+        <label for="{{ form.amount.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">Số tiền</label>
+        {% render_field form.amount %}
+        <p id="amount-formatted" class="mt-1 text-xs text-gray-400">&nbsp;</p>
+        {% if form.amount.errors %}<p class="mt-1 text-sm text-red-400">{{ form.amount.errors.0 }}</p>{% endif %}
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <label for="{{ form.note.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">Ghi chú</label>
+      {% render_field form.note %}
+      {% if form.note.errors %}<p class="mt-1 text-sm text-red-400">{{ form.note.errors.0 }}</p>{% endif %}
+    </div>
+
+    <div class="mt-6 flex items-center justify-end gap-2">
+      <a href="{% url 'finance:transactions_list' %}" class="px-4 py-2 rounded-md border text-sm bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">Hủy</a>
+      <button type="submit" class="px-4 py-2 rounded-md border text-sm bg-blue-600 text-white border-blue-700 hover:bg-blue-500 flex items-center">
+        <i data-lucide="save" class="w-4 h-4 mr-1"></i>Lưu
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>lucide.createIcons();</script>
+<script>
+  (function(){
+    function formatCurrency(val){
+      if (val === null || val === undefined || val === '') return '';
+      var num = Number(val);
+      if (isNaN(num)) return '';
+      var parts = num.toFixed(0).split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return parts.join('.') + 'đ';
+    }
+    function updatePreview(){
+      var inp = document.querySelector('input[name="amount"]');
+      var out = document.getElementById('amount-formatted');
+      if (!inp || !out) return;
+      var v = inp.value;
+      out.textContent = v ? ('Hiển thị: ' + formatCurrency(v)) : '';
+    }
+    document.addEventListener('input', function(e){
+      if (e.target && e.target.name === 'amount') updatePreview();
+    });
+    document.addEventListener('DOMContentLoaded', updatePreview);
+    updatePreview();
+  })();
+</script>
+{% if view_type == 'income' %}
+<script>
+  (function(){
+    const params = new URLSearchParams(window.location.search || '');
+    const remainingParam = params.get('remaining');
+    const remaining = remainingParam && !isNaN(Number(remainingParam)) ? Number(remainingParam) : null;
+    const categorySelect = document.querySelector('select[name="category"]');
+    const amountInput = document.querySelector('input[name="amount"]');
+    const TARGET_TEXT = 'Khoản thu - KH thanh toán đơn hàng';
+
+    function maybeAutofill(){
+      if (!categorySelect || !amountInput || remaining === null) return;
+      const opt = categorySelect.options[categorySelect.selectedIndex];
+      const selectedText = (opt && (opt.text || '').trim()) || '';
+      const isTarget = selectedText.toLowerCase() === TARGET_TEXT.toLowerCase();
+      if (isTarget) {
+        if (!amountInput.value) {
+          amountInput.value = String(remaining);
+          amountInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      } else {
+        // If amount is exactly the auto value, clear it when switching away
+        if (amountInput.value && !isNaN(Number(amountInput.value)) && Number(amountInput.value) === remaining) {
+          amountInput.value = '';
+          amountInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      }
+    }
+
+    if (categorySelect) {
+      categorySelect.addEventListener('change', maybeAutofill);
+      document.addEventListener('DOMContentLoaded', maybeAutofill);
+      // Also try once in case DOMContentLoaded already fired
+      maybeAutofill();
+    }
+  })();
+</script>
+{% endif %}
+<script>
+  (function(){
+    const customerSelect = document.getElementById('id_customer');
+    const customerMeta = document.getElementById('customer-meta');
+
+    function onCustomerChange(){
+      const opt = customerSelect ? customerSelect.options[customerSelect.selectedIndex] : null;
+      if (!opt) { if (customerMeta) customerMeta.textContent=''; return; }
+      const code = opt.dataset && opt.dataset.code || '';
+      const phone = opt.dataset && opt.dataset.phone || '';
+      if (customerMeta) customerMeta.textContent = `${code ? 'Mã: ' + code + ' · ' : ''}${phone || ''}` || ' ';
+    }
+
+    if (customerSelect && window.jQuery && window.jQuery.fn && window.jQuery.fn.select2) {
+      Array.from(customerSelect.options).forEach(opt => {
+        if (!opt.value) return;
+        const text = opt.text || '';
+        const parts = text.split('—').map(s => s.trim());
+        const name = parts[0] || text;
+        const codeMatch = text.match(/\[(.*?)\]/);
+        const code = codeMatch ? codeMatch[1] : '';
+        const phone = parts.length >= 3 ? parts[2] : '';
+        opt.dataset.name = name;
+        opt.dataset.code = code;
+        opt.dataset.phone = phone;
+        opt.text = name;
+      });
+      const $cust = window.jQuery(customerSelect);
+      $cust.select2({
+        width: '100%',
+        allowClear: true,
+        placeholder: '— Chọn khách hàng —',
+        minimumResultsForSearch: 0,
+        templateResult: function(customer){
+          if (!customer.id) return customer.text;
+          const el = customer.element;
+          const name = el?.dataset?.name || customer.text || '';
+          const code = el?.dataset?.code || '';
+          const phone = el?.dataset?.phone || '';
+          const $opt = window.jQuery('<div class="py-1">\
+               <div class="block font-medium text-gray-100 name"></div>\
+               <div class="block text-xs text-gray-400 code"></div>\
+               <div class="block text-xs text-gray-400 flex items-center gap-1 phone">\
+                 <i data-lucide="phone" class="w-3 h-3"></i><span class="phone-text"></span>\
+               </div>\
+             </div>');
+          $opt.find('.name').text(name);
+          $opt.find('.code').text(code ? `#${code}` : '');
+          $opt.find('.phone-text').text(phone ? `${phone}` : '');
+          return $opt;
+        },
+        templateSelection: function(customer){
+          if (!customer.id) return customer.text;
+          const el = customer.element;
+          const name = el?.dataset?.name || customer.text || '';
+          const code = el?.dataset?.code || '';
+          const phone = el?.dataset?.phone || '';
+          return `${name}${code ? '  #' + code : ''}${phone ? '  · SĐT: ' + phone : ''}`;
+        }
+      });
+      $cust.on('select2:open select2:select', function(){ if (window.lucide) lucide.createIcons(); });
+    }
+
+    if (customerSelect) {
+      customerSelect.addEventListener('change', onCustomerChange);
+      if (customerSelect.value) onCustomerChange();
+    }
+  })();
+</script>
+{% endblock %}
