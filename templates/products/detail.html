@@ -79,6 +79,7 @@
           </div>
         </div>
         <p class="text-gray-400 text-sm pt-5">Giá bán: <span class="text-gray-200 font-semibold">{{ product.price|smart_vnd }}</span></p>
+        <p class="text-gray-400 text-sm">Giá nhập: <span class="text-gray-300 font-medium">{{ product.purchase_price|default:0|smart_vnd }}</span></p>
       </div>
     </div>
     <div class="mt-3 text-xs text-gray-500">

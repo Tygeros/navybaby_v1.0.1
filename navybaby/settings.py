@@ -17,12 +17,15 @@ SECRET_KEY = os.environ.get(
     "django-insecure-se1$v-h&5b*868ok+@x9%6ay!%654k_5+mhmvhjvo)+!p-%n7z"
 )
 
-# DEBUG should be "False" in production. Use environment variable to control.
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+# DEBUG defaults to True locally; set DEBUG=False on Render
+DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-# ALLOWED_HOSTS can be provided via environment variable, comma-separated.
-# Example: ALLOWED_HOSTS=navybaby.onrender.com,localhost
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+# Explicit allowlist including Render domain
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "navybaby-v0-4.onrender.com",
+]
 
 # === APPS ===
 INSTALLED_APPS = [
@@ -85,15 +88,14 @@ TEMPLATES = [
 ]
 
 # === DATABASE ===
-# Primary: read DATABASE_URL environment variable (Render provides it).
-# Fallback: local sqlite (for development).
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=not DEBUG,  # require SSL in production by default
+        ssl_require=not DEBUG,
     )
 }
+
 
 # === PASSWORD VALIDATORS ===
 AUTH_PASSWORD_VALIDATORS = [
@@ -117,7 +119,7 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # WhiteNoise: fix lỗi admin static và compress ổn định trên Render
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 WHITENOISE_USE_FINDERS = True  # giúp tìm admin static khi collectstatic
 
 # === MEDIA FILES (Cloudinary or Local) ===

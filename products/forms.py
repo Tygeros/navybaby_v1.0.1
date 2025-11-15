@@ -31,7 +31,7 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = [
             'code', 'name', 'category', 'supplier', 'description', 
-            'image', 'price', 'private_order', 'note', 'colors', 'sizes'
+            'image', 'price', 'purchase_price', 'private_order', 'note', 'colors', 'sizes'
         ]
         widgets = {
             'name': forms.TextInput(attrs={
@@ -53,6 +53,10 @@ class ProductForm(forms.ModelForm):
                 'onchange': 'previewImage(this, \'image-preview\')',
             }),
             'price': forms.NumberInput(attrs={
+                'class': 'w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700',
+                'min': 0,
+            }),
+            'purchase_price': forms.NumberInput(attrs={
                 'class': 'w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700',
                 'min': 0,
             }),

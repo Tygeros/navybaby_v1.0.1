@@ -204,6 +204,7 @@
             <th class="px-4 py-3 text-left font-medium text-gray-400 uppercase tracking-wider">Màu</th>
             <th class="px-4 py-3 text-left font-medium text-gray-400 uppercase tracking-wider">Size</th>
             <th class="px-4 py-3 text-left font-medium text-gray-400 uppercase tracking-wider">Số đơn</th>
+            <th class="px-4 py-3 text-left font-medium text-gray-400 uppercase tracking-wider">Giá nhập</th>
             <th class="px-4 py-3 text-left font-medium text-gray-400 uppercase tracking-wider">Giá</th>
             <th class="px-4 py-3 text-left font-medium text-gray-400 uppercase tracking-wider">Doanh thu</th>
           </tr>
@@ -242,6 +243,7 @@
                 {% empty %}-{% endfor %}
               </td>
               <td class="px-4 py-3 text-gray-200">{{ p.order_count }}</td>
+              <td class="px-4 py-3"><span class="text-gray-300">{{ p.purchase_price|default:0|smart_vnd }}</span></td>
               <td class="px-4 py-3"><span class="text-blue-400 font-semibold">{{ p.price|smart_vnd }}</span></td>
               <td class="px-4 py-3"><span class="text-green-400 font-semibold">{{ p.total_revenue|smart_vnd }}</span></td>
             </tr>

@@ -70,6 +70,22 @@
           {% endif %}
         </div>
 
+        <!-- Purchase Price -->
+        <div>
+          <label for="{{ form.purchase_price.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">
+            Giá nhập (VNĐ)
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="text-gray-400">₫</span>
+            </div>
+            {% render_field form.purchase_price class="pl-8 w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" %}
+          </div>
+          {% if form.purchase_price.errors %}
+            <p class="mt-1 text-sm text-red-400">{{ form.purchase_price.errors.0 }}</p>
+          {% endif %}
+        </div>
+
         <!-- Category -->
         <div>
           <label for="{{ form.category.id_for_label }}" class="block text-sm font-medium text-gray-300 mb-1">

@@ -14,6 +14,7 @@ class Product(models.Model):
     description = models.TextField(blank=True)
     image = CloudinaryField('image', blank=True, null=True)
     price = models.IntegerField()
+    purchase_price = models.IntegerField(default=0)
     private_order = models.BooleanField(default=False)
     note = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
