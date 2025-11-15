@@ -75,7 +75,179 @@
   </div>
 </div>
 
+<!-- Thống kê & Biểu đồ -->
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+    <h5 class="font-semibold text-lg mb-3 flex items-center text-blue-400">
+      <i data-lucide="bar-chart-2" class="w-5 h-5 mr-2"></i>Khách hàng mới (so sánh kỳ)
+    </h5>
+    <div class="grid grid-cols-1 gap-3">
+      <canvas id="customersChart" height="120"></canvas>
+    </div>
+  </div>
+
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+    <h5 class="font-semibold text-lg mb-3 flex items-center text-green-400">
+      <i data-lucide="bar-chart" class="w-5 h-5 mr-2"></i>Sản phẩm mới (so sánh kỳ)
+    </h5>
+    <div class="grid grid-cols-1 gap-3">
+      <canvas id="productsChart" height="120"></canvas>
+    </div>
+  </div>
+
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-4 xl:col-span-2">
+    <h5 class="font-semibold text-lg mb-3 flex items-center text-yellow-400">
+      <i data-lucide="activity" class="w-5 h-5 mr-2"></i>Đơn hàng (số lượng & giá trị)
+    </h5>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div>
+        <p class="text-sm text-gray-400 mb-2">Số lượng đơn</p>
+        <canvas id="ordersCountChart" height="140"></canvas>
+      </div>
+      <div>
+        <p class="text-sm text-gray-400 mb-2">Giá trị đơn (₫)</p>
+        <canvas id="ordersValueChart" height="140"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Top sản phẩm bán chạy trong tháng -->
+<div class="bg-[#121212] border border-gray-800 rounded-lg p-4 mb-8">
+  <h5 class="font-semibold text-lg mb-3 flex items-center text-purple-400">
+    <i data-lucide="trophy" class="w-5 h-5 mr-2"></i>Top sản phẩm bán chạy trong tháng
+  </h5>
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-800 text-sm">
+      <thead class="bg-[#161616]">
+        <tr>
+          <th class="px-4 py-2 text-left text-gray-400 uppercase tracking-wider">#</th>
+          <th class="px-4 py-2 text-left text-gray-400 uppercase tracking-wider">Sản phẩm</th>
+          <th class="px-4 py-2 text-right text-gray-400 uppercase tracking-wider">Số lượng</th>
+          <th class="px-4 py-2 text-right text-gray-400 uppercase tracking-wider">Giá trị</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-800">
+        {% for p in top_products_month %}
+          <tr>
+            <td class="px-4 py-2 text-gray-400">{{ forloop.counter }}</td>
+            <td class="px-4 py-2 text-gray-200">{{ p.product__name }}</td>
+            <td class="px-4 py-2 text-right text-gray-100">{{ p.total_amount|default:0 }}</td>
+            <td class="px-4 py-2 text-right text-green-400">{{ p.total_value|default:0|smart_vnd }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="px-4 py-4 text-center text-gray-400">Chưa có dữ liệu trong tháng này.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="text-xs text-gray-500 mt-2">Không tính các đơn hàng đã đối soát hoặc hủy.</p>
+  </div>
+
 {% endblock %}
 
 <script src="https://unpkg.com/lucide@latest"></script>
-<script>lucide.createIcons();</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{{ customer_stats|json_script:"customer-stats-data" }}
+{{ product_stats|json_script:"product-stats-data" }}
+{{ order_stats|json_script:"order-stats-data" }}
+<script>
+  if (window.lucide) { try { lucide.createIcons(); } catch (e) {} }
+  // Prepare data from context
+  const customerStats = JSON.parse(document.getElementById('customer-stats-data').textContent);
+  const productStats = JSON.parse(document.getElementById('product-stats-data').textContent);
+  const orderStats = JSON.parse(document.getElementById('order-stats-data').textContent);
+
+  function makeBarChart(ctx, labels, currentData, previousData, colors) {
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Kỳ này',
+            data: currentData,
+            backgroundColor: colors[0],
+            borderColor: colors[0],
+          },
+          {
+            label: 'Kỳ trước',
+            data: previousData,
+            backgroundColor: colors[1],
+            borderColor: colors[1],
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: '#d1d5db' } },
+          tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('vi-VN')}` } }
+        },
+        scales: {
+          x: { ticks: { color: '#9ca3af' }, grid: { color: '#1f2937' } },
+          y: { ticks: { color: '#9ca3af', callback: v => v.toLocaleString('vi-VN') }, grid: { color: '#1f2937' } }
+        }
+      }
+    });
+  }
+
+  // Customers chart: Today/This Week/This Month vs previous
+  const custLabels = ['Hôm nay', 'Tuần này', 'Tháng này'];
+  const custCurrent = [customerStats.today, customerStats.this_week, customerStats.this_month];
+  const custPrev = [customerStats.yesterday, customerStats.last_week, customerStats.last_month];
+  makeBarChart(document.getElementById('customersChart'), custLabels, custCurrent, custPrev, ['#60a5fa', '#334155']);
+
+  // Products chart
+  const prodCurrent = [productStats.today, productStats.this_week, productStats.this_month];
+  const prodPrev = [productStats.yesterday, productStats.last_week, productStats.last_month];
+  makeBarChart(document.getElementById('productsChart'), custLabels, prodCurrent, prodPrev, ['#34d399', '#374151']);
+
+  // Orders count chart (bar)
+  const ordLabels = ['Hôm nay', 'Tuần này', 'Tháng này'];
+  const ordCountCurrent = [orderStats.today.count, orderStats.this_week.count, orderStats.this_month.count];
+  const ordCountPrev = [orderStats.yesterday.count, orderStats.last_week.count, orderStats.last_month.count];
+  makeBarChart(document.getElementById('ordersCountChart'), ordLabels, ordCountCurrent, ordCountPrev, ['#f59e0b', '#374151']);
+
+  // Orders value chart (line vs bar)
+  new Chart(document.getElementById('ordersValueChart'), {
+    type: 'bar',
+    data: {
+      labels: ordLabels,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Giá trị (₫) - Kỳ này',
+          data: [orderStats.today.value, orderStats.this_week.value, orderStats.this_month.value],
+          borderColor: '#10b981',
+          backgroundColor: 'transparent',
+          tension: 0.3,
+          yAxisID: 'y',
+        },
+        {
+          type: 'line',
+          label: 'Giá trị (₫) - Kỳ trước',
+          data: [orderStats.yesterday.value, orderStats.last_week.value, orderStats.last_month.value],
+          borderColor: '#4b5563',
+          backgroundColor: 'transparent',
+          borderDash: [4,4],
+          tension: 0.3,
+          yAxisID: 'y',
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#d1d5db' } },
+        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${Number(ctx.parsed.y||0).toLocaleString('vi-VN')} ₫` } }
+      },
+      scales: {
+        x: { ticks: { color: '#9ca3af' }, grid: { color: '#1f2937' } },
+        y: { ticks: { color: '#9ca3af', callback: v => `${Number(v).toLocaleString('vi-VN')} ₫` }, grid: { color: '#1f2937' } }
+      }
+    }
+  });
+</script>
