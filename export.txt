@@ -1,0 +1,1 @@
+export DATABASE_URL="postgres://navybaby_db_6kwj_user:jYyGQ4itauMT0DySWvqraePEQfcBcPAy@dpg-d4bjgije5dus73emk5vg-a.oregon-postgres.render.com:5432/navybaby_db_6kwj"

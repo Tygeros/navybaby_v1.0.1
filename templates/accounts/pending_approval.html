@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Chờ chấp thuận{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h3 class="mb-3">Tài khoản đang chờ chấp thuận</h3>
+          <p class="mb-4">Cảm ơn bạn đã đăng ký. Quản trị viên sẽ xem xét và chấp thuận tài khoản của bạn trước khi bạn có thể truy cập ứng dụng.</p>
+          <div class="d-flex gap-2">
+            <a class="btn btn-secondary" href="/">Về trang chủ</a>
+            <a class="btn btn-outline-primary" href="{% url 'accounts:dang-xuat' %}">Đăng xuất</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
