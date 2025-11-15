@@ -1,5 +1,6 @@
 """
-Django settings for navybaby project.
+Django settings for navybaby project (Render-ready).
+Place this file at: <project>/navybaby/settings.py
 """
 
 from pathlib import Path
@@ -9,19 +10,19 @@ import dj_database_url
 # === PATHS ===
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# === SECURITY ===
+# === SECURITY / ENV ===
+# Use DJANGO_SECRET_KEY environment variable in production.
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
     "django-insecure-se1$v-h&5b*868ok+@x9%6ay!%654k_5+mhmvhjvo)+!p-%n7z"
 )
-DEBUG = os.environ.get("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "navybaby-v0-4.onrender.com",
-    "navybaby.onrender.com",
-]
+# DEBUG should be "False" in production. Use environment variable to control.
+DEBUG = os.environ.get("DEBUG", "False") == "True"
+
+# ALLOWED_HOSTS can be provided via environment variable, comma-separated.
+# Example: ALLOWED_HOSTS=navybaby.onrender.com,localhost
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 # === APPS ===
 INSTALLED_APPS = [
@@ -83,11 +84,13 @@ TEMPLATES = [
 ]
 
 # === DATABASE ===
+# Primary: read DATABASE_URL environment variable (Render provides it).
+# Fallback: local sqlite (for development).
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
-        ssl_require=not DEBUG,
+        ssl_require=not DEBUG,  # require SSL in production by default
     )
 }
 
@@ -113,19 +116,17 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # WhiteNoise: fix lỗi admin static và compress ổn định trên Render
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 WHITENOISE_USE_FINDERS = True  # giúp tìm admin static khi collectstatic
 
-# === MEDIA FILES (Cloudinary / Local) ===
-CLOUDINARY_URL = os.environ.get("CLOUDINARY_URL")
+# === MEDIA FILES (Cloudinary or Local) ===
+CLOUDINARY_URL = os.environ.get("CLOUDINARY_URL", "")
 USE_CLOUDINARY = bool(CLOUDINARY_URL)
 
 if USE_CLOUDINARY:
-    # Prod / Render
     DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
     MEDIA_URL = "/media/"
 else:
-    # Dev local
     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
     MEDIA_URL = "/media/"
     MEDIA_ROOT = BASE_DIR / "media"
@@ -133,12 +134,56 @@ else:
 # === DEFAULTS ===
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# === OPTIONAL: add headers & security for Render + WhiteNoise ===
+# === SECURITY SETTINGS (Render) ===
+# When Render sits behind a proxy/load balancer
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 
+# HSTS (optional, enable after verifying HTTPS works)
+if not DEBUG:
+    SECURE_HSTS_SECONDS = 60  # increase after verifying (e.g. to 3600 or more)
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
 # === AUTH REDIRECTS ===
 LOGIN_URL = "/dang-nhap/"
 LOGIN_REDIRECT_URL = "/"
+
+# === LOGGING: helpful for diagnosing 500 errors on Render ===
+LOG_LEVEL = "DEBUG" if DEBUG else "INFO"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "standard": {"format": "[%(asctime)s] %(levelname)s %(name)s: %(message)s"},
+    },
+    "handlers": {
+        "console": {
+            "level": LOG_LEVEL,
+            "class": "logging.StreamHandler",
+            "formatter": "standard",
+        },
+    },
+    "loggers": {
+        "django": {"handlers": ["console"], "level": LOG_LEVEL, "propagate": True},
+        "": {"handlers": ["console"], "level": LOG_LEVEL},
+    },
+}
+
+# Optional: email admin on errors (configure env vars to enable)
+ADMINS = tuple(
+    [tuple(a.split(",")) for a in os.environ.get("ADMINS", "").split(";") if a]
+)  # format: "name,email;name2,email2"
+
+# Print DB config to logs when DEBUG to aid troubleshooting (not printing secrets)
+if DEBUG:
+    from pprint import pformat
+
+    try:
+        dbinfo = DATABASES.get("default", {})
+        print("DATABASE CONFIG:", pformat(dbinfo))
+    except Exception:
+        pass
