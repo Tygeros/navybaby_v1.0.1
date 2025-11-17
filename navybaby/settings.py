@@ -117,6 +117,7 @@ USE_TZ = True
 # === STATIC FILES ===
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # WhiteNoise: fix lỗi admin static và compress ổn định trên Render
 STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"

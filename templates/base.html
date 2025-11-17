@@ -13,6 +13,16 @@
 
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
   {% block extra_css %}{% endblock %}
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('theme');
+        const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+        const theme = saved || (prefersLight ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body class="min-h-screen flex text-gray-200 bg-[#1b1b1b]">
 
@@ -105,6 +115,9 @@
           {% block navbar_title %}Tổng quan{% endblock %}
         </h1>
         <div class="flex items-center space-x-3">
+          <button id="themeToggle" class="p-2 rounded-full border border-gray-800 text-gray-300 hover:border-gray-700 focus:outline-none focus-visible:ring focus-visible:ring-blue-500/20" title="Chuyển chế độ sáng/tối" aria-label="Chuyển chế độ sáng/tối">
+            <span id="themeIcon"></span>
+          </button>
           {% if request.user.is_authenticated %}
             <a href="{% url 'accounts:doi-mat-khau' %}" class="text-gray-300 hover:text-white" title="Cập nhật mật khẩu">
               <i data-lucide="settings" class="w-5 h-5"></i>
@@ -149,6 +162,34 @@
     }
     document.getElementById('closeSidebar')?.addEventListener('click', close);
     backdrop?.addEventListener('click', close);
+
+    // Theme toggle
+    (function() {
+      const btn = document.getElementById('themeToggle');
+      const iconHost = document.getElementById('themeIcon');
+      const renderIcon = (mode) => {
+        if (!iconHost || !window.lucide || !lucide.createIcon) return;
+        const name = mode === 'light' ? 'sun' : 'moon';
+        iconHost.innerHTML = '';
+        try {
+          iconHost.innerHTML = lucide.createIcon(name).toSvg({ class: 'w-5 h-5' });
+        } catch (e) {}
+      };
+      const apply = (mode) => {
+        document.documentElement.setAttribute('data-theme', mode);
+        try { localStorage.setItem('theme', mode); } catch (e) {}
+        renderIcon(mode);
+        try { window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: mode } })); } catch (e) {}
+      };
+      // init icon according to current theme
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      renderIcon(current);
+      // Don't fire themechange on first paint, only render icon
+      btn?.addEventListener('click', function() {
+        const curr = document.documentElement.getAttribute('data-theme') || 'dark';
+        apply(curr === 'dark' ? 'light' : 'dark');
+      });
+    })();
   </script>
 
   {% block extra_js %}{% endblock %}

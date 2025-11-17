@@ -160,37 +160,51 @@
   const productStats = JSON.parse(document.getElementById('product-stats-data').textContent);
   const orderStats = JSON.parse(document.getElementById('order-stats-data').textContent);
 
+  function uiPalette() {
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    if (theme === 'light') {
+      return { legend: '#374151', tick: '#4b5563', grid: '#e5e7eb' };
+    }
+    return { legend: '#d1d5db', tick: '#9ca3af', grid: '#1f2937' };
+  }
+
+  function applyScales(baseOptions) {
+    const p = uiPalette();
+    baseOptions.plugins = baseOptions.plugins || {};
+    baseOptions.plugins.legend = baseOptions.plugins.legend || {};
+    baseOptions.plugins.legend.labels = Object.assign({ color: p.legend }, baseOptions.plugins.legend.labels || {});
+    baseOptions.scales = baseOptions.scales || {};
+    baseOptions.scales.x = Object.assign({
+      ticks: { color: p.tick },
+      grid: { color: p.grid }
+    }, baseOptions.scales.x || {});
+    baseOptions.scales.y = Object.assign({
+      ticks: Object.assign({ color: p.tick }, (baseOptions.scales.y && baseOptions.scales.y.ticks) || {}),
+      grid: { color: p.grid }
+    }, baseOptions.scales.y || {});
+    return baseOptions;
+  }
+
   function makeBarChart(ctx, labels, currentData, previousData, colors) {
-    new Chart(ctx, {
+    const options = applyScales({
+      responsive: true,
+      plugins: {
+        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('vi-VN')}` } }
+      },
+      scales: {
+        y: { ticks: { callback: v => v.toLocaleString('vi-VN') } }
+      }
+    });
+    return new Chart(ctx, {
       type: 'bar',
       data: {
         labels,
         datasets: [
-          {
-            label: 'Kỳ này',
-            data: currentData,
-            backgroundColor: colors[0],
-            borderColor: colors[0],
-          },
-          {
-            label: 'Kỳ trước',
-            data: previousData,
-            backgroundColor: colors[1],
-            borderColor: colors[1],
-          }
+          { label: 'Kỳ này', data: currentData, backgroundColor: colors[0], borderColor: colors[0] },
+          { label: 'Kỳ trước', data: previousData, backgroundColor: colors[1], borderColor: colors[1] }
         ]
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { labels: { color: '#d1d5db' } },
-          tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('vi-VN')}` } }
-        },
-        scales: {
-          x: { ticks: { color: '#9ca3af' }, grid: { color: '#1f2937' } },
-          y: { ticks: { color: '#9ca3af', callback: v => v.toLocaleString('vi-VN') }, grid: { color: '#1f2937' } }
-        }
-      }
+      options
     });
   }
 
@@ -198,12 +212,12 @@
   const custLabels = ['Hôm nay', 'Tuần này', 'Tháng này'];
   const custCurrent = [customerStats.today, customerStats.this_week, customerStats.this_month];
   const custPrev = [customerStats.yesterday, customerStats.last_week, customerStats.last_month];
-  makeBarChart(document.getElementById('customersChart'), custLabels, custCurrent, custPrev, ['#60a5fa', '#334155']);
+  const customersChart = makeBarChart(document.getElementById('customersChart'), custLabels, custCurrent, custPrev, ['#60a5fa', '#334155']);
 
   // Products chart
   const prodCurrent = [productStats.today, productStats.this_week, productStats.this_month];
   const prodPrev = [productStats.yesterday, productStats.last_week, productStats.last_month];
-  makeBarChart(document.getElementById('productsChart'), custLabels, prodCurrent, prodPrev, ['#34d399', '#374151']);
+  const productsChart = makeBarChart(document.getElementById('productsChart'), custLabels, prodCurrent, prodPrev, ['#34d399', '#374151']);
 
   // Orders count chart (bar)
   const ordLabels = ['Hôm nay', 'Tuần này', 'Tháng này'];
@@ -212,7 +226,7 @@
   makeBarChart(document.getElementById('ordersCountChart'), ordLabels, ordCountCurrent, ordCountPrev, ['#f59e0b', '#374151']);
 
   // Orders value chart (line vs bar)
-  new Chart(document.getElementById('ordersValueChart'), {
+  const ordersValueChart = new Chart(document.getElementById('ordersValueChart'), {
     type: 'bar',
     data: {
       labels: ordLabels,
@@ -238,16 +252,37 @@
         }
       ]
     },
-    options: {
+    options: applyScales({
       responsive: true,
       plugins: {
-        legend: { labels: { color: '#d1d5db' } },
         tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${Number(ctx.parsed.y||0).toLocaleString('vi-VN')} ₫` } }
       },
       scales: {
-        x: { ticks: { color: '#9ca3af' }, grid: { color: '#1f2937' } },
-        y: { ticks: { color: '#9ca3af', callback: v => `${Number(v).toLocaleString('vi-VN')} ₫` }, grid: { color: '#1f2937' } }
+        y: { ticks: { callback: v => `${Number(v).toLocaleString('vi-VN')} ₫` } }
       }
-    }
+    })
+  });
+
+  // React to theme changes
+  window.addEventListener('themechange', function() {
+    const charts = [customersChart, productsChart, ordersValueChart];
+    const p = uiPalette();
+    charts.forEach(ch => {
+      if (!ch) return;
+      if (ch.options.plugins && ch.options.plugins.legend && ch.options.plugins.legend.labels) {
+        ch.options.plugins.legend.labels.color = p.legend;
+      }
+      if (ch.options.scales && ch.options.scales.x) {
+        if (ch.options.scales.x.ticks) ch.options.scales.x.ticks.color = p.tick;
+        if (ch.options.scales.x.grid) ch.options.scales.x.grid.color = p.grid;
+      }
+      if (ch.options.scales && ch.options.scales.y) {
+        if (ch.options.scales.y.ticks && typeof ch.options.scales.y.ticks === 'object') {
+          ch.options.scales.y.ticks.color = p.tick;
+        }
+        if (ch.options.scales.y.grid) ch.options.scales.y.grid.color = p.grid;
+      }
+      ch.update();
+    });
   });
 </script>
