@@ -410,6 +410,11 @@
           </td>
           <td class="px-4 py-3 text-blue-400 whitespace-nowrap">
             <a href="{% url 'orders:order_detail' o.pk %}" class="hover:underline">{{ o.code }}</a>
+            {% with status_class=o.get_status_class %}
+              <div class="mt-1">
+                <span class="text-[11px] px-1.5 py-0.5 rounded {{ status_class }} whitespace-nowrap">{{ o.get_status_display }}</span>
+              </div>
+            {% endwith %}
           </td>
           <td class="px-4 py-3 text-sm text-gray-300">
             <div class="flex items-center gap-2">

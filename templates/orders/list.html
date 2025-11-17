@@ -337,19 +337,21 @@
                 <i data-lucide="image" class="w-5 h-5"></i>
               </div>
             {% endif %}
-            <div class="flex items-center gap-2">
+            <div>
               <a href="{% url 'orders:order_detail' order.pk %}" class="font-semibold text-gray-100 hover:underline">{{ order.code }}</a>
               {% with status_class=order.get_status_class %}
-                <span class="text-[11px] px-1.5 py-0.5 rounded {{ status_class }} order-status" data-order-id="{{ order.pk }}">{{ order.get_status_display }}</span>
-                <form method="post" action="{% url 'orders:update_order_status' order.pk %}" class="hidden order-status-form">
-                  {% csrf_token %}
-                  <input type="hidden" name="next" value="{{ request.get_full_path }}" />
-                  <select name="status" class="bg-[#161616] border border-gray-800 rounded px-2 py-1 text-xs text-gray-200" onchange="this.form.submit()">
-                    {% for value,label in status_choices.items %}
-                      <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
-                  </select>
-                </form>
+                <div class="mt-1">
+                  <span class="text-[11px] px-1.5 py-0.5 rounded {{ status_class }} order-status" data-order-id="{{ order.pk }}">{{ order.get_status_display }}</span>
+                  <form method="post" action="{% url 'orders:update_order_status' order.pk %}" class="hidden order-status-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+                    <select name="status" class="bg-[#161616] border border-gray-800 rounded px-2 py-1 text-xs text-gray-200" onchange="this.form.submit()">
+                      {% for value,label in status_choices.items %}
+                        <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>{{ label }}</option>
+                      {% endfor %}
+                    </select>
+                  </form>
+                </div>
               {% endwith %}
             </div>
             <div class="mt-1">
@@ -414,6 +416,11 @@
             </td>
             <td class="px-4 py-3 text-sm text-blue-400">
               <a href="{% url 'orders:order_detail' order.pk %}" class="hover:underline">{{ order.code }}</a>
+              {% with status_class=order.get_status_class %}
+                <div class="mt-1">
+                  <span class="text-[11px] px-1.5 py-0.5 rounded {{ status_class }} whitespace-nowrap">{{ order.get_status_display }}</span>
+                </div>
+              {% endwith %}
             </td>
             <td class="px-4 py-3 text-sm text-gray-300">
               {% if order.customer %}
