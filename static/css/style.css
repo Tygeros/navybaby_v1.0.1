@@ -70,6 +70,7 @@ button, a { transition: background-color .15s ease, border-color .15s ease, colo
 [data-theme="light"] .bg-\[\#111\] { background-color: #f3f4f6 !important; color: #9ca3af !important; }
 [data-theme="light"] .bg-\[\#1a1a1a\] { background-color: #f9fafb !important; }
 [data-theme="light"] .bg-\[\#1f1f1f\] { background-color: #ffffff !important; }
+[data-theme="light"] .bg-\[\#1e1e1e\] { background-color: #f3f4f6 !important; }
 [data-theme="light"] ::placeholder { color: #9ca3af; opacity: 1; }
 [data-theme="light"] .text-blue-400 { color: #1d4ed8 !important; } /* blue-700 for stronger contrast */
 [data-theme="light"] .text-blue-300 { color: #3b82f6 !important; }
@@ -119,3 +120,37 @@ html[data-theme="light"] .text-red-500 { color: #991b1b !important; }
 
 /* Theme toggle hover in light mode */
 [data-theme="light"] #themeToggle:hover { background-color: #e5e7eb !important; }
+
+/* Select2 (orders/create.html) light mode overrides */
+html[data-theme="light"] .select2-container .select2-selection--single {
+  background-color: #ffffff !important;
+  border-color: #d1d5db !important; /* gray-300 */
+  color: #111827 !important; /* gray-900 */
+}
+html[data-theme="light"] .select2-container .select2-selection--single .select2-selection__rendered {
+  color: #111827 !important; /* gray-900 */
+}
+html[data-theme="light"] .select2-container .select2-selection--single .select2-selection__placeholder {
+  color: #6b7280 !important; /* gray-500 */
+}
+html[data-theme="light"] .select2-dropdown {
+  background-color: #ffffff !important;
+  border-color: #d1d5db !important; /* gray-300 */
+  color: #374151 !important; /* gray-700 */
+}
+html[data-theme="light"] .select2-search--dropdown .select2-search__field {
+  background-color: #ffffff !important;
+  border-color: #d1d5db !important;
+  color: #111827 !important;
+}
+html[data-theme="light"] .select2-results__option--highlighted.select2-results__option--selectable,
+html[data-theme="light"] .select2-container--default .select2-results__option--highlighted[aria-selected] {
+  background-color: rgba(59,130,246,0.12) !important; /* blue-500/12 */
+  color: #111827 !important;
+}
+html[data-theme="light"] .select2-results__option[aria-selected=true],
+html[data-theme="light"] .select2-container--default .select2-results__option--selected {
+  background-color: #e5e7eb !important; /* gray-200 */
+  color: #111827 !important;
+}
+html[data-theme="light"] .select2-container--default .select2-results__group { color: #6b7280 !important; }
