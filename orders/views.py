@@ -346,10 +346,14 @@ class OrderCreateView(CreateView):
                     continue
 
                 # amount
-                try:
-                    amount = int(self.request.POST.get(f'items-{index}-amount') or 0)
-                except ValueError:
-                    amount = 0
+                amount_raw = self.request.POST.get(f'items-{index}-amount')
+                if amount_raw is None or str(amount_raw).strip() == '':
+                    amount = 1
+                else:
+                    try:
+                        amount = int(amount_raw)
+                    except ValueError:
+                        amount = 1
                 # discount
                 try:
                     discount = float(self.request.POST.get(f'items-{index}-discount') or 0)
@@ -409,10 +413,14 @@ class OrderCreateView(CreateView):
                     continue
 
                 # amount
-                try:
-                    amount = int(self.request.POST.get(f'items-{index}-amount') or 0)
-                except ValueError:
-                    amount = 0
+                amount_raw = self.request.POST.get(f'items-{index}-amount')
+                if amount_raw is None or str(amount_raw).strip() == '':
+                    amount = 1
+                else:
+                    try:
+                        amount = int(amount_raw)
+                    except ValueError:
+                        amount = 1
                 # discount
                 try:
                     discount = float(self.request.POST.get(f'items-{index}-discount') or 0)

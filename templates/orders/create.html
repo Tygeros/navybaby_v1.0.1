@@ -166,7 +166,12 @@
                   <select class="item-product w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-gray-200" name="items-__i__-product">
                     <option value="">— Chọn sản phẩm —</option>
                     {% for opt in form.fields.product.queryset %}
-                      <option value="{{ opt.id }}">{{ opt }}</option>
+                      <option value="{{ opt.id }}"
+                              data-name="{{ opt.name }}"
+                              data-code="{{ opt.code }}"
+                              data-supplier="{{ opt.supplier.name|default_if_none:'' }}">
+                        {{ opt.name }}
+                      </option>
                     {% endfor %}
                   </select>
                 </div>
@@ -566,7 +571,7 @@
           const name = el?.dataset?.name || product.text || '';
           const code = el?.dataset?.code || '';
           const $opt = window.jQuery(
-            '<div class="py-1 flex items-center gap-2>\
+            '<div class="py-1 flex items-center gap-2">\
                <div class="thumb w-10 h-10 rounded bg-[#1e1e1e] border border-gray-800 flex items-center justify-center overflow-hidden">\
                  <i class="lucide-image w-5 h-5 text-gray-500"></i>\
                </div>\
@@ -701,13 +706,15 @@
         // parse option label to enrich dataset
         Array.from(prodSel.options).forEach(opt => {
           if (!opt.value) return;
-          const text = opt.text || '';
-          const parts = text.split('—').map(s => s.trim());
-          const name = parts[0] || text;
-          const codeMatch = text.match(/\[(.*?)\]/);
-          const code = codeMatch ? codeMatch[1] : '';
-          opt.dataset.name = name;
-          opt.dataset.code = code;
+          if (!opt.dataset.name || !opt.dataset.code) {
+            const raw = opt.dataset.originalText || opt.text || '';
+            const parts = raw.split('—').map(s => s.trim());
+            const name = opt.dataset.name || parts[0] || raw;
+            const codeMatch = raw.match(/\[(.*?)\]/);
+            const code = opt.dataset.code || (codeMatch ? codeMatch[1] : '');
+            opt.dataset.name = name;
+            opt.dataset.code = code;
+          }
         });
         $prod.select2({
           width: '100%',
@@ -731,7 +738,7 @@
                </div>'
             );
             $opt.find('.name').text(name);
-            $opt.find('.code').text(code ? `Mã: ${code}` : '');
+            $opt.find('.code').text(code ? `#${code}` : '');
             return $opt;
           },
           templateSelection: function(product) {
