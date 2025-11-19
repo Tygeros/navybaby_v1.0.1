@@ -170,6 +170,20 @@ class TransactionListView(ListView):
             qs = qs.filter(created_at__date__gte=date_from)
         if date_to:
             qs = qs.filter(created_at__date__lte=date_to)
+        # Staff visibility rule: hide all EXPENSE except two specific categories
+        user = getattr(self.request, 'user', None)
+        if user is not None and getattr(user, 'account_type', None) == 'staff':
+            allowed_names = [
+                'Khấu trừ khoản tiền đặt cọc đơn hàng',
+                'Hoàn tiền cho KH do hủy đơn',
+                # Fallback common variant that may exist from quick confirm flow
+                'Khấu trừ khoản tiền đặt cọc',
+            ]
+            name_q = Q()
+            for nm in allowed_names:
+                name_q |= Q(name__iexact=nm)
+            allowed_ids = list(FinanceCategory.objects.filter(type='EXPENSE').filter(name_q).values_list('id', flat=True))
+            qs = qs.filter(~Q(category__type='EXPENSE') | Q(category_id__in=allowed_ids))
         sort = self.request.GET.get('sort', 'created_desc')
         if sort == 'created_asc':
             qs = qs.order_by('created_at')
@@ -217,6 +231,19 @@ class TransactionListView(ListView):
             filtered = filtered.filter(created_at__date__gte=date_from)
         if date_to:
             filtered = filtered.filter(created_at__date__lte=date_to)
+        # Apply the same staff visibility rule to stats aggregation
+        user = getattr(self.request, 'user', None)
+        if user is not None and getattr(user, 'account_type', None) == 'staff':
+            allowed_names = [
+                'Khấu trừ khoản tiền đặt cọc đơn hàng',
+                'Hoàn tiền cho KH do hủy đơn',
+                'Khấu trừ khoản tiền đặt cọc',
+            ]
+            name_q = Q()
+            for nm in allowed_names:
+                name_q |= Q(name__iexact=nm)
+            allowed_ids = list(FinanceCategory.objects.filter(type='EXPENSE').filter(name_q).values_list('id', flat=True))
+            filtered = filtered.filter(~Q(category__type='EXPENSE') | Q(category_id__in=allowed_ids))
         
         dec_field = DecimalField(max_digits=15, decimal_places=2)
         zero_dec = Value(0, output_field=dec_field)
