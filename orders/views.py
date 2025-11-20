@@ -86,13 +86,18 @@ class OrderListView(ListView):
         # Sorting
         sort = self.request.GET.get('sort')
         if sort == 'revenue_asc':
-            queryset = queryset.order_by('revenue', '-created_at')
+            queryset = queryset.order_by('revenue', '-updated_at')
         elif sort == 'revenue_desc':
-            queryset = queryset.order_by('-revenue', '-created_at')
+            queryset = queryset.order_by('-revenue', '-updated_at')
         elif sort == 'created_asc':
             queryset = queryset.order_by('created_at')
-        else:
+        elif sort == 'created_desc':
             queryset = queryset.order_by('-created_at')
+        elif sort == 'updated_asc':
+            queryset = queryset.order_by('updated_at')
+        else:
+            # Default: newest updated first
+            queryset = queryset.order_by('-updated_at')
         return queryset
     
     def get_context_data(self, **kwargs):
@@ -110,7 +115,8 @@ class OrderListView(ListView):
         
         # Add search query to context (prefer 'q')
         context['search_query'] = self.request.GET.get('q', self.request.GET.get('search', ''))
-        context['sort'] = self.request.GET.get('sort', 'created_desc')
+        # Default sorting: newest updated first
+        context['sort'] = self.request.GET.get('sort', 'updated_desc')
         context['status_filter'] = self.request.GET.getlist('status')
         # Supplier filter list (no strict validation here; UI controls input)
         context['supplier_filter'] = self.request.GET.getlist('supplier')
@@ -203,6 +209,8 @@ class OrderListView(ListView):
                             total_discount=DJSum('discount_safe'),
                             oldest=Min('created_at'),
                             newest=Max('created_at'),
+                            oldest_updated=Min('updated_at'),
+                            newest_updated=Max('updated_at'),
                         )
                     )
                 else:  # product
@@ -216,20 +224,28 @@ class OrderListView(ListView):
                             total_discount=DJSum('discount_safe'),
                             oldest=Min('created_at'),
                             newest=Max('created_at'),
+                            oldest_updated=Min('updated_at'),
+                            newest_updated=Max('updated_at'),
                         )
                     )
                 # Order grouped results based on selected sort
-                sort = self.request.GET.get('sort') or 'created_desc'
+                sort = self.request.GET.get('sort') or 'updated_desc'
                 if sort == 'revenue_asc':
-                    grouped = grouped.order_by('total_revenue', '-newest')
+                    grouped = grouped.order_by('total_revenue', '-newest_updated')
                 elif sort == 'revenue_desc':
-                    grouped = grouped.order_by('-total_revenue', '-newest')
+                    grouped = grouped.order_by('-total_revenue', '-newest_updated')
                 elif sort == 'created_asc':
-                    # Oldest order in group first
+                    # Oldest order in group first (by created time)
                     grouped = grouped.order_by('oldest', 'product_id' if context['group_by']=='product' else 'customer_id')
-                else:  # created_desc or default
-                    # Newest order in group first
+                elif sort == 'created_desc':
+                    # Newest order in group first (by created time)
                     grouped = grouped.order_by('-newest', 'product_id' if context['group_by']=='product' else 'customer_id')
+                elif sort == 'updated_asc':
+                    # Oldest update in group first
+                    grouped = grouped.order_by('oldest_updated', 'product_id' if context['group_by']=='product' else 'customer_id')
+                else:  # updated_desc or default
+                    # Newest update in group first
+                    grouped = grouped.order_by('-newest_updated', 'product_id' if context['group_by']=='product' else 'customer_id')
                 # compute net profit per group
                 grouped_list = []
                 for g in grouped:

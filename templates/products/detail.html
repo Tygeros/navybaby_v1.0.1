@@ -231,8 +231,10 @@
       </div>
       <div>
         <select name="sort" class="w-full bg-[#161616] border border-gray-800 rounded-md px-3 py-2 text-sm text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700 transition">
-          <option value="created_desc" {% if sort == 'created_desc' %}selected{% endif %}>Mới nhất</option>
-          <option value="created_asc" {% if sort == 'created_asc' %}selected{% endif %}>Cũ nhất</option>
+          <option value="updated_desc" {% if sort == 'updated_desc' %}selected{% endif %}>Cập nhật gần nhất</option>
+          <option value="updated_asc" {% if sort == 'updated_asc' %}selected{% endif %}>Cập nhật cũ nhất</option>
+          <option value="created_desc" {% if sort == 'created_desc' %}selected{% endif %}>Tạo gần nhất</option>
+          <option value="created_asc" {% if sort == 'created_asc' %}selected{% endif %}>Tạo cũ nhất</option>
           <option value="revenue_desc" {% if sort == 'revenue_desc' %}selected{% endif %}>Doanh thu giảm dần</option>
           <option value="revenue_asc" {% if sort == 'revenue_asc' %}selected{% endif %}>Doanh thu tăng dần</option>
         </select>
@@ -312,7 +314,7 @@
           <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Doanh thu thuần</th>
           <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Trạng thái</th>
           <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Ghi chú</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Ngày tạo</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Thời gian cập nhật</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-800">
@@ -358,7 +360,7 @@
             </form>
           </td>
           <td class="px-4 py-3 text-gray-300 whitespace-nowrap">{{ o.note|default:'-' }}</td>
-          <td class="px-4 py-3 text-gray-400 whitespace-nowrap">{{ o.created_at|date:'d/m/Y H:i' }}</td>
+          <td class="px-4 py-3 text-gray-400 whitespace-nowrap">{{ o.updated_at|date:'d/m/Y H:i' }}</td>
         </tr>
         {% empty %}
         <tr>

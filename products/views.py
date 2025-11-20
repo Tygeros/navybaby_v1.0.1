@@ -275,13 +275,18 @@ class ProductDetailView(DetailView):
         # Sorting
         sort = self.request.GET.get('sort')
         if sort == 'revenue_asc':
-            qs = qs.order_by('revenue', '-created_at')
+            qs = qs.order_by('revenue', '-updated_at')
         elif sort == 'revenue_desc':
-            qs = qs.order_by('-revenue', '-created_at')
+            qs = qs.order_by('-revenue', '-updated_at')
         elif sort == 'created_asc':
             qs = qs.order_by('created_at')
-        else:
+        elif sort == 'created_desc':
             qs = qs.order_by('-created_at')
+        elif sort == 'updated_asc':
+            qs = qs.order_by('updated_at')
+        else:
+            # Default: newest updated first
+            qs = qs.order_by('-updated_at')
 
         recent_orders = qs
         context['recent_orders'] = recent_orders
@@ -299,7 +304,8 @@ class ProductDetailView(DetailView):
         # Additional context for filters UI
         context['status_choices'] = dict(Order.STATUS_CHOICES)
         context['search_query'] = self.request.GET.get('q', self.request.GET.get('search', ''))
-        context['sort'] = self.request.GET.get('sort', 'created_desc')
+        # Default sorting: newest updated first
+        context['sort'] = self.request.GET.get('sort', 'updated_desc')
         context['status_filter'] = status_list
         context['color_filter'] = color_filter
         context['size_filter'] = size_filter

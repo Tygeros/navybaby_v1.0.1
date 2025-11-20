@@ -171,14 +171,18 @@ class CustomerDetailView(DetailView):
         # Sorting
         sort = self.request.GET.get('sort')
         if sort == 'revenue_asc':
-            annotated_qs = annotated_qs.order_by('revenue', '-created_at')
+            annotated_qs = annotated_qs.order_by('revenue', '-updated_at')
         elif sort == 'revenue_desc':
-            annotated_qs = annotated_qs.order_by('-revenue', '-created_at')
+            annotated_qs = annotated_qs.order_by('-revenue', '-updated_at')
         elif sort == 'created_asc':
             annotated_qs = annotated_qs.order_by('created_at')
-        else:
-            # default newest first
+        elif sort == 'created_desc':
             annotated_qs = annotated_qs.order_by('-created_at')
+        elif sort == 'updated_asc':
+            annotated_qs = annotated_qs.order_by('updated_at')
+        else:
+            # default newest updated first
+            annotated_qs = annotated_qs.order_by('-updated_at')
 
         recent_orders = list(annotated_qs)
 
@@ -332,7 +336,8 @@ class CustomerDetailView(DetailView):
             'status': status_list,
             'supplier': supplier_ids,
             'q': q or '',
-            'sort': sort or 'created_desc',
+            # Default sort is by latest update
+            'sort': sort or 'updated_desc',
         }
         return context
 
