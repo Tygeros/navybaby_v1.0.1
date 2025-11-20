@@ -50,12 +50,13 @@ class Order(models.Model):
 
     def get_status_class(self):
         mapping = {
-            "created": "bg-gray-900/40 border border-gray-800 text-gray-300",
-            "cart": "bg-amber-900/30 border border-amber-800 text-amber-300",
-            "purchased": "bg-blue-900/30 border border-blue-800 text-blue-300",
-            "in_stock": "bg-indigo-900/30 border border-indigo-800 text-indigo-300",
-            "reported": "bg-purple-900/30 border border-purple-800 text-purple-300",
-            "reconciled": "bg-green-900/30 border border-green-800 text-green-300",
-            "cancelled": "bg-red-900/30 border border-red-800 text-red-300",
+            # Màu được tăng tương phản và phân biệt rõ hơn giữa các trạng thái
+            "created": "bg-gray-500/20 border border-gray-500/70 text-gray-100",
+            "cart": "bg-amber-500/20 border border-amber-500/70 text-amber-100",
+            "purchased": "bg-blue-500/20 border border-blue-500/70 text-blue-100",
+            "in_stock": "bg-indigo-500/20 border border-indigo-500/70 text-indigo-100",
+            "reported": "bg-purple-500/20 border border-purple-500/70 text-purple-100",
+            "reconciled": "bg-emerald-500/20 border border-emerald-500/70 text-emerald-100",
+            "cancelled": "bg-red-500/20 border border-red-500/70 text-red-100",
         }
-        return mapping.get(self.status, "bg-gray-900/40 border border-gray-800 text-gray-300")
+        return mapping.get(self.status, "bg-gray-500/20 border border-gray-500/70 text-gray-100")

@@ -412,11 +412,6 @@
           </td>
           <td class="px-4 py-3 text-blue-400 whitespace-nowrap">
             <a href="{% url 'orders:order_detail' o.pk %}" class="hover:underline">{{ o.code }}</a>
-            {% with status_class=o.get_status_class %}
-              <div class="mt-1">
-                <span class="text-[11px] px-1.5 py-0.5 rounded {{ status_class }} whitespace-nowrap">{{ o.get_status_display }}</span>
-              </div>
-            {% endwith %}
           </td>
           <td class="px-4 py-3 text-sm text-gray-300">
             <div class="flex items-center gap-2">
@@ -452,11 +447,15 @@
             <form method="post" action="{% url 'orders:update_order_status' o.pk %}">
               {% csrf_token %}
               <input type="hidden" name="next" value="{{ request.get_full_path }}" />
-              <select name="status" class="bg-[#161616] border border-gray-800 rounded px-2 py-1 text-xs text-gray-200" onchange="this.form.submit()">
-                {% for value,label in order_status_choices %}
-                  <option value="{{ value }}" {% if o.status == value %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-              </select>
+              {% with status_class=o.get_status_class %}
+                <div class="inline-flex items-center rounded border px-1.5 py-1 text-xs {{ status_class }}">
+                  <select name="status" class="bg-transparent border-0 text-xs text-gray-200 focus:outline-none focus:ring-0 focus:border-0" onchange="this.form.submit()">
+                    {% for value,label in order_status_choices %}
+                      <option value="{{ value }}" {% if o.status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endwith %}
             </form>
           </td>
           <td class="px-4 py-3 text-sm text-gray-300 whitespace-nowrap">{{ o.note|default:'-' }}</td>
