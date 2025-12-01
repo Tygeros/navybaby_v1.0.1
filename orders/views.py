@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.db.models import Q, Sum, F, Count
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
+from django.utils import timezone
 
 from .models import Order
 from .forms import OrderForm
@@ -668,7 +669,8 @@ def bulk_update_order_status(request):
         messages.error(request, 'Trạng thái không hợp lệ')
         return redirect(return_to or redirect_target)
     try:
-        updated = Order.objects.filter(id__in=ids).update(status=new_status)
+        # Cập nhật cả status và updated_at cho tất cả đơn hàng được chọn
+        updated = Order.objects.filter(id__in=ids).update(status=new_status, updated_at=timezone.now())
         messages.success(request, f'Đã cập nhật trạng thái {updated} đơn hàng.')
     except Exception:
         messages.error(request, 'Không thể cập nhật trạng thái. Vui lòng thử lại.')
