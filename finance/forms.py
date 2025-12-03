@@ -51,6 +51,7 @@ class FinanceTransactionForm(forms.ModelForm):
         self.fields['category'].required = True
         self.fields['amount'].required = True
         # Customer is optional
+        self.fields['customer'].required = False
         try:
             self.fields['customer'].queryset = Customer.objects.all().order_by('name')
             self.fields['customer'].label_from_instance = lambda obj: f"{obj.name} — [{obj.code}] — {obj.phone_number or ''}"
