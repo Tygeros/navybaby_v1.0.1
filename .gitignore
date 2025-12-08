@@ -271,3 +271,8 @@ import_*.py
 *.csv
 export.txt
 fixtures/
+
+# Local Render database config (do not commit)
+render_db_info.local.txt
+render_env.local.sh
+
