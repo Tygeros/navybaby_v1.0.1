@@ -1,0 +1,507 @@
+{% extends 'base.html' %}
+{% load number_extras %}
+{% load media_extras %}
+
+{% block title %}Báo cáo khách hàng {{ customer.name }} - NavyBaby{% endblock %}
+{% block navbar_icon %}bar-chart-2{% endblock %}
+{% block navbar_title %}Khách hàng{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row justify-between items-center mb-6">
+  <div>
+    <h2 class="text-2xl font-bold flex items-center text-emerald-400">
+      <i data-lucide="bar-chart-2" class="w-6 h-6 mr-2"></i>Báo cáo khách hàng
+    </h2>
+    <p class="text-gray-400 text-sm mt-1">
+      {{ customer.name }} · Mã KH: <span class="text-blue-300">{{ customer.code }}</span>
+    </p>
+  </div>
+  <div class="flex items-center gap-2 mt-3 md:mt-0">
+    <a href="{% url 'customers:customer_detail' customer.code %}?{% if request.GET %}{{ request.GET.urlencode }}{% endif %}"
+       class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 flex items-center">
+      <i data-lucide="arrow-left" class="inline w-4 h-4 mr-1"></i>Quay lại chi tiết
+    </a>
+    <a href="{% url 'customers:customer_bill' customer.code %}{% if request.GET %}?{{ request.GET.urlencode }}&qr_id=4{% else %}?qr_id=4{% endif %}"
+       class="px-3 py-1.5 rounded-md border text-sm transition bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-500 flex items-center">
+      <i data-lucide="file-text" class="inline w-4 h-4 mr-1"></i>Mở bill
+    </a>
+  </div>
+</div>
+
+<div class="bg-[#121212] border border-gray-800 rounded-lg p-4 mb-6">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <h3 class="text-base font-semibold text-gray-100 flex items-center">
+        <i data-lucide="calendar-range" class="w-4 h-4 mr-2 text-blue-400"></i>Khoảng thời gian báo cáo
+      </h3>
+      <p class="text-xs text-gray-400 mt-1">
+        Hiển thị dữ liệu từ
+        <span class="text-gray-200 font-medium">{{ date_range.start|date:'d/m/Y' }}</span>
+        đến
+        <span class="text-gray-200 font-medium">{{ date_range.end|date:'d/m/Y' }}</span>.
+      </p>
+    </div>
+    <form method="get" class="flex flex-col sm:flex-row gap-2 sm:items-center">
+      <div class="flex items-center gap-2">
+        <label for="start" class="text-xs text-gray-400">Từ ngày</label>
+        <input id="start" type="date" name="start" value="{{ date_range.start_str }}"
+               class="bg-[#161616] border border-gray-800 rounded px-2 py-1 text-xs text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" />
+      </div>
+      <div class="flex items-center gap-2">
+        <label for="end" class="text-xs text-gray-400">Đến ngày</label>
+        <input id="end" type="date" name="end" value="{{ date_range.end_str }}"
+               class="bg-[#161616] border border-gray-800 rounded px-2 py-1 text-xs text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-gray-700" />
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="submit"
+                class="px-3 py-1.5 rounded-md border text-xs bg-blue-600 text-white border-blue-700 hover:bg-blue-500">
+          Cập nhật
+        </button>
+        <a href="{% url 'customers:customer_report' customer.code %}"
+           class="px-3 py-1.5 rounded-md border text-xs bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">
+          Toàn thời gian
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+  <div class="lg:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-4">
+    <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-4">
+      <i data-lucide="shopping-cart" class="w-6 h-6 text-yellow-400 mb-2"></i>
+      <h4 class="font-bold text-xl text-gray-100">{{ order_summary.order_count|default:0 }}</h4>
+      <p class="text-gray-400 text-xs mt-1 uppercase tracking-wide">Số đơn hàng</p>
+    </div>
+    <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-4">
+      <i data-lucide="line-chart" class="w-6 h-6 text-emerald-400 mb-2"></i>
+      <h4 class="font-bold text-xl text-emerald-400">{{ order_summary.total_net_profit|default:0|smart_vnd }}</h4>
+      <p class="text-gray-400 text-xs mt-1 uppercase tracking-wide">Doanh thu thuần</p>
+    </div>
+    <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-4">
+      <i data-lucide="sigma" class="w-6 h-6 text-blue-400 mb-2"></i>
+      <h4 class="font-bold text-xl text-gray-100">{{ order_summary.avg_order_value|default:0|smart_vnd }}</h4>
+      <p class="text-gray-400 text-xs mt-1 uppercase tracking-wide">Giá trị TB / đơn</p>
+    </div>
+    <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-4">
+      <i data-lucide="coins" class="w-6 h-6 text-green-400 mb-2"></i>
+      <h4 class="font-bold text-xl text-gray-100">{{ order_summary.total_revenue|default:0|smart_vnd }}</h4>
+      <p class="text-gray-400 text-xs mt-1 uppercase tracking-wide">Tổng doanh thu</p>
+    </div>
+    <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-4">
+      <i data-lucide="badge-percent" class="w-6 h-6 text-purple-400 mb-2"></i>
+      <h4 class="font-bold text-xl text-gray-100">{{ order_summary.total_discount|default:0|smart_vnd }}</h4>
+      <p class="text-gray-400 text-xs mt-1 uppercase tracking-wide">Tổng chiết khấu</p>
+    </div>
+    <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-4">
+      <i data-lucide="package" class="w-6 h-6 text-orange-400 mb-2"></i>
+      <h4 class="font-bold text-xl text-gray-100">{{ order_summary.total_amount|default:0 }}</h4>
+      <p class="text-gray-400 text-xs mt-1 uppercase tracking-wide">Tổng sản phẩm (SL)</p>
+    </div>
+  </div>
+  <div class="bg-[#161616] border border-gray-800 rounded-lg p-4 flex flex-col justify-center">
+    <h3 class="text-sm font-semibold text-gray-200 mb-3 flex items-center">
+      <i data-lucide="wallet" class="w-4 h-4 text-emerald-400 mr-2"></i>Giao dịch tài chính
+    </h3>
+    <div class="space-y-2 text-sm text-gray-300">
+      <div class="flex items-center justify-between">
+        <span>Tổng khoản thu</span>
+        <span class="text-emerald-400 font-semibold">{{ finance_summary.income_total|default:0|smart_vnd }}</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span>Tổng khoản chi</span>
+        <span class="text-red-400 font-semibold">{{ finance_summary.expense_total|default:0|smart_vnd }}</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <span>Dòng tiền ròng</span>
+        <span class="text-blue-300 font-semibold">{{ finance_summary.net_cash|default:0|smart_vnd }}</span>
+      </div>
+      <div class="flex items-center justify-between text-xs text-gray-400 pt-1 border-t border-gray-800 mt-2">
+        <span>Số giao dịch</span>
+        <span class="text-gray-200 font-medium">{{ transactions_count|default:0 }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bg-[#121212] border border-gray-800 rounded-lg p-4 mb-4">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+    <h3 class="text-base font-semibold text-gray-100 flex items-center">
+      <i data-lucide="pie-chart" class="w-4 h-4 mr-2 text-emerald-400"></i>Phân bố đơn hàng theo trạng thái
+    </h3>
+    <div class="text-xs text-gray-400">
+      Tổng số đơn: <span class="text-gray-200 font-semibold">{{ order_summary.order_count|default:0 }}</span>
+    </div>
+  </div>
+  <div class="flex flex-col md:flex-row md:items-center gap-4">
+    <div class="md:flex-1 overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-800 text-sm">
+        <thead class="bg-[#161616]">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Trạng thái</th>
+            <th class="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Số đơn</th>
+            <th class="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Doanh thu</th>
+            <th class="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Chiết khấu</th>
+            <th class="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase tracking-wider">Doanh thu thuần</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-800">
+          {% for row in status_breakdown %}
+          <tr class="hover:bg-[#171717]">
+            <td class="px-4 py-3 text-gray-200 whitespace-nowrap">{{ row.label }}</td>
+            <td class="px-4 py-3 text-right text-gray-300 whitespace-nowrap">{{ row.order_count }}</td>
+            <td class="px-4 py-3 text-right text-green-400 whitespace-nowrap">{{ row.total_revenue|default:0|smart_vnd }}</td>
+            <td class="px-4 py-3 text-right text-yellow-300 whitespace-nowrap">{{ row.total_discount|default:0|smart_vnd }}</td>
+            <td class="px-4 py-3 text-right text-emerald-400 whitespace-nowrap">{{ row.total_net_profit|default:0|smart_vnd }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="5" class="px-4 py-6 text-center text-gray-400">Không có dữ liệu trong khoảng thời gian đã chọn.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="flex items-center justify-center md:w-1/3">
+      <div class="w-40 h-40 sm:w-56 sm:h-56">
+        <canvas id="status-pie" class="w-full h-full"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bg-[#121212] border border-gray-800 rounded-lg p-4 mb-4">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+    <h3 class="text-base font-semibold text-gray-100 flex items-center">
+      <i data-lucide="bar-chart-2" class="w-4 h-4 mr-2 text-blue-400"></i>Số lượng đơn hàng theo ngày
+    </h3>
+    <div class="text-xs text-gray-400">
+      Khoảng thời gian: <span class="text-gray-200 font-semibold">{{ date_range.start|date:'d/m/Y' }}</span> - <span class="text-gray-200 font-semibold">{{ date_range.end|date:'d/m/Y' }}</span>
+    </div>
+  </div>
+  <div class="mt-2">
+    {% if orders_per_day %}
+      <canvas id="orders-bar" class="w-full max-h-[260px]"></canvas>
+    {% else %}
+      <p class="text-sm text-gray-400">Không có đơn hàng nào trong khoảng thời gian đã chọn.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+  <div class="flex items-center justify-between mb-3">
+    <h3 class="text-base font-semibold text-gray-100 flex items-center">
+      <i data-lucide="list-ordered" class="w-4 h-4 mr-2 text-blue-400"></i>Top mã sản phẩm theo doanh thu thuần
+    </h3>
+    <div class="text-xs text-gray-400">
+      Tối đa 10 sản phẩm có giá trị thuần cao nhất trong khoảng thời gian.
+    </div>
+  </div>
+  <div class="mt-2">
+    {% if top_products %}
+      <div class="overflow-x-auto">
+        <!-- Canvas tối thiểu rộng để đủ chỗ cho nhiều nhãn, có thể cuộn ngang -->
+        <canvas id="top-products-bar" class="min-w-[520px] h-64"></canvas>
+      </div>
+    {% else %}
+      <p class="text-sm text-gray-400">Không có đơn hàng nào trong khoảng thời gian đã chọn.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  lucide.createIcons();
+
+  (function() {
+    var canvas = document.getElementById('status-pie');
+    if (!canvas || !window.Chart) return;
+
+    var ctx = canvas.getContext('2d');
+    var labels = [];
+    var data = [];
+    var bgColors = [];
+
+    // Map trạng thái -> màu sắc tương đương với get_status_class (gần với palette Tailwind)
+    var statusColorMap = {
+      'created': '#6b7280',    // gray-500
+      'cart': '#f59e0b',       // amber-500
+      'purchased': '#3b82f6',  // blue-500
+      'in_stock': '#6366f1',   // indigo-500
+      'reported': '#a855f7',   // purple-500
+      'reconciled': '#10b981', // emerald-500
+      'cancelled': '#ef4444',  // red-500
+    };
+
+    {% for row in status_breakdown %}
+      labels.push('{{ row.label|escapejs }}');
+      data.push({{ row.order_count|default:0 }});
+      bgColors.push(statusColorMap['{{ row.status }}'] || '#64748b');
+    {% endfor %}
+
+    if (!data.length) return;
+
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: bgColors,
+          borderWidth: 1,
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+      },
+    });
+  })();
+
+  (function() {
+    var canvas = document.getElementById('orders-bar');
+    if (!canvas || !window.Chart) return;
+
+    var ctx = canvas.getContext('2d');
+    var labels = [];
+    var labelsFull = [];
+    var data = [];
+
+    {% for row in orders_per_day %}
+      labels.push('{{ row.day|date:"d/m" }}');
+      labelsFull.push('{{ row.day|date:"d/m/Y" }}');
+      data.push({{ row.order_count|default:0 }});
+    {% endfor %}
+
+    if (!data.length) return;
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: data,
+          backgroundColor: '#3b82f6',
+          borderRadius: 4,
+        }],
+      },
+      options: {
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                var idx = context.dataIndex;
+                var value = context.parsed.y || 0;
+                var dateStr = labelsFull[idx] || context.label || '';
+                return dateStr + ': ' + value + ' đơn';
+              },
+            },
+          },
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: {
+              autoSkip: true,
+              maxTicksLimit: 10,
+            },
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0,
+            },
+          },
+        },
+      },
+    });
+  })();
+
+  (function() {
+    var canvas = document.getElementById('top-products-bar');
+    if (!canvas || !window.Chart) return;
+
+    var ctx = canvas.getContext('2d');
+    var labels = [];
+    var orderCounts = [];
+    var totalAmounts = [];
+    var netRevenues = [];
+
+    var productsData = {{ top_products_chart|default:'[]' }};
+
+    if (!productsData || !productsData.length) return;
+
+    productsData.forEach(function(p) {
+      labels.push(p.code || 'SP');
+      orderCounts.push(p.order_count || 0);
+      totalAmounts.push(p.total_amount || 0);
+      netRevenues.push(p.net_revenue || 0);
+    });
+
+    // Store product data for click handler
+    window.topProductsData = productsData;
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Số đơn',
+            data: orderCounts,
+            backgroundColor: '#60a5fa',
+            yAxisID: 'y',
+          },
+          {
+            label: 'Tổng SL',
+            data: totalAmounts,
+            backgroundColor: '#f97316',
+            yAxisID: 'y',
+          },
+          {
+            label: 'Doanh thu thuần',
+            data: netRevenues,
+            backgroundColor: '#10b981',
+            yAxisID: 'y1',
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: 'index',
+          intersect: false,
+        },
+        plugins: {
+          legend: {
+            display: true,
+            labels: {
+              color: '#e5e7eb',
+              font: { size: 11 },
+            },
+          },
+          tooltip: {
+            enabled: false,
+            external: function(context) {
+              var tooltipEl = document.getElementById('chartjs-tooltip');
+              if (!tooltipEl) {
+                tooltipEl = document.createElement('div');
+                tooltipEl.id = 'chartjs-tooltip';
+                tooltipEl.style.cssText = 'position:absolute;background:rgba(0,0,0,0.9);color:#fff;border-radius:6px;padding:10px;pointer-events:none;transition:opacity 0.2s;z-index:9999;max-width:280px;';
+                document.body.appendChild(tooltipEl);
+              }
+
+              var tooltipModel = context.tooltip;
+              if (tooltipModel.opacity === 0) {
+                tooltipEl.style.opacity = 0;
+                return;
+              }
+
+              if (tooltipModel.body) {
+                var dataIndex = tooltipModel.dataPoints[0].dataIndex;
+                var product = productsData[dataIndex];
+                var lines = [];
+
+                // Product image
+                if (product.image) {
+                  lines.push('<img src="' + product.image + '" style="width:100%;max-width:200px;height:auto;border-radius:4px;margin-bottom:8px;" onerror="this.style.display=\'none\'" />');
+                }
+
+                // Product info
+                lines.push('<div style="font-weight:600;margin-bottom:4px;">' + (product.name || 'Sản phẩm') + '</div>');
+                lines.push('<div style="font-size:11px;color:#9ca3af;margin-bottom:6px;">Mã: ' + (product.code || '-') + '</div>');
+
+                // Stats
+                tooltipModel.dataPoints.forEach(function(dp) {
+                  var label = dp.dataset.label;
+                  var value = dp.parsed.y;
+                  if (label === 'Doanh thu thuần') {
+                    var v = Math.round(value);
+                    var s = v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                    lines.push('<div style="font-size:12px;margin:2px 0;"><span style="color:#10b981;">●</span> ' + label + ': ' + s + 'đ</div>');
+                  } else if (label === 'Số đơn') {
+                    lines.push('<div style="font-size:12px;margin:2px 0;"><span style="color:#60a5fa;">●</span> ' + label + ': ' + value + '</div>');
+                  } else {
+                    lines.push('<div style="font-size:12px;margin:2px 0;"><span style="color:#f97316;">●</span> ' + label + ': ' + value + '</div>');
+                  }
+                });
+
+                lines.push('<div style="font-size:10px;color:#6b7280;margin-top:6px;font-style:italic;">Click để xem chi tiết</div>');
+
+                tooltipEl.innerHTML = lines.join('');
+              }
+
+              var position = context.chart.canvas.getBoundingClientRect();
+              tooltipEl.style.opacity = 1;
+              tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+              tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+            },
+          },
+        },
+        onClick: function(event, elements) {
+          if (elements.length > 0) {
+            var dataIndex = elements[0].index;
+            var product = window.topProductsData[dataIndex];
+            if (product && product.product_id) {
+              window.location.href = '/san-pham/' + product.product_id;
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: {
+              color: '#9ca3af',
+              autoSkip: true,
+              maxRotation: 45,
+              minRotation: 0,
+            },
+          },
+          y: {
+            type: 'linear',
+            display: true,
+            position: 'left',
+            beginAtZero: true,
+            ticks: {
+              color: '#9ca3af',
+              precision: 0,
+            },
+            title: {
+              display: true,
+              text: 'Số đơn / Tổng SL',
+              color: '#9ca3af',
+              font: { size: 11 },
+            },
+          },
+          y1: {
+            type: 'linear',
+            display: true,
+            position: 'right',
+            beginAtZero: true,
+            ticks: {
+              color: '#9ca3af',
+              precision: 0,
+            },
+            title: {
+              display: true,
+              text: 'Doanh thu thuần (đ)',
+              color: '#9ca3af',
+              font: { size: 11 },
+            },
+            grid: {
+              drawOnChartArea: false,
+            },
+          },
+        },
+      },
+    });
+  })();
+</script>
+{% endblock %}
