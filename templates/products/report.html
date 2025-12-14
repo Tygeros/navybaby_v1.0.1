@@ -2,28 +2,24 @@
 {% load number_extras %}
 {% load media_extras %}
 
-{% block title %}Báo cáo khách hàng {{ customer.name }} - NavyBaby{% endblock %}
+{% block title %}Báo cáo sản phẩm {{ product.name }} - NavyBaby{% endblock %}
 {% block navbar_icon %}bar-chart-2{% endblock %}
-{% block navbar_title %}Khách hàng{% endblock %}
+{% block navbar_title %}Sản phẩm{% endblock %}
 
 {% block content %}
 <div class="flex flex-col md:flex-row justify-between items-center mb-6">
   <div>
     <h2 class="text-2xl font-bold flex items-center text-emerald-400">
-      <i data-lucide="bar-chart-2" class="w-6 h-6 mr-2"></i>Báo cáo khách hàng
+      <i data-lucide="bar-chart-2" class="w-6 h-6 mr-2"></i>Báo cáo sản phẩm
     </h2>
     <p class="text-gray-400 text-sm mt-1">
-      {{ customer.name }} · Mã KH: <span class="text-blue-300">{{ customer.code }}</span>
+      {{ product.name }} · Mã SP: <span class="text-blue-300">{{ product.code }}</span>
     </p>
   </div>
   <div class="flex items-center gap-2 mt-3 md:mt-0">
-    <a href="{% url 'customers:customer_detail' customer.code %}?{% if request.GET %}{{ request.GET.urlencode }}{% endif %}"
+    <a href="{% url 'products:product_detail' product.pk %}?{% if request.GET %}{{ request.GET.urlencode }}{% endif %}"
        class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 flex items-center">
       <i data-lucide="arrow-left" class="inline w-4 h-4 mr-1"></i>Quay lại chi tiết
-    </a>
-    <a href="{% url 'customers:customer_bill' customer.code %}{% if request.GET %}?{{ request.GET.urlencode }}&qr_id=4{% else %}?qr_id=4{% endif %}"
-       class="px-3 py-1.5 rounded-md border text-sm transition bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-500 flex items-center">
-      <i data-lucide="file-text" class="inline w-4 h-4 mr-1"></i>Mở bill
     </a>
   </div>
 </div>
@@ -57,7 +53,7 @@
                 class="px-3 py-1.5 rounded-md border text-xs bg-blue-600 text-white border-blue-700 hover:bg-blue-500">
           Cập nhật
         </button>
-        <a href="{% url 'customers:customer_report' customer.code %}"
+        <a href="{% url 'products:product_report' product.pk %}"
            class="px-3 py-1.5 rounded-md border text-xs bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">
           Toàn thời gian
         </a>
@@ -66,8 +62,8 @@
   </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-  <div class="lg:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-4">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
     <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-4">
       <i data-lucide="shopping-cart" class="w-6 h-6 text-yellow-400 mb-2"></i>
       <h4 class="font-bold text-xl text-gray-100">{{ order_summary.order_count|default:0 }}</h4>
@@ -96,29 +92,33 @@
     <div class="bg-[#161616] border border-gray-800 rounded-lg flex flex-col items-center justify-center p-4">
       <i data-lucide="package" class="w-6 h-6 text-orange-400 mb-2"></i>
       <h4 class="font-bold text-xl text-gray-100">{{ order_summary.total_amount|default:0 }}</h4>
-      <p class="text-gray-400 text-xs mt-1 uppercase tracking-wide">Tổng sản phẩm (SL)</p>
+      <p class="text-gray-400 text-xs mt-1 uppercase tracking-wide">Tổng số lượng bán</p>
     </div>
   </div>
   <div class="bg-[#161616] border border-gray-800 rounded-lg p-4 flex flex-col justify-center">
     <h3 class="text-sm font-semibold text-gray-200 mb-3 flex items-center">
-      <i data-lucide="wallet" class="w-4 h-4 text-emerald-400 mr-2"></i>Giao dịch tài chính
+      <i data-lucide="info" class="w-4 h-4 text-blue-400 mr-2"></i>Thông tin sản phẩm
     </h3>
     <div class="space-y-2 text-sm text-gray-300">
       <div class="flex items-center justify-between">
-        <span>Tổng khoản thu</span>
-        <span class="text-emerald-400 font-semibold">{{ finance_summary.income_total|default:0|smart_vnd }}</span>
+        <span>Giá bán</span>
+        <span class="text-emerald-400 font-semibold">{{ product.price|default:0|smart_vnd }}</span>
       </div>
+      {% if product.category %}
       <div class="flex items-center justify-between">
-        <span>Tổng khoản chi</span>
-        <span class="text-red-400 font-semibold">{{ finance_summary.expense_total|default:0|smart_vnd }}</span>
+        <span>Danh mục</span>
+        <span class="text-blue-300 font-semibold">{{ product.category.name }}</span>
       </div>
+      {% endif %}
+      {% if product.supplier %}
       <div class="flex items-center justify-between">
-        <span>Dòng tiền ròng</span>
-        <span class="text-blue-300 font-semibold">{{ finance_summary.net_cash|default:0|smart_vnd }}</span>
+        <span>Nhà cung cấp</span>
+        <span class="text-purple-300 font-semibold">{{ product.supplier.name }}</span>
       </div>
+      {% endif %}
       <div class="flex items-center justify-between text-xs text-gray-400 pt-1 border-t border-gray-800 mt-2">
-        <span>Số giao dịch</span>
-        <span class="text-gray-200 font-medium">{{ transactions_count|default:0 }}</span>
+        <span>Ngày tạo</span>
+        <span class="text-gray-200 font-medium">{{ product.created_at|date:'d/m/Y' }}</span>
       </div>
     </div>
   </div>
@@ -191,17 +191,16 @@
 <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
   <div class="flex items-center justify-between mb-3">
     <h3 class="text-base font-semibold text-gray-100 flex items-center">
-      <i data-lucide="list-ordered" class="w-4 h-4 mr-2 text-blue-400"></i>Top mã sản phẩm theo doanh thu thuần
+      <i data-lucide="users" class="w-4 h-4 mr-2 text-blue-400"></i>Top khách hàng theo doanh thu thuần
     </h3>
     <div class="text-xs text-gray-400">
-      Tối đa 10 sản phẩm có giá trị thuần cao nhất trong khoảng thời gian.
+      Tối đa 10 khách hàng có giá trị thuần cao nhất trong khoảng thời gian.
     </div>
   </div>
   <div class="mt-2">
-    {% if top_products %}
+    {% if top_customers %}
       <div class="overflow-x-auto">
-        <!-- Canvas tối thiểu rộng để đủ chỗ cho nhiều nhãn, có thể cuộn ngang -->
-        <canvas id="top-products-bar" class="min-w-[520px] h-64"></canvas>
+        <canvas id="top-customers-bar" class="min-w-[520px] h-64"></canvas>
       </div>
     {% else %}
       <p class="text-sm text-gray-400">Không có đơn hàng nào trong khoảng thời gian đã chọn.</p>
@@ -224,15 +223,14 @@
     var data = [];
     var bgColors = [];
 
-    // Map trạng thái -> màu sắc tương đương với get_status_class (gần với palette Tailwind)
     var statusColorMap = {
-      'created': '#6b7280',    // gray-500
-      'cart': '#f59e0b',       // amber-500
-      'purchased': '#3b82f6',  // blue-500
-      'in_stock': '#6366f1',   // indigo-500
-      'reported': '#a855f7',   // purple-500
-      'reconciled': '#10b981', // emerald-500
-      'cancelled': '#ef4444',  // red-500
+      'created': '#6b7280',
+      'cart': '#f59e0b',
+      'purchased': '#3b82f6',
+      'in_stock': '#6366f1',
+      'reported': '#a855f7',
+      'reconciled': '#10b981',
+      'cancelled': '#ef4444',
     };
 
     {% for row in status_breakdown %}
@@ -325,7 +323,7 @@
   })();
 
   (function() {
-    var canvas = document.getElementById('top-products-bar');
+    var canvas = document.getElementById('top-customers-bar');
     if (!canvas || !window.Chart) return;
 
     var ctx = canvas.getContext('2d');
@@ -334,19 +332,18 @@
     var totalAmounts = [];
     var netRevenues = [];
 
-    var productsData = {{ top_products_chart|default:'[]' }};
+    var customersData = {{ top_customers_chart|default:'[]' }};
 
-    if (!productsData || !productsData.length) return;
+    if (!customersData || !customersData.length) return;
 
-    productsData.forEach(function(p) {
-      labels.push(p.code || 'SP');
-      orderCounts.push(p.order_count || 0);
-      totalAmounts.push(p.total_amount || 0);
-      netRevenues.push(p.net_revenue || 0);
+    customersData.forEach(function(c) {
+      labels.push(c.code || 'KH');
+      orderCounts.push(c.order_count || 0);
+      totalAmounts.push(c.total_amount || 0);
+      netRevenues.push(c.net_revenue || 0);
     });
 
-    // Store product data for click handler
-    window.topProductsData = productsData;
+    window.topCustomersData = customersData;
 
     new Chart(ctx, {
       type: 'bar',
@@ -392,69 +389,26 @@
             },
           },
           tooltip: {
-            enabled: false,
-            external: function(context) {
-              var tooltipEl = document.getElementById('chartjs-tooltip');
-              if (!tooltipEl) {
-                tooltipEl = document.createElement('div');
-                tooltipEl.id = 'chartjs-tooltip';
-                tooltipEl.style.cssText = 'position:absolute;background:rgba(0,0,0,0.9);color:#fff;border-radius:6px;padding:10px;pointer-events:none;transition:opacity 0.2s;z-index:9999;max-width:280px;';
-                document.body.appendChild(tooltipEl);
-              }
-
-              var tooltipModel = context.tooltip;
-              if (tooltipModel.opacity === 0) {
-                tooltipEl.style.opacity = 0;
-                return;
-              }
-
-              if (tooltipModel.body) {
-                var dataIndex = tooltipModel.dataPoints[0].dataIndex;
-                var product = productsData[dataIndex];
-                var lines = [];
-
-                // Product image
-                if (product.image) {
-                  lines.push('<img src="' + product.image + '" style="width:100%;max-width:200px;height:auto;border-radius:4px;margin-bottom:8px;" onerror="this.style.display=\'none\'" />');
+            callbacks: {
+              label: function(context) {
+                var label = context.dataset.label || '';
+                var value = context.parsed.y;
+                if (label === 'Doanh thu thuần') {
+                  var v = Math.round(value);
+                  var s = v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                  return label + ': ' + s + 'đ';
                 }
-
-                // Product info
-                lines.push('<div style="font-weight:600;margin-bottom:4px;">' + (product.name || 'Sản phẩm') + '</div>');
-                lines.push('<div style="font-size:11px;color:#9ca3af;margin-bottom:6px;">Mã: ' + (product.code || '-') + '</div>');
-
-                // Stats
-                tooltipModel.dataPoints.forEach(function(dp) {
-                  var label = dp.dataset.label;
-                  var value = dp.parsed.y;
-                  if (label === 'Doanh thu thuần') {
-                    var v = Math.round(value);
-                    var s = v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-                    lines.push('<div style="font-size:12px;margin:2px 0;"><span style="color:#10b981;">●</span> ' + label + ': ' + s + 'đ</div>');
-                  } else if (label === 'Số đơn') {
-                    lines.push('<div style="font-size:12px;margin:2px 0;"><span style="color:#60a5fa;">●</span> ' + label + ': ' + value + '</div>');
-                  } else {
-                    lines.push('<div style="font-size:12px;margin:2px 0;"><span style="color:#f97316;">●</span> ' + label + ': ' + value + '</div>');
-                  }
-                });
-
-                lines.push('<div style="font-size:10px;color:#6b7280;margin-top:6px;font-style:italic;">Click để xem chi tiết</div>');
-
-                tooltipEl.innerHTML = lines.join('');
-              }
-
-              var position = context.chart.canvas.getBoundingClientRect();
-              tooltipEl.style.opacity = 1;
-              tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-              tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+                return label + ': ' + value;
+              },
             },
           },
         },
         onClick: function(event, elements) {
           if (elements.length > 0) {
             var dataIndex = elements[0].index;
-            var product = window.topProductsData[dataIndex];
-            if (product && product.product_id) {
-              window.location.href = '/san-pham/' + product.product_id;
+            var customer = window.topCustomersData[dataIndex];
+            if (customer && customer.customer_code) {
+              window.location.href = '/khach-hang/' + customer.customer_code;
             }
           }
         },

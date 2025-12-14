@@ -533,17 +533,22 @@ class CustomerReportView(DetailView):
             order_cnt = row.get('order_count') or 0
             total_amt = row.get('total_amount') or 0
             net_rev = row.get('total_net_profit') or 0
-            
-            # Get product image
+
+            # Get product image (absolute URL so tooltip <img> loads correctly)
             product_image = ''
             try:
                 from products.models import Product
                 product_obj = Product.objects.filter(id=product_id).only('image').first()
-                if product_obj and product_obj.image:
-                    product_image = str(product_obj.image)
+                if product_obj and getattr(product_obj, 'image', None):
+                    try:
+                        # Prefer full URL based on current request (handles MEDIA_URL automatically)
+                        product_image = self.request.build_absolute_uri(product_obj.image.url)
+                    except Exception:
+                        # Fallback: relative path string
+                        product_image = str(product_obj.image)
             except Exception:
                 pass
-            
+
             try:
                 order_cnt = int(order_cnt)
             except Exception:

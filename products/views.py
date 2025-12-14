@@ -324,3 +324,216 @@ class ProductDeleteView(DeleteView):
         response = super().delete(request, *args, **kwargs)
         messages.success(request, 'Sản phẩm đã được xóa thành công!')
         return response
+
+
+class ProductReportView(DetailView):
+    model = Product
+    template_name = 'products/report.html'
+    context_object_name = 'product'
+
+    def get_context_data(self, **kwargs):
+        from datetime import datetime, timedelta
+        from django.db.models import (
+            F,
+            FloatField,
+            IntegerField,
+            ExpressionWrapper,
+            Sum,
+            Case,
+            When,
+            Value,
+            Count,
+        )
+        from django.db.models.functions import Coalesce, TruncDate
+        from django.utils import timezone
+        from django.utils.safestring import mark_safe
+        import json
+
+        context = super().get_context_data(**kwargs)
+        product = self.object
+
+        context['title'] = f"Báo cáo sản phẩm {product.name} - NavyBaby"
+
+        # Date range: default from product.created_at to today
+        date_format = '%Y-%m-%d'
+        product_created_date = product.created_at.date()
+        today = timezone.localdate()
+
+        start_param = self.request.GET.get('start')
+        end_param = self.request.GET.get('end')
+
+        start_date = product_created_date
+        end_date = today
+
+        if start_param:
+            try:
+                start_date = datetime.strptime(start_param, date_format).date()
+            except Exception:
+                pass
+        if end_param:
+            try:
+                end_date = datetime.strptime(end_param, date_format).date()
+            except Exception:
+                pass
+
+        # Clamp to valid bounds
+        if start_date < product_created_date:
+            start_date = product_created_date
+        if end_date > today:
+            end_date = today
+        if start_date > end_date:
+            start_date, end_date = end_date, start_date
+
+        context['date_range'] = {
+            'start': start_date,
+            'end': end_date,
+            'start_str': start_date.strftime(date_format),
+            'end_str': end_date.strftime(date_format),
+        }
+
+        # Orders within date range
+        orders_qs = (
+            Order.objects
+            .filter(product=product, created_at__date__gte=start_date, created_at__date__lte=end_date)
+            .select_related('customer')
+        )
+
+        annotated_qs = (
+            orders_qs
+            .annotate(
+                amount_safe=Coalesce(F('amount'), 0, output_field=IntegerField()),
+                price_safe=Coalesce(F('sale_price'), 0.0, output_field=FloatField()),
+            )
+            .annotate(
+                discount_raw=Coalesce(F('discount'), 0.0, output_field=FloatField()),
+                revenue_raw=ExpressionWrapper(F('amount_safe') * F('price_safe'), output_field=FloatField()),
+            )
+            .annotate(
+                discount_safe=Case(
+                    When(status='cancelled', then=Value(0.0)),
+                    default=F('discount_raw'),
+                    output_field=FloatField(),
+                ),
+                revenue=Case(
+                    When(status='cancelled', then=Value(0.0)),
+                    default=F('revenue_raw'),
+                    output_field=FloatField(),
+                ),
+            )
+            .annotate(
+                net_profit=ExpressionWrapper(F('revenue') - F('discount_safe'), output_field=FloatField()),
+            )
+        )
+
+        order_aggs = annotated_qs.aggregate(
+            order_count=Count('id'),
+            total_amount=Coalesce(Sum('amount_safe'), 0, output_field=IntegerField()),
+            total_discount=Coalesce(Sum('discount_safe'), 0.0, output_field=FloatField()),
+            total_revenue=Coalesce(Sum('revenue'), 0.0, output_field=FloatField()),
+        )
+        total_net_profit = (order_aggs.get('total_revenue') or 0) - (order_aggs.get('total_discount') or 0)
+        order_count = order_aggs.get('order_count') or 0
+        avg_order_value = total_net_profit / order_count if order_count else 0
+
+        context['order_summary'] = {
+            'order_count': order_count,
+            'total_amount': order_aggs.get('total_amount') or 0,
+            'total_discount': order_aggs.get('total_discount') or 0,
+            'total_revenue': order_aggs.get('total_revenue') or 0,
+            'total_net_profit': total_net_profit,
+            'avg_order_value': avg_order_value,
+        }
+
+        # Orders per day within date range
+        orders_per_day_qs = (
+            orders_qs
+            .annotate(day=TruncDate('created_at'))
+            .values('day')
+            .annotate(order_count=Count('id'))
+        )
+        counts_by_day = {row['day']: row['order_count'] or 0 for row in orders_per_day_qs}
+
+        days_list = []
+        current = start_date
+        while current <= end_date:
+            days_list.append({
+                'day': current,
+                'order_count': counts_by_day.get(current, 0),
+            })
+            current += timedelta(days=1)
+
+        context['orders_per_day'] = days_list
+
+        # Breakdown by order status
+        status_map = dict(Order.STATUS_CHOICES)
+        status_breakdown_qs = annotated_qs.values('status').annotate(
+            order_count=Count('id'),
+            total_revenue=Coalesce(Sum('revenue'), 0.0, output_field=FloatField()),
+            total_discount=Coalesce(Sum('discount_safe'), 0.0, output_field=FloatField()),
+        )
+        status_breakdown = []
+        for row in status_breakdown_qs:
+            revenue_val = row['total_revenue'] or 0
+            discount_val = row['total_discount'] or 0
+            status_breakdown.append({
+                'status': row['status'],
+                'label': status_map.get(row['status'], row['status']),
+                'order_count': row['order_count'] or 0,
+                'total_revenue': revenue_val,
+                'total_discount': discount_val,
+                'total_net_profit': revenue_val - discount_val,
+            })
+        context['status_breakdown'] = status_breakdown
+
+        # Top customers by net profit (aggregate by customer)
+        top_customers_qs = (
+            annotated_qs
+            .values('customer_id')
+            .annotate(
+                customer_name=F('customer__name'),
+                customer_code=F('customer__code'),
+                total_net_profit=Sum('net_profit'),
+                order_count=Count('id'),
+                total_amount=Coalesce(Sum('amount_safe'), 0, output_field=IntegerField()),
+            )
+            .order_by('-total_net_profit')[:10]
+        )
+        top_customers_list = list(top_customers_qs)
+        context['top_customers'] = top_customers_list
+
+        # JSON-friendly data for chart
+        top_customers_chart = []
+        for row in top_customers_list:
+            customer_id = row.get('customer_id')
+            customer_code = row.get('customer_code') or f"KH-{customer_id}"
+            code = customer_code
+            name = row.get('customer_name') or '(Không tên)'
+            order_cnt = row.get('order_count') or 0
+            total_amt = row.get('total_amount') or 0
+            net_rev = row.get('total_net_profit') or 0
+
+            try:
+                order_cnt = int(order_cnt)
+            except Exception:
+                order_cnt = 0
+            try:
+                total_amt = int(total_amt)
+            except Exception:
+                total_amt = 0
+            try:
+                net_rev = float(net_rev)
+            except Exception:
+                net_rev = 0.0
+            top_customers_chart.append({
+                'customer_id': customer_id,
+                'customer_code': customer_code,
+                'code': code,
+                'name': name,
+                'order_count': order_cnt,
+                'total_amount': total_amt,
+                'net_revenue': net_rev,
+            })
+
+        context['top_customers_chart'] = mark_safe(json.dumps(top_customers_chart))
+
+        return context
