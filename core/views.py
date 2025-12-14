@@ -124,17 +124,118 @@ class HomePageView(LoginRequiredMixin, TemplateView):
             'last_month': orders_last_month,
         }
 
-        # Top-selling products this month (by quantity)
-        top_qs = (
-            orders_all
+        # Top-selling products this month (by net revenue)
+        from django.db.models import Case, When, Value, FloatField
+        top_products_qs = (
+            Order.objects
+            .exclude(status__in=['reconciled', 'cancelled'])
             .filter(created_at__gte=start_month)
             .select_related('product')
-            .values('product_id', 'product__name')
+            .values('product_id', 'product__name', 'product__code')
             .annotate(
+                order_count=Coalesce(Sum(Case(When(id__isnull=False, then=1), default=0, output_field=IntegerField())), 0),
                 total_amount=Coalesce(Sum('amount'), 0),
-                total_value=Coalesce(Sum(order_value_expr), 0),
+                net_revenue=Coalesce(Sum(order_value_expr), 0),
             )
-            .order_by('-total_amount')[:5]
+            .order_by('-net_revenue')[:10]
         )
-        context['top_products_month'] = list(top_qs)
+        context['top_products'] = list(top_products_qs)
+
+        # Top customers this month (by net revenue)
+        top_customers_qs = (
+            Order.objects
+            .exclude(status__in=['reconciled', 'cancelled'])
+            .filter(created_at__gte=start_month)
+            .select_related('customer')
+            .values('customer_id', 'customer__name', 'customer__code')
+            .annotate(
+                order_count=Coalesce(Sum(Case(When(id__isnull=False, then=1), default=0, output_field=IntegerField())), 0),
+                total_amount=Coalesce(Sum('amount'), 0),
+                net_revenue=Coalesce(Sum(order_value_expr), 0),
+            )
+            .order_by('-net_revenue')[:10]
+        )
+        context['top_customers'] = list(top_customers_qs)
+
+        # Order status breakdown
+        from django.db.models import Count
+        status_breakdown_qs = (
+            Order.objects
+            .filter(created_at__gte=start_month)
+            .values('status')
+            .annotate(
+                order_count=Count('id'),
+                total_revenue=Coalesce(Sum(order_value_expr), 0),
+            )
+            .order_by('-order_count')
+        )
+        status_map = dict(Order.STATUS_CHOICES)
+        status_breakdown = []
+        for row in status_breakdown_qs:
+            status_breakdown.append({
+                'status': row['status'],
+                'label': status_map.get(row['status'], row['status']),
+                'order_count': row['order_count'],
+                'total_revenue': row['total_revenue'],
+            })
+        context['status_breakdown'] = status_breakdown
+
+        # Revenue over last 30 days (daily)
+        from django.db.models.functions import TruncDate
+        thirty_days_ago = start_today - timedelta(days=30)
+        daily_revenue_qs = (
+            Order.objects
+            .exclude(status__in=['reconciled', 'cancelled'])
+            .filter(created_at__gte=thirty_days_ago)
+            .annotate(day=TruncDate('created_at'))
+            .values('day')
+            .annotate(
+                order_count=Count('id'),
+                revenue=Coalesce(Sum(order_value_expr), 0),
+            )
+            .order_by('day')
+        )
+        revenue_by_day = {row['day']: {'count': row['order_count'], 'revenue': row['revenue']} for row in daily_revenue_qs}
+        
+        # Fill missing days with 0
+        revenue_timeline = []
+        current_day = thirty_days_ago.date()
+        while current_day <= today_date:
+            data = revenue_by_day.get(current_day, {'count': 0, 'revenue': 0})
+            revenue_timeline.append({
+                'day': current_day.strftime('%Y-%m-%d'),
+                'order_count': data['count'],
+                'revenue': data['revenue'],
+            })
+            current_day += timedelta(days=1)
+        context['revenue_timeline'] = revenue_timeline
+
+        # Serialize data for charts with additional info
+        import json
+        from django.utils.safestring import mark_safe
+        
+        # Enrich top products with image URLs
+        top_products_enriched = []
+        for row in top_products_qs:
+            product_id = row.get('product_id')
+            product_image = ''
+            try:
+                product_obj = Product.objects.filter(id=product_id).only('image').first()
+                if product_obj and getattr(product_obj, 'image', None):
+                    try:
+                        product_image = self.request.build_absolute_uri(product_obj.image.url)
+                    except Exception:
+                        product_image = str(product_obj.image) if product_obj.image else ''
+            except Exception:
+                pass
+            
+            enriched = dict(row)
+            enriched['image'] = product_image
+            top_products_enriched.append(enriched)
+        
+        context['top_products_chart'] = mark_safe(json.dumps(top_products_enriched))
+        context['top_customers_chart'] = mark_safe(json.dumps(list(top_customers_qs)))
+        context['status_breakdown_chart'] = mark_safe(json.dumps(status_breakdown))
+        context['revenue_timeline_chart'] = mark_safe(json.dumps(revenue_timeline))
+
         return context

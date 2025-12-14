@@ -16,7 +16,7 @@
   <span class="bg-blue-900/30 text-blue-300 px-3 py-1 rounded-md text-sm font-medium border border-blue-800">NavyBaby v1.0.1</span>
 </div>
 
-<!-- Thống kê -->
+<!-- Thống kê tổng quan -->
 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
   <a href="{% url 'customers:customer_list' %}" class="bg-[#161616] border border-gray-800 rounded-lg text-center p-4 transition hover:-translate-y-0.5 hover:border-gray-700 block">
     <i data-lucide="users" class="w-8 h-8 text-blue-400 mx-auto mb-2"></i>
@@ -39,250 +39,413 @@
   <div class="bg-[#161616] border border-gray-800 rounded-lg text-center p-4 transition hover:-translate-y-0.5 hover:border-gray-700">
     <i data-lucide="coins" class="w-8 h-8 text-purple-400 mx-auto mb-2"></i>
     <h4 class="font-bold text-xl text-gray-100">{{ net_profit|default:0|smart_vnd }}</h4>
-    <p class="text-gray-400 text-sm flex items-center justify-center gap-1" title="Tổng lợi nhuận tạm tính của toàn bộ các đơn hàng chưa đối soát. (Chỉ áp dụng đối với các đơn hàng có sản phẩm với trường giá nhập > 0)">
-      Lãi ròng ước tính
-      <i data-lucide="help-circle" class="w-4 h-4 text-gray-500"></i>
-    </p>
+    <p class="text-gray-400 text-sm">Lãi ròng ước tính</p>
   </div>
 </div>
 
-<!-- Thao tác nhanh -->
-<div class="bg-[#121212] border border-gray-800 rounded-lg p-4 mb-6">
-  <h5 class="font-semibold text-lg mb-3 flex items-center text-blue-400">
-    <i data-lucide="zap" class="w-5 h-5 mr-2"></i>Thao tác nhanh
-  </h5>
-
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-    <a href="{% url 'customers:customer_create' %}" class="border border-gray-800 bg-[#161616] rounded-lg p-3 text-center transition hover:-translate-y-0.5 hover:border-gray-700 hover:bg-[#1e1e1e]">
-      <i data-lucide="user-plus" class="w-7 h-7 text-blue-400 mx-auto mb-2"></i>
-      <p class="text-gray-300">Thêm khách hàng</p>
-    </a>
-
-    <a href="{% url 'products:product_create' %}" class="border border-gray-800 bg-[#161616] rounded-lg p-3 text-center transition hover:-translate-y-0.5 hover:border-gray-700 hover:bg-[#1e1e1e] group">
-      <i data-lucide="package-plus" class="w-7 h-7 text-green-400 mx-auto mb-2 group-hover:scale-110 transition-transform"></i>
-      <p class="text-gray-300 group-hover:text-white">Thêm sản phẩm</p>
-    </a>
-
-    <a href="{% url 'orders:order_create' %}" class="border border-gray-800 bg-[#161616] rounded-lg p-3 text-center transition hover:-translate-y-0.5 hover:border-gray-700 hover:bg-[#1e1e1e] group">
-      <i data-lucide="shopping-bag" class="w-7 h-7 text-yellow-400 mx-auto mb-2 group-hover:scale-110 transition-transform"></i>
-      <p class="text-gray-300 group-hover:text-white">Tạo đơn hàng</p>
-    </a>
-
-    <a href="{% url 'finance:transactions_list' %}" class="border border-gray-800 bg-[#161616] rounded-lg p-3 text-center transition hover:-translate-y-0.5 hover:border-gray-700 hover:bg-[#1e1e1e] group" title="Tính năng đang phát triển">
-      <i data-lucide="circle-plus" class="w-7 h-7 text-purple-400 mx-auto mb-2 group-hover:scale-110 transition-transform"></i>
-      <p class="text-gray-300 group-hover:text-white">Thêm giao dịch mới</p>
-    </a>
+<!-- Biểu đồ doanh thu & đơn hàng 30 ngày -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h5 class="font-semibold text-lg flex items-center text-emerald-400">
+        <i data-lucide="trending-up" class="w-5 h-5 mr-2"></i>Doanh thu 30 ngày qua
+      </h5>
+      <div class="text-right">
+        <p class="text-xs text-gray-400">Tổng</p>
+        <p id="totalRevenue" class="text-lg font-bold text-emerald-400">-</p>
+      </div>
+    </div>
+    <div class="h-64">
+      <canvas id="revenueChart"></canvas>
+    </div>
+  </div>
+  
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h5 class="font-semibold text-lg flex items-center text-yellow-400">
+        <i data-lucide="shopping-cart" class="w-5 h-5 mr-2"></i>Số lượng đơn hàng 30 ngày qua
+      </h5>
+      <div class="text-right">
+        <p class="text-xs text-gray-400">Tổng</p>
+        <p id="totalOrders" class="text-lg font-bold text-yellow-400">-</p>
+      </div>
+    </div>
+    <div class="h-64">
+      <canvas id="orderCountChart"></canvas>
+    </div>
   </div>
 </div>
 
-<!-- Thống kê & Biểu đồ -->
-<div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+<!-- Top sản phẩm, Top khách hàng & Phân bố trạng thái -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+  <!-- Top sản phẩm -->
   <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
     <h5 class="font-semibold text-lg mb-3 flex items-center text-blue-400">
-      <i data-lucide="bar-chart-2" class="w-5 h-5 mr-2"></i>Khách hàng mới (so sánh kỳ)
+      <i data-lucide="package" class="w-5 h-5 mr-2"></i>Top sản phẩm tháng này
     </h5>
-    <div class="grid grid-cols-1 gap-3">
-      <canvas id="customersChart" height="120"></canvas>
+    <div class="h-80">
+      <canvas id="topProductsChart"></canvas>
     </div>
   </div>
 
+  <!-- Top khách hàng -->
   <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
-    <h5 class="font-semibold text-lg mb-3 flex items-center text-green-400">
-      <i data-lucide="bar-chart" class="w-5 h-5 mr-2"></i>Sản phẩm mới (so sánh kỳ)
+    <h5 class="font-semibold text-lg mb-3 flex items-center text-purple-400">
+      <i data-lucide="users" class="w-5 h-5 mr-2"></i>Top khách hàng tháng này
     </h5>
-    <div class="grid grid-cols-1 gap-3">
-      <canvas id="productsChart" height="120"></canvas>
+    <div class="h-80">
+      <canvas id="topCustomersChart"></canvas>
     </div>
   </div>
 
-  <div class="bg-[#121212] border border-gray-800 rounded-lg p-4 xl:col-span-2">
+  <!-- Phân bố trạng thái đơn hàng -->
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
     <h5 class="font-semibold text-lg mb-3 flex items-center text-yellow-400">
-      <i data-lucide="activity" class="w-5 h-5 mr-2"></i>Đơn hàng (số lượng & giá trị)
+      <i data-lucide="pie-chart" class="w-5 h-5 mr-2"></i>Phân bố trạng thái
     </h5>
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div>
-        <p class="text-sm text-gray-400 mb-2">Số lượng đơn</p>
-        <canvas id="ordersCountChart" height="140"></canvas>
-      </div>
-      <div>
-        <p class="text-sm text-gray-400 mb-2">Giá trị đơn (₫)</p>
-        <canvas id="ordersValueChart" height="140"></canvas>
-      </div>
+    <div class="h-80 flex items-center justify-center">
+      <canvas id="statusChart"></canvas>
     </div>
   </div>
 </div>
-
-<!-- Top sản phẩm bán chạy trong tháng -->
-<div class="bg-[#121212] border border-gray-800 rounded-lg p-4 mb-8">
-  <h5 class="font-semibold text-lg mb-3 flex items-center text-purple-400">
-    <i data-lucide="trophy" class="w-5 h-5 mr-2"></i>Top sản phẩm bán chạy trong tháng
-  </h5>
-  <div class="overflow-x-auto">
-    <table class="min-w-full divide-y divide-gray-800 text-sm">
-      <thead class="bg-[#161616]">
-        <tr>
-          <th class="px-4 py-2 text-left text-gray-400 uppercase tracking-wider">#</th>
-          <th class="px-4 py-2 text-left text-gray-400 uppercase tracking-wider">Sản phẩm</th>
-          <th class="px-4 py-2 text-right text-gray-400 uppercase tracking-wider">Số lượng</th>
-          <th class="px-4 py-2 text-right text-gray-400 uppercase tracking-wider">Giá trị</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-800">
-        {% for p in top_products_month %}
-          <tr>
-            <td class="px-4 py-2 text-gray-400">{{ forloop.counter }}</td>
-            <td class="px-4 py-2 text-gray-200">{{ p.product__name }}</td>
-            <td class="px-4 py-2 text-right text-gray-100">{{ p.total_amount|default:0 }}</td>
-            <td class="px-4 py-2 text-right text-green-400">{{ p.total_value|default:0|smart_vnd }}</td>
-          </tr>
-        {% empty %}
-          <tr>
-            <td colspan="4" class="px-4 py-4 text-center text-gray-400">Chưa có dữ liệu trong tháng này.</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  <p class="text-xs text-gray-500 mt-2">Không tính các đơn hàng đã đối soát hoặc hủy.</p>
-  </div>
 
 {% endblock %}
 
-<script src="https://unpkg.com/lucide@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-{{ customer_stats|json_script:"customer-stats-data" }}
-{{ product_stats|json_script:"product-stats-data" }}
-{{ order_stats|json_script:"order-stats-data" }}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  if (window.lucide) { try { lucide.createIcons(); } catch (e) {} }
-  // Prepare data from context
-  const customerStats = JSON.parse(document.getElementById('customer-stats-data').textContent);
-  const productStats = JSON.parse(document.getElementById('product-stats-data').textContent);
-  const orderStats = JSON.parse(document.getElementById('order-stats-data').textContent);
+  lucide.createIcons();
 
-  function uiPalette() {
-    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-    if (theme === 'light') {
-      return { legend: '#374151', tick: '#4b5563', grid: '#e5e7eb' };
+  // Parse data from backend
+  const revenueData = {{ revenue_timeline_chart|default:'[]' }};
+  const topProductsData = {{ top_products_chart|default:'[]' }};
+  const topCustomersData = {{ top_customers_chart|default:'[]' }};
+  const statusData = {{ status_breakdown_chart|default:'[]' }};
+
+  // Calculate totals
+  let totalRevenue30Days = 0;
+  let totalOrders30Days = 0;
+  if (revenueData && revenueData.length > 0) {
+    revenueData.forEach(d => {
+      totalRevenue30Days += d.revenue || 0;
+      totalOrders30Days += d.order_count || 0;
+    });
+    
+    // Display totals
+    const totalRevenueEl = document.getElementById('totalRevenue');
+    const totalOrdersEl = document.getElementById('totalOrders');
+    if (totalRevenueEl) {
+      totalRevenueEl.textContent = (totalRevenue30Days / 1000000).toFixed(1) + 'Mđ';
     }
-    return { legend: '#d1d5db', tick: '#9ca3af', grid: '#1f2937' };
+    if (totalOrdersEl) {
+      totalOrdersEl.textContent = totalOrders30Days.toLocaleString('vi-VN');
+    }
   }
 
-  function applyScales(baseOptions) {
-    const p = uiPalette();
-    baseOptions.plugins = baseOptions.plugins || {};
-    baseOptions.plugins.legend = baseOptions.plugins.legend || {};
-    baseOptions.plugins.legend.labels = Object.assign({ color: p.legend }, baseOptions.plugins.legend.labels || {});
-    baseOptions.scales = baseOptions.scales || {};
-    baseOptions.scales.x = Object.assign({
-      ticks: { color: p.tick },
-      grid: { color: p.grid }
-    }, baseOptions.scales.x || {});
-    baseOptions.scales.y = Object.assign({
-      ticks: Object.assign({ color: p.tick }, (baseOptions.scales.y && baseOptions.scales.y.ticks) || {}),
-      grid: { color: p.grid }
-    }, baseOptions.scales.y || {});
-    return baseOptions;
-  }
-
-  function makeBarChart(ctx, labels, currentData, previousData, colors) {
-    const options = applyScales({
-      responsive: true,
-      plugins: {
-        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString('vi-VN')}` } }
+  // Revenue chart (30 days)
+  if (revenueData && revenueData.length > 0) {
+    const ctx1 = document.getElementById('revenueChart');
+    new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels: revenueData.map(d => {
+          const date = new Date(d.day);
+          return date.getDate() + '/' + (date.getMonth() + 1);
+        }),
+        datasets: [{
+          label: 'Doanh thu (đ)',
+          data: revenueData.map(d => d.revenue),
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          tension: 0.4,
+          fill: true,
+        }]
       },
-      scales: {
-        y: { ticks: { callback: v => v.toLocaleString('vi-VN') } }
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return 'Doanh thu: ' + context.parsed.y.toLocaleString('vi-VN') + 'đ';
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return (value / 1000000).toFixed(1) + 'M';
+              }
+            }
+          }
+        }
       }
     });
-    return new Chart(ctx, {
+  }
+
+  // Order count chart (30 days)
+  if (revenueData && revenueData.length > 0) {
+    const ctx1b = document.getElementById('orderCountChart');
+    new Chart(ctx1b, {
       type: 'bar',
       data: {
-        labels,
-        datasets: [
-          { label: 'Kỳ này', data: currentData, backgroundColor: colors[0], borderColor: colors[0] },
-          { label: 'Kỳ trước', data: previousData, backgroundColor: colors[1], borderColor: colors[1] }
-        ]
+        labels: revenueData.map(d => {
+          const date = new Date(d.day);
+          return date.getDate() + '/' + (date.getMonth() + 1);
+        }),
+        datasets: [{
+          label: 'Số đơn',
+          data: revenueData.map(d => d.order_count),
+          backgroundColor: '#f59e0b',
+          borderRadius: 4,
+          maxBarThickness: 40,
+        }]
       },
-      options
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return 'Số đơn: ' + context.parsed.y;
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0
+            }
+          }
+        }
+      }
     });
   }
 
-  // Customers chart: Today/This Week/This Month vs previous
-  const custLabels = ['Hôm nay', 'Tuần này', 'Tháng này'];
-  const custCurrent = [customerStats.today, customerStats.this_week, customerStats.this_month];
-  const custPrev = [customerStats.yesterday, customerStats.last_week, customerStats.last_month];
-  const customersChart = makeBarChart(document.getElementById('customersChart'), custLabels, custCurrent, custPrev, ['#60a5fa', '#334155']);
-
-  // Products chart
-  const prodCurrent = [productStats.today, productStats.this_week, productStats.this_month];
-  const prodPrev = [productStats.yesterday, productStats.last_week, productStats.last_month];
-  const productsChart = makeBarChart(document.getElementById('productsChart'), custLabels, prodCurrent, prodPrev, ['#34d399', '#374151']);
-
-  // Orders count chart (bar)
-  const ordLabels = ['Hôm nay', 'Tuần này', 'Tháng này'];
-  const ordCountCurrent = [orderStats.today.count, orderStats.this_week.count, orderStats.this_month.count];
-  const ordCountPrev = [orderStats.yesterday.count, orderStats.last_week.count, orderStats.last_month.count];
-  makeBarChart(document.getElementById('ordersCountChart'), ordLabels, ordCountCurrent, ordCountPrev, ['#f59e0b', '#374151']);
-
-  // Orders value chart (line vs bar)
-  const ordersValueChart = new Chart(document.getElementById('ordersValueChart'), {
-    type: 'bar',
-    data: {
-      labels: ordLabels,
-      datasets: [
-        {
-          type: 'line',
-          label: 'Giá trị (₫) - Kỳ này',
-          data: [orderStats.today.value, orderStats.this_week.value, orderStats.this_month.value],
-          borderColor: '#10b981',
-          backgroundColor: 'transparent',
-          tension: 0.3,
-          yAxisID: 'y',
-        },
-        {
-          type: 'line',
-          label: 'Giá trị (₫) - Kỳ trước',
-          data: [orderStats.yesterday.value, orderStats.last_week.value, orderStats.last_month.value],
-          borderColor: '#4b5563',
-          backgroundColor: 'transparent',
-          borderDash: [4,4],
-          tension: 0.3,
-          yAxisID: 'y',
-        }
-      ]
-    },
-    options: applyScales({
-      responsive: true,
-      plugins: {
-        tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${Number(ctx.parsed.y||0).toLocaleString('vi-VN')} ₫` } }
+  // Top products chart with custom tooltip
+  if (topProductsData && topProductsData.length > 0) {
+    const ctx2 = document.getElementById('topProductsChart');
+    new Chart(ctx2, {
+      type: 'bar',
+      data: {
+        labels: topProductsData.map(p => p.product__code || p.product__name || 'SP'),
+        datasets: [{
+          label: 'Doanh thu thuần (đ)',
+          data: topProductsData.map(p => p.net_revenue),
+          backgroundColor: '#3b82f6',
+          maxBarThickness: 40,
+        }]
       },
-      scales: {
-        y: { ticks: { callback: v => `${Number(v).toLocaleString('vi-VN')} ₫` } }
-      }
-    })
-  });
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            enabled: false,
+            external: function(context) {
+              let tooltipEl = document.getElementById('chartjs-tooltip-products');
+              if (!tooltipEl) {
+                tooltipEl = document.createElement('div');
+                tooltipEl.id = 'chartjs-tooltip-products';
+                tooltipEl.style.cssText = 'position:absolute;background:rgba(0,0,0,0.9);color:#fff;border-radius:6px;padding:10px;pointer-events:none;transition:opacity 0.2s;z-index:9999;max-width:280px;';
+                document.body.appendChild(tooltipEl);
+              }
 
-  // React to theme changes
-  window.addEventListener('themechange', function() {
-    const charts = [customersChart, productsChart, ordersValueChart];
-    const p = uiPalette();
-    charts.forEach(ch => {
-      if (!ch) return;
-      if (ch.options.plugins && ch.options.plugins.legend && ch.options.plugins.legend.labels) {
-        ch.options.plugins.legend.labels.color = p.legend;
-      }
-      if (ch.options.scales && ch.options.scales.x) {
-        if (ch.options.scales.x.ticks) ch.options.scales.x.ticks.color = p.tick;
-        if (ch.options.scales.x.grid) ch.options.scales.x.grid.color = p.grid;
-      }
-      if (ch.options.scales && ch.options.scales.y) {
-        if (ch.options.scales.y.ticks && typeof ch.options.scales.y.ticks === 'object') {
-          ch.options.scales.y.ticks.color = p.tick;
+              const tooltipModel = context.tooltip;
+              if (tooltipModel.opacity === 0) {
+                tooltipEl.style.opacity = 0;
+                return;
+              }
+
+              if (tooltipModel.body) {
+                const dataIndex = tooltipModel.dataPoints[0].dataIndex;
+                const product = topProductsData[dataIndex];
+                const lines = [];
+
+                if (product.image) {
+                  lines.push('<img src="' + product.image + '" style="width:100%;max-width:200px;height:auto;border-radius:4px;margin-bottom:8px;" onerror="this.style.display=\'none\'" />');
+                }
+
+                lines.push('<div style="font-weight:600;margin-bottom:4px;">' + (product.product__name || 'Sản phẩm') + '</div>');
+                lines.push('<div style="font-size:11px;color:#9ca3af;margin-bottom:6px;">Mã: ' + (product.product__code || '-') + '</div>');
+                lines.push('<div style="font-size:12px;margin:2px 0;"><span style="color:#10b981;">●</span> Doanh thu: ' + product.net_revenue.toLocaleString('vi-VN') + 'đ</div>');
+                lines.push('<div style="font-size:12px;margin:2px 0;"><span style="color:#60a5fa;">●</span> Số đơn: ' + product.order_count + '</div>');
+                lines.push('<div style="font-size:12px;margin:2px 0;"><span style="color:#f97316;">●</span> Tổng SL: ' + product.total_amount + '</div>');
+
+                tooltipEl.innerHTML = lines.join('');
+              }
+
+              const position = context.chart.canvas.getBoundingClientRect();
+              tooltipEl.style.opacity = 1;
+              tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+              tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return (value / 1000000).toFixed(1) + 'M';
+              }
+            }
+          }
+        },
+        onClick: function(event, elements) {
+          if (elements.length > 0) {
+            const dataIndex = elements[0].index;
+            const product = topProductsData[dataIndex];
+            if (product && product.product_id) {
+              window.location.href = '/san-pham/' + product.product_id;
+            }
+          }
         }
-        if (ch.options.scales.y.grid) ch.options.scales.y.grid.color = p.grid;
       }
-      ch.update();
     });
-  });
+  }
+
+  // Top customers chart with custom tooltip
+  if (topCustomersData && topCustomersData.length > 0) {
+    const ctx3 = document.getElementById('topCustomersChart');
+    new Chart(ctx3, {
+      type: 'bar',
+      data: {
+        labels: topCustomersData.map(c => c.customer__code || c.customer__name || 'KH'),
+        datasets: [{
+          label: 'Doanh thu thuần (đ)',
+          data: topCustomersData.map(c => c.net_revenue),
+          backgroundColor: '#a855f7',
+          maxBarThickness: 40,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            enabled: false,
+            external: function(context) {
+              let tooltipEl = document.getElementById('chartjs-tooltip-customers');
+              if (!tooltipEl) {
+                tooltipEl = document.createElement('div');
+                tooltipEl.id = 'chartjs-tooltip-customers';
+                tooltipEl.style.cssText = 'position:absolute;background:rgba(0,0,0,0.9);color:#fff;border-radius:6px;padding:10px;pointer-events:none;transition:opacity 0.2s;z-index:9999;max-width:280px;';
+                document.body.appendChild(tooltipEl);
+              }
+
+              const tooltipModel = context.tooltip;
+              if (tooltipModel.opacity === 0) {
+                tooltipEl.style.opacity = 0;
+                return;
+              }
+
+              if (tooltipModel.body) {
+                const dataIndex = tooltipModel.dataPoints[0].dataIndex;
+                const customer = topCustomersData[dataIndex];
+                const lines = [];
+
+                lines.push('<div style="font-weight:600;margin-bottom:4px;">' + (customer.customer__name || 'Khách hàng') + '</div>');
+                lines.push('<div style="font-size:11px;color:#9ca3af;margin-bottom:6px;">Mã: ' + (customer.customer__code || '-') + '</div>');
+                lines.push('<div style="font-size:12px;margin:2px 0;"><span style="color:#10b981;">●</span> Doanh thu: ' + customer.net_revenue.toLocaleString('vi-VN') + 'đ</div>');
+                lines.push('<div style="font-size:12px;margin:2px 0;"><span style="color:#60a5fa;">●</span> Số đơn: ' + customer.order_count + '</div>');
+                lines.push('<div style="font-size:12px;margin:2px 0;"><span style="color:#f97316;">●</span> Tổng SL: ' + customer.total_amount + '</div>');
+
+                tooltipEl.innerHTML = lines.join('');
+              }
+
+              const position = context.chart.canvas.getBoundingClientRect();
+              tooltipEl.style.opacity = 1;
+              tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+              tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return (value / 1000000).toFixed(1) + 'M';
+              }
+            }
+          }
+        },
+        onClick: function(event, elements) {
+          if (elements.length > 0) {
+            const dataIndex = elements[0].index;
+            const customer = topCustomersData[dataIndex];
+            if (customer && customer.customer__code) {
+              window.location.href = '/khach-hang/' + customer.customer__code;
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Status breakdown chart
+  if (statusData && statusData.length > 0) {
+    const ctx4 = document.getElementById('statusChart');
+    const statusColors = {
+      'created': '#6b7280',
+      'cart': '#f59e0b',
+      'purchased': '#3b82f6',
+      'in_stock': '#6366f1',
+      'reported': '#a855f7',
+      'reconciled': '#10b981',
+      'cancelled': '#ef4444',
+    };
+    
+    new Chart(ctx4, {
+      type: 'doughnut',
+      data: {
+        labels: statusData.map(s => s.label),
+        datasets: [{
+          data: statusData.map(s => s.order_count),
+          backgroundColor: statusData.map(s => statusColors[s.status] || '#64748b'),
+          borderWidth: 2,
+          borderColor: '#121212',
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 15,
+              font: { size: 12 }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = ((value / total) * 100).toFixed(1);
+                return label + ': ' + value + ' đơn (' + percentage + '%)';
+              }
+            }
+          }
+        }
+      }
+    });
+  }
 </script>
+{% endblock %}
