@@ -20,6 +20,10 @@
       <i data-lucide="plus" class="w-4 h-4"></i>
       Thêm giao dịch
     </a>
+    <a href="{% url 'wallet:wallet_report' wallet.id %}" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition flex items-center gap-2">
+      <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+      Báo cáo
+    </a>
     <a href="{% url 'wallet:wallet_edit' wallet.id %}" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition flex items-center gap-2">
       <i data-lucide="edit" class="w-4 h-4"></i>
       Chỉnh sửa

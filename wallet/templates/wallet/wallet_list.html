@@ -88,6 +88,9 @@
       <a href="{% url 'wallet:wallet_detail' wallet.id %}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center px-3 py-2 rounded-md text-sm transition">
         <i data-lucide="eye" class="w-4 h-4 inline mr-1"></i>Chi tiết
       </a>
+      <a href="{% url 'wallet:wallet_report' wallet.id %}" class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-2 rounded-md text-sm transition" title="Báo cáo">
+        <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
+      </a>
       <a href="{% url 'wallet:wallet_edit' wallet.id %}" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-md text-sm transition" title="Chỉnh sửa">
         <i data-lucide="edit" class="w-4 h-4"></i>
       </a>

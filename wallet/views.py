@@ -1,14 +1,19 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Sum, Q
+from django.db.models import Sum, Q, Count
+from django.db.models.functions import TruncDate
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from datetime import datetime, timedelta
 from .models import Wallet, WalletTransaction
+from .decorators import admin_required
 from decimal import Decimal
+import json
 
 
 @login_required
+@admin_required
 def wallet_list(request):
     """
     Danh sách các ví
@@ -28,6 +33,7 @@ def wallet_list(request):
 
 
 @login_required
+@admin_required
 def wallet_detail(request, wallet_id):
     """
     Chi tiết ví và danh sách giao dịch
@@ -89,6 +95,7 @@ def wallet_detail(request, wallet_id):
 
 
 @login_required
+@admin_required
 def wallet_create(request):
     """
     Tạo ví mới
@@ -122,6 +129,7 @@ def wallet_create(request):
 
 
 @login_required
+@admin_required
 def wallet_edit(request, wallet_id):
     """
     Chỉnh sửa thông tin ví và điều chỉnh số dư thủ công
@@ -168,6 +176,7 @@ def wallet_edit(request, wallet_id):
 
 
 @login_required
+@admin_required
 def wallet_delete(request, wallet_id):
     """
     Xóa ví
@@ -189,6 +198,7 @@ def wallet_delete(request, wallet_id):
 
 
 @login_required
+@admin_required
 def transaction_create(request, wallet_id):
     """
     Tạo giao dịch mới
@@ -239,6 +249,7 @@ def transaction_create(request, wallet_id):
 
 
 @login_required
+@admin_required
 def transaction_edit(request, transaction_id):
     """
     Chỉnh sửa giao dịch
@@ -282,6 +293,7 @@ def transaction_edit(request, transaction_id):
 
 
 @login_required
+@admin_required
 def transaction_delete(request, transaction_id):
     """
     Xóa giao dịch
@@ -299,3 +311,154 @@ def transaction_delete(request, transaction_id):
         'wallet': wallet,
     }
     return render(request, 'wallet/transaction_confirm_delete.html', context)
+
+
+@login_required
+@admin_required
+def wallet_report(request, wallet_id):
+    """
+    Báo cáo ví - Biểu đồ thu chi và số dư theo thời gian
+    """
+    wallet = get_object_or_404(Wallet, id=wallet_id)
+    
+    # Lấy khoảng thời gian từ GET parameters
+    start_date_str = request.GET.get('start_date', '')
+    end_date_str = request.GET.get('end_date', '')
+    
+    # Parse dates
+    custom_start_date = None
+    custom_end_date = None
+    
+    if start_date_str:
+        try:
+            custom_start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            pass
+    
+    if end_date_str:
+        try:
+            custom_end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            pass
+    
+    # Xác định khoảng thời gian cho biểu đồ
+    today_date = timezone.localdate()
+    start_today = timezone.make_aware(datetime.combine(today_date, datetime.min.time()))
+    
+    if custom_start_date and custom_end_date:
+        chart_start = timezone.make_aware(datetime.combine(custom_start_date, datetime.min.time()))
+        chart_end = timezone.make_aware(datetime.combine(custom_end_date, datetime.max.time()))
+        date_range_label = f"từ {start_date_str} đến {end_date_str}"
+    elif custom_start_date:
+        chart_start = timezone.make_aware(datetime.combine(custom_start_date, datetime.min.time()))
+        chart_end = timezone.now()
+        date_range_label = f"từ {start_date_str}"
+    elif custom_end_date:
+        chart_start = start_today - timedelta(days=30)
+        chart_end = timezone.make_aware(datetime.combine(custom_end_date, datetime.max.time()))
+        date_range_label = f"đến {end_date_str}"
+    else:
+        # Mặc định: 30 ngày gần nhất
+        chart_start = start_today - timedelta(days=30)
+        chart_end = timezone.now()
+        date_range_label = "30 ngày qua"
+    
+    # Thống kê tổng quan
+    all_transactions = wallet.transactions.all()
+    
+    total_income = all_transactions.filter(
+        Q(transaction_type='deposit') | Q(transaction_type='income')
+    ).aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+    
+    total_expense = all_transactions.filter(
+        Q(transaction_type='withdrawal') | Q(transaction_type='expense')
+    ).aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+    
+    # Dữ liệu biểu đồ theo ngày
+    daily_transactions = (
+        wallet.transactions
+        .filter(transaction_date__gte=chart_start, transaction_date__lte=chart_end)
+        .annotate(day=TruncDate('transaction_date'))
+        .values('day')
+        .annotate(
+            income=Sum(
+                'amount',
+                filter=Q(transaction_type='deposit') | Q(transaction_type='income')
+            ),
+            expense=Sum(
+                'amount',
+                filter=Q(transaction_type='withdrawal') | Q(transaction_type='expense')
+            )
+        )
+        .order_by('day')
+    )
+    
+    # Tạo dict cho tra cứu nhanh
+    transactions_by_day = {}
+    for row in daily_transactions:
+        transactions_by_day[row['day']] = {
+            'income': row['income'] or Decimal('0.00'),
+            'expense': row['expense'] or Decimal('0.00'),
+        }
+    
+    # Điền đầy dữ liệu cho tất cả các ngày
+    timeline_data = []
+    running_balance = Decimal('0.00')
+    
+    # Tính số dư ban đầu (trước chart_start)
+    initial_transactions = wallet.transactions.filter(transaction_date__lt=chart_start)
+    initial_income = initial_transactions.filter(
+        Q(transaction_type='deposit') | Q(transaction_type='income')
+    ).aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+    initial_expense = initial_transactions.filter(
+        Q(transaction_type='withdrawal') | Q(transaction_type='expense')
+    ).aggregate(total=Sum('amount'))['total'] or Decimal('0.00')
+    running_balance = initial_income - initial_expense
+    
+    current_day = chart_start.date()
+    end_day = chart_end.date()
+    
+    while current_day <= end_day:
+        data = transactions_by_day.get(current_day, {'income': Decimal('0.00'), 'expense': Decimal('0.00')})
+        running_balance += data['income'] - data['expense']
+        
+        timeline_data.append({
+            'day': current_day.strftime('%Y-%m-%d'),
+            'income': float(data['income']),
+            'expense': float(data['expense']),
+            'balance': float(running_balance),
+        })
+        current_day += timedelta(days=1)
+    
+    # Phân bổ chi tiêu theo danh mục
+    expense_by_category = (
+        wallet.transactions
+        .filter(
+            Q(transaction_type='withdrawal') | Q(transaction_type='expense'),
+            transaction_date__gte=chart_start,
+            transaction_date__lte=chart_end
+        )
+        .values('category')
+        .annotate(total=Sum('amount'))
+        .order_by('-total')
+    )
+    
+    category_breakdown = []
+    for row in expense_by_category:
+        category_breakdown.append({
+            'category': row['category'],
+            'label': dict(WalletTransaction.CATEGORY_CHOICES).get(row['category'], row['category']),
+            'amount': float(row['total'] or 0),
+        })
+    
+    context = {
+        'wallet': wallet,
+        'start_date': start_date_str,
+        'end_date': end_date_str,
+        'date_range_label': date_range_label,
+        'total_income': total_income,
+        'total_expense': total_expense,
+        'timeline_data': mark_safe(json.dumps(timeline_data)),
+        'category_breakdown': mark_safe(json.dumps(category_breakdown)),
+    }
+    return render(request, 'wallet/wallet_report.html', context)

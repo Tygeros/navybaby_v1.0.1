@@ -47,9 +47,12 @@
             class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500"
           >
             {% for value, label in transaction_types %}
-            <option value="{{ value }}" {% if transaction.transaction_type == value %}selected{% endif %}>{{ label }}</option>
+            <option value="{{ value }}" {% if transaction.transaction_type == value %}selected{% endif %} {% if value == 'income' or value == 'expense' %}disabled{% endif %}>
+              {{ label }}{% if value == 'income' or value == 'expense' %} (Tự động từ Tài chính){% endif %}
+            </option>
             {% endfor %}
           </select>
+          <p class="text-xs text-gray-500 mt-1">"Khoản thu" và "Khoản chi" chỉ được tạo tự động từ phần Tài chính</p>
         </div>
 
         <div>

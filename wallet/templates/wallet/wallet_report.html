@@ -1,0 +1,574 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load number_extras %}
+
+{% block title %}Báo cáo {{ wallet.name }} - NavyBaby{% endblock %}
+{% block navbar_icon %}bar-chart-3{% endblock %}
+{% block navbar_title %}Báo cáo Ví{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="flex justify-between items-center mb-6">
+  <div>
+    <h2 class="text-2xl font-bold flex items-center text-purple-400">
+      <i data-lucide="bar-chart-3" class="w-6 h-6 mr-2"></i>Báo cáo: {{ wallet.name }}
+    </h2>
+    <p class="text-gray-400">Phân tích thu chi và số dư theo thời gian</p>
+  </div>
+  <div class="flex gap-2">
+    <a href="{% url 'wallet:wallet_detail' wallet.id %}" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition flex items-center gap-2">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      Quay lại
+    </a>
+  </div>
+</div>
+
+<!-- Date Range Filter -->
+<div class="bg-[#161616] border border-gray-800 rounded-lg p-4 mb-6">
+  <form method="get" action="{% url 'wallet:wallet_report' wallet.id %}" class="flex flex-col md:flex-row gap-4 items-end">
+    <div class="flex-1">
+      <label for="start_date" class="block text-sm font-medium text-gray-300 mb-2">
+        <i data-lucide="calendar" class="w-4 h-4 inline mr-1"></i>Ngày bắt đầu
+      </label>
+      <input 
+        type="date" 
+        id="start_date" 
+        name="start_date" 
+        value="{{ start_date|default:'' }}"
+        class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500 transition"
+      />
+    </div>
+    <div class="flex-1">
+      <label for="end_date" class="block text-sm font-medium text-gray-300 mb-2">
+        <i data-lucide="calendar" class="w-4 h-4 inline mr-1"></i>Ngày kết thúc
+      </label>
+      <input 
+        type="date" 
+        id="end_date" 
+        name="end_date" 
+        value="{{ end_date|default:'' }}"
+        class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500 transition"
+      />
+    </div>
+    <div class="flex gap-2">
+      <button 
+        type="submit" 
+        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition flex items-center gap-2"
+      >
+        <i data-lucide="filter" class="w-4 h-4"></i>
+        Áp dụng
+      </button>
+      <a 
+        href="{% url 'wallet:wallet_report' wallet.id %}" 
+        class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-md transition flex items-center gap-2"
+      >
+        <i data-lucide="x" class="w-4 h-4"></i>
+        Xóa bộ lọc
+      </a>
+    </div>
+  </form>
+  {% if start_date or end_date %}
+  <div class="mt-3 text-sm text-gray-400">
+    <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+    Đang hiển thị báo cáo từ 
+    <span class="text-blue-400 font-medium">{{ start_date|default:"(không giới hạn)" }}</span> 
+    đến 
+    <span class="text-blue-400 font-medium">{{ end_date|default:"(không giới hạn)" }}</span>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Thống kê tổng quan -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div class="bg-gradient-to-r from-emerald-900/30 to-green-900/30 border border-emerald-800 rounded-lg p-5">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-gray-400 text-sm mb-1">Số dư hiện tại</p>
+        {% if wallet.currency == 'VND' %}
+        <h3 class="text-2xl font-bold text-emerald-400">{{ wallet.balance|smart_vnd }}</h3>
+        {% else %}
+        <h3 class="text-2xl font-bold text-emerald-400">{{ wallet.balance|floatformat:2 }} {{ wallet.currency }}</h3>
+        {% endif %}
+      </div>
+      <i data-lucide="wallet" class="w-10 h-10 text-emerald-400"></i>
+    </div>
+  </div>
+  
+  <div class="bg-[#161616] border border-gray-800 rounded-lg p-5">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-gray-400 text-sm mb-1">Tổng thu</p>
+        {% if wallet.currency == 'VND' %}
+        <h3 class="text-2xl font-bold text-blue-400">{{ total_income|smart_vnd }}</h3>
+        {% else %}
+        <h3 class="text-2xl font-bold text-blue-400">{{ total_income|floatformat:2 }} {{ wallet.currency }}</h3>
+        {% endif %}
+      </div>
+      <i data-lucide="trending-up" class="w-10 h-10 text-blue-400"></i>
+    </div>
+  </div>
+  
+  <div class="bg-[#161616] border border-gray-800 rounded-lg p-5">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-gray-400 text-sm mb-1">Tổng chi</p>
+        {% if wallet.currency == 'VND' %}
+        <h3 class="text-2xl font-bold text-orange-400">{{ total_expense|smart_vnd }}</h3>
+        {% else %}
+        <h3 class="text-2xl font-bold text-orange-400">{{ total_expense|floatformat:2 }} {{ wallet.currency }}</h3>
+        {% endif %}
+      </div>
+      <i data-lucide="trending-down" class="w-10 h-10 text-orange-400"></i>
+    </div>
+  </div>
+</div>
+
+<!-- View Mode Selector -->
+<div class="flex items-center justify-between mb-4">
+  <h4 class="text-lg font-semibold text-gray-200 flex items-center">
+    <i data-lucide="line-chart" class="w-5 h-5 mr-2"></i>Biểu đồ theo thời gian
+  </h4>
+  <div class="flex gap-2 bg-[#161616] border border-gray-800 rounded-lg p-1">
+    <button 
+      onclick="changeChartView('day')" 
+      id="viewDay" 
+      class="px-4 py-2 rounded-md text-sm font-medium transition bg-purple-600 text-white"
+    >
+      <i data-lucide="calendar-days" class="w-4 h-4 inline mr-1"></i>Ngày
+    </button>
+    <button 
+      onclick="changeChartView('week')" 
+      id="viewWeek" 
+      class="px-4 py-2 rounded-md text-sm font-medium transition text-gray-400 hover:text-gray-200"
+    >
+      <i data-lucide="calendar-range" class="w-4 h-4 inline mr-1"></i>Tuần
+    </button>
+    <button 
+      onclick="changeChartView('month')" 
+      id="viewMonth" 
+      class="px-4 py-2 rounded-md text-sm font-medium transition text-gray-400 hover:text-gray-200"
+    >
+      <i data-lucide="calendar" class="w-4 h-4 inline mr-1"></i>Tháng
+    </button>
+  </div>
+</div>
+
+<!-- Biểu đồ -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+  <!-- Biểu đồ Thu Chi -->
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h5 class="font-semibold text-lg flex items-center text-purple-400">
+        <i data-lucide="bar-chart-2" class="w-5 h-5 mr-2"></i>Thu Chi {{ date_range_label }}
+      </h5>
+    </div>
+    <div class="h-64">
+      <canvas id="incomeExpenseChart"></canvas>
+    </div>
+  </div>
+  
+  <!-- Biểu đồ Số dư -->
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h5 class="font-semibold text-lg flex items-center text-emerald-400">
+        <i data-lucide="trending-up" class="w-5 h-5 mr-2"></i>Số dư {{ date_range_label }}
+      </h5>
+    </div>
+    <div class="h-64">
+      <canvas id="balanceChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+  <!-- Biểu đồ Thu Chi tích lũy -->
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h5 class="font-semibold text-lg flex items-center text-blue-400">
+        <i data-lucide="area-chart" class="w-5 h-5 mr-2"></i>Tổng Thu Chi tích lũy {{ date_range_label }}
+      </h5>
+    </div>
+    <div class="h-80">
+      <canvas id="cumulativeChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Biểu đồ Phân bổ Chi tiêu theo Danh mục -->
+  <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h5 class="font-semibold text-lg flex items-center text-orange-400">
+        <i data-lucide="pie-chart" class="w-5 h-5 mr-2"></i>Phân bổ Chi tiêu {{ date_range_label }}
+      </h5>
+    </div>
+    <div class="h-80 flex items-center justify-center">
+      <canvas id="categoryChart"></canvas>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  lucide.createIcons();
+
+  const timelineData = {{ timeline_data|default:'[]' }};
+  const categoryData = {{ category_breakdown|default:'[]' }};
+  const currency = '{{ wallet.currency }}';
+  const isVND = currency === 'VND';
+  
+  // Store original data
+  const originalTimelineData = [...timelineData];
+  
+  // Chart instances
+  let incomeExpenseChart = null;
+  let balanceChart = null;
+  let cumulativeChart = null;
+  let currentViewMode = 'day';
+
+  // Format currency
+  function formatCurrency(value) {
+    if (isVND) {
+      return (value / 1000000).toFixed(1) + 'M';
+    } else {
+      return value.toFixed(2) + ' ¥';
+    }
+  }
+
+  function formatTooltipCurrency(value) {
+    if (isVND) {
+      return value.toLocaleString('vi-VN') + 'đ';
+    } else {
+      return value.toFixed(2) + ' ¥';
+    }
+  }
+
+  // Get week number
+  function getWeekNumber(date) {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+    const yearStart = new Date(d.getFullYear(), 0, 1);
+    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    return d.getFullYear() + '-W' + weekNo;
+  }
+
+  // Get month key
+  function getMonthKey(date) {
+    const d = new Date(date);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  }
+
+  // Aggregate data by view mode
+  function aggregateData(data, mode) {
+    if (mode === 'day') {
+      return data;
+    }
+
+    const aggregated = {};
+    
+    data.forEach(item => {
+      let key;
+      if (mode === 'week') {
+        key = getWeekNumber(item.day);
+      } else if (mode === 'month') {
+        key = getMonthKey(item.day);
+      }
+
+      if (!aggregated[key]) {
+        aggregated[key] = {
+          key: key,
+          income: 0,
+          expense: 0,
+          balance: 0,
+          days: []
+        };
+      }
+
+      aggregated[key].income += item.income || 0;
+      aggregated[key].expense += item.expense || 0;
+      aggregated[key].days.push(item.day);
+    });
+
+    // Calculate balance for aggregated periods
+    const sorted = Object.values(aggregated).sort((a, b) => a.key.localeCompare(b.key));
+    let runningBalance = 0;
+    sorted.forEach(item => {
+      runningBalance += item.income - item.expense;
+      item.balance = runningBalance;
+    });
+
+    return sorted;
+  }
+
+  // Format label based on view mode
+  function formatLabel(item, mode) {
+    if (mode === 'day') {
+      const date = new Date(item.day);
+      return date.getDate() + '/' + (date.getMonth() + 1);
+    } else if (mode === 'week') {
+      const parts = item.key.split('-W');
+      return 'Tuần ' + parts[1] + '/' + parts[0];
+    } else if (mode === 'month') {
+      const parts = item.key.split('-');
+      return 'Tháng ' + parts[1] + '/' + parts[0];
+    }
+  }
+
+  // Create Income vs Expense Chart
+  function createIncomeExpenseChart(data, mode) {
+    const ctx = document.getElementById('incomeExpenseChart');
+    
+    if (incomeExpenseChart) {
+      incomeExpenseChart.destroy();
+    }
+
+    incomeExpenseChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: data.map(d => formatLabel(d, mode)),
+        datasets: [{
+          label: 'Thu',
+          data: data.map(d => d.income),
+          backgroundColor: '#10b981',
+          borderRadius: 4,
+        }, {
+          label: 'Chi',
+          data: data.map(d => d.expense),
+          backgroundColor: '#f97316',
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { 
+            display: true,
+            position: 'top',
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return context.dataset.label + ': ' + formatTooltipCurrency(context.parsed.y);
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return formatCurrency(value);
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Create Balance Chart
+  function createBalanceChart(data, mode) {
+    const ctx = document.getElementById('balanceChart');
+    
+    if (balanceChart) {
+      balanceChart.destroy();
+    }
+
+    balanceChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: data.map(d => formatLabel(d, mode)),
+        datasets: [{
+          label: 'Số dư',
+          data: data.map(d => d.balance),
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          tension: 0.4,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return 'Số dư: ' + formatTooltipCurrency(context.parsed.y);
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            ticks: {
+              callback: function(value) {
+                return formatCurrency(value);
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Create Cumulative Chart
+  function createCumulativeChart(data, mode) {
+    const ctx = document.getElementById('cumulativeChart');
+    
+    if (cumulativeChart) {
+      cumulativeChart.destroy();
+    }
+
+    let cumulativeIncome = 0;
+    let cumulativeExpense = 0;
+    
+    const cumulativeData = data.map(d => {
+      cumulativeIncome += d.income;
+      cumulativeExpense += d.expense;
+      return {
+        day: d.day,
+        income: cumulativeIncome,
+        expense: cumulativeExpense
+      };
+    });
+
+    cumulativeChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: cumulativeData.map((d, idx) => formatLabel(data[idx], mode)),
+        datasets: [{
+          label: 'Tổng Thu tích lũy',
+          data: cumulativeData.map(d => d.income),
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          tension: 0.4,
+          fill: true,
+        }, {
+          label: 'Tổng Chi tích lũy',
+          data: cumulativeData.map(d => d.expense),
+          borderColor: '#f97316',
+          backgroundColor: 'rgba(249, 115, 22, 0.1)',
+          tension: 0.4,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { 
+            display: true,
+            position: 'top',
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return context.dataset.label + ': ' + formatTooltipCurrency(context.parsed.y);
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: function(value) {
+                return formatCurrency(value);
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Change chart view mode
+  window.changeChartView = function(mode) {
+    currentViewMode = mode;
+    
+    // Update button styles
+    ['day', 'week', 'month'].forEach(m => {
+      const btn = document.getElementById('view' + m.charAt(0).toUpperCase() + m.slice(1));
+      if (btn) {
+        if (m === mode) {
+          btn.className = 'px-4 py-2 rounded-md text-sm font-medium transition bg-purple-600 text-white';
+        } else {
+          btn.className = 'px-4 py-2 rounded-md text-sm font-medium transition text-gray-400 hover:text-gray-200';
+        }
+      }
+    });
+
+    // Aggregate data and update charts
+    const aggregatedData = aggregateData(originalTimelineData, mode);
+    createIncomeExpenseChart(aggregatedData, mode);
+    createBalanceChart(aggregatedData, mode);
+    createCumulativeChart(aggregatedData, mode);
+    
+    // Reinitialize lucide icons
+    lucide.createIcons();
+  }
+
+  // Initialize charts with day view
+  if (timelineData && timelineData.length > 0) {
+    createIncomeExpenseChart(timelineData, 'day');
+    createBalanceChart(timelineData, 'day');
+    createCumulativeChart(timelineData, 'day');
+  }
+
+  // Category Breakdown Pie Chart
+  if (categoryData && categoryData.length > 0) {
+    const ctx4 = document.getElementById('categoryChart');
+    const categoryColors = {
+      'purchase': '#3b82f6',
+      'shipping': '#f59e0b',
+      'deposit': '#10b981',
+      'refund': '#a855f7',
+      'other': '#64748b',
+    };
+    
+    new Chart(ctx4, {
+      type: 'doughnut',
+      data: {
+        labels: categoryData.map(c => c.label),
+        datasets: [{
+          data: categoryData.map(c => c.amount),
+          backgroundColor: categoryData.map(c => categoryColors[c.category] || '#64748b'),
+          borderWidth: 2,
+          borderColor: '#121212',
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 15,
+              font: { size: 12 }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = ((value / total) * 100).toFixed(1);
+                return label + ': ' + formatTooltipCurrency(value) + ' (' + percentage + '%)';
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+</script>
+{% endblock %}
