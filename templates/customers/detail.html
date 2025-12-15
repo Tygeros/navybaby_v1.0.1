@@ -220,7 +220,7 @@
           <div class="mt-4 flex flex-col gap-2">
             
             <a href="{% url 'customers:customer_report' customer.code %}{% if request.GET %}?{{ request.GET.urlencode }}{% endif %}"
-               class="px-3 py-2 rounded-md border text-sm transition bg-[#1c1c1c] text-gray-200 border-gray-800 hover:border-gray-700 flex items-center justify-center">
+               class="px-3 py-2 rounded-md border text-sm transition dark:bg-[#1c1c1c] bg-gray-100 dark:text-gray-200 text-gray-900 dark:border-gray-800 border-gray-300 dark:hover:border-gray-700 hover:border-gray-400 flex items-center justify-center">
               <i data-lucide="bar-chart-2" class="inline w-4 h-4 mr-1"></i>Xem báo cáo
             </a>
             <a id="btn-create-bill" data-deposit="{{ payment_raw.deposit|default:0 }}" href="{% url 'customers:customer_bill' customer.code %}{% if request.GET %}?{{ request.GET.urlencode }}&qr_id=4{% else %}?qr_id=4{% endif %}"

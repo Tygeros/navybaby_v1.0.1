@@ -23,35 +23,35 @@
 <!-- Số dư theo loại tiền tệ -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
   <!-- Số dư VNĐ -->
-  <div class="bg-gradient-to-r from-emerald-900/30 to-green-900/30 border border-emerald-800 rounded-lg p-6">
+  <div class="bg-gradient-to-r dark:from-emerald-900/30 dark:to-green-900/30 from-emerald-100 to-green-100 border dark:border-emerald-800 border-emerald-300 rounded-lg p-6">
     <div class="flex items-center justify-between">
       <div>
         <p class="text-gray-400 text-sm mb-1 flex items-center">
           <i data-lucide="wallet" class="w-4 h-4 mr-1"></i>
           Tổng số dư VNĐ
         </p>
-        <h3 class="text-3xl font-bold text-emerald-300">{{ vnd_balance|smart_vnd }}</h3>
-        <p class="text-xs text-gray-500 mt-1">Việt Nam Đồng</p>
+        <h3 class="text-3xl font-bold dark:text-emerald-300 text-emerald-700">{{ vnd_balance|smart_vnd }}</h3>
+        <p class="text-xs dark:text-gray-500 text-gray-600 mt-1">Việt Nam Đồng</p>
       </div>
-      <div class="bg-emerald-500/20 p-4 rounded-full">
-        <i data-lucide="coins" class="w-12 h-12 text-emerald-400"></i>
+      <div class="dark:bg-emerald-500/20 bg-emerald-200 p-4 rounded-full">
+        <i data-lucide="coins" class="w-12 h-12 dark:text-emerald-400 text-emerald-700"></i>
       </div>
     </div>
   </div>
   
   <!-- Số dư CNY -->
-  <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-800 rounded-lg p-6">
+  <div class="bg-gradient-to-r dark:from-blue-900/30 dark:to-purple-900/30 from-blue-100 to-purple-100 border dark:border-blue-800 border-blue-300 rounded-lg p-6">
     <div class="flex items-center justify-between">
       <div>
         <p class="text-gray-400 text-sm mb-1 flex items-center">
           <i data-lucide="wallet" class="w-4 h-4 mr-1"></i>
           Tổng số dư CNY
         </p>
-        <h3 class="text-3xl font-bold text-blue-300">{{ cny_balance|floatformat:2 }} ¥</h3>
-        <p class="text-xs text-gray-500 mt-1">Đồng Nhân dân tệ</p>
+        <h3 class="text-3xl font-bold dark:text-blue-300 text-blue-700">{{ cny_balance|floatformat:2 }} ¥</h3>
+        <p class="text-xs dark:text-gray-500 text-gray-600 mt-1">Đồng Nhân dân tệ</p>
       </div>
-      <div class="bg-blue-500/20 p-4 rounded-full">
-        <i data-lucide="coins" class="w-12 h-12 text-blue-400"></i>
+      <div class="dark:bg-blue-500/20 bg-blue-200 p-4 rounded-full">
+        <i data-lucide="coins" class="w-12 h-12 dark:text-blue-400 text-blue-700"></i>
       </div>
     </div>
   </div>

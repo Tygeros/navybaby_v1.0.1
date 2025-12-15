@@ -37,17 +37,17 @@
 
 <!-- Thống kê -->
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-  <div class="bg-gradient-to-r from-emerald-900/30 to-green-900/30 border border-emerald-800 rounded-lg p-5">
+  <div class="bg-gradient-to-r dark:from-emerald-900/30 dark:to-green-900/30 from-emerald-100 to-green-100 border dark:border-emerald-800 border-emerald-300 rounded-lg p-5">
     <div class="flex items-center justify-between">
       <div>
         <p class="text-gray-400 text-sm mb-1">Số dư hiện tại</p>
         {% if wallet.currency == 'VND' %}
-        <h3 class="text-2xl font-bold text-emerald-400">{{ wallet.balance|smart_vnd }}</h3>
+        <h3 class="text-2xl font-bold dark:text-emerald-400 text-emerald-700">{{ wallet.balance|smart_vnd }}</h3>
         {% else %}
-        <h3 class="text-2xl font-bold text-emerald-400">{{ wallet.balance|floatformat:2 }} {{ wallet.currency }}</h3>
+        <h3 class="text-2xl font-bold dark:text-emerald-400 text-emerald-700">{{ wallet.balance|floatformat:2 }} {{ wallet.currency }}</h3>
         {% endif %}
       </div>
-      <i data-lucide="wallet" class="w-10 h-10 text-emerald-400"></i>
+      <i data-lucide="wallet" class="w-10 h-10 dark:text-emerald-400 text-emerald-700"></i>
     </div>
   </div>
   
@@ -56,12 +56,12 @@
       <div>
         <p class="text-gray-400 text-sm mb-1">Tổng nạp tiền</p>
         {% if wallet.currency == 'VND' %}
-        <h3 class="text-2xl font-bold text-blue-400">{{ total_deposits|smart_vnd }}</h3>
+        <h3 class="text-2xl font-bold dark:text-blue-400 text-blue-700">{{ total_deposits|smart_vnd }}</h3>
         {% else %}
-        <h3 class="text-2xl font-bold text-blue-400">{{ total_deposits|floatformat:2 }} {{ wallet.currency }}</h3>
+        <h3 class="text-2xl font-bold dark:text-blue-400 text-blue-700">{{ total_deposits|floatformat:2 }} {{ wallet.currency }}</h3>
         {% endif %}
       </div>
-      <i data-lucide="arrow-down-circle" class="w-10 h-10 text-blue-400"></i>
+      <i data-lucide="arrow-down-circle" class="w-10 h-10 dark:text-blue-400 text-blue-700"></i>
     </div>
   </div>
   
@@ -70,12 +70,12 @@
       <div>
         <p class="text-gray-400 text-sm mb-1">Tổng chi tiêu</p>
         {% if wallet.currency == 'VND' %}
-        <h3 class="text-2xl font-bold text-orange-400">{{ total_withdrawals|smart_vnd }}</h3>
+        <h3 class="text-2xl font-bold dark:text-orange-400 text-orange-700">{{ total_withdrawals|smart_vnd }}</h3>
         {% else %}
-        <h3 class="text-2xl font-bold text-orange-400">{{ total_withdrawals|floatformat:2 }} {{ wallet.currency }}</h3>
+        <h3 class="text-2xl font-bold dark:text-orange-400 text-orange-700">{{ total_withdrawals|floatformat:2 }} {{ wallet.currency }}</h3>
         {% endif %}
       </div>
-      <i data-lucide="arrow-up-circle" class="w-10 h-10 text-orange-400"></i>
+      <i data-lucide="arrow-up-circle" class="w-10 h-10 dark:text-orange-400 text-orange-700"></i>
     </div>
   </div>
 </div>
@@ -85,11 +85,11 @@
   <form method="get" class="grid grid-cols-1 md:grid-cols-5 gap-4">
     <div>
       <label class="block text-sm font-medium text-gray-300 mb-2">Từ ngày</label>
-      <input type="date" name="start_date" value="{{ start_date }}" class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500">
+      <input type="date" name="start_date" value="{{ start_date }}" class="w-full dark:bg-[#0a0a0a] bg-white dark:border-gray-700 border-gray-300 rounded-md px-3 py-2 dark:text-gray-100 text-gray-900 focus:outline-none focus:border-blue-500">
     </div>
     <div>
       <label class="block text-sm font-medium text-gray-300 mb-2">Đến ngày</label>
-      <input type="date" name="end_date" value="{{ end_date }}" class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500">
+      <input type="date" name="end_date" value="{{ end_date }}" class="w-full dark:bg-[#0a0a0a] bg-white dark:border-gray-700 border-gray-300 rounded-md px-3 py-2 dark:text-gray-100 text-gray-900 focus:outline-none focus:border-blue-500">
     </div>
     <div>
       <label class="block text-sm font-medium text-gray-300 mb-2">Loại giao dịch</label>
@@ -121,30 +121,30 @@
 </div>
 
 <!-- Danh sách giao dịch -->
-<div class="bg-[#121212] border border-gray-800 rounded-lg overflow-hidden">
-  <div class="p-4 border-b border-gray-800">
-    <h3 class="text-lg font-semibold text-gray-100 flex items-center">
+<div class="dark:bg-[#121212] bg-white dark:border-gray-800 border-gray-200 rounded-lg overflow-hidden">
+  <div class="p-4 border-b dark:border-gray-800 border-gray-200">
+    <h3 class="text-lg font-semibold dark:text-gray-100 text-gray-800 flex items-center">
       <i data-lucide="list" class="w-5 h-5 mr-2"></i>Lịch sử giao dịch
     </h3>
   </div>
   
   <div class="overflow-x-auto">
     <table class="w-full">
-      <thead class="bg-[#0a0a0a] border-b border-gray-800">
+      <thead class="dark:bg-[#0a0a0a] bg-gray-100 dark:border-gray-800 border-gray-200">
         <tr>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Ngày</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Loại</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Danh mục</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Số tiền</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Mô tả</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">Mã tham chiếu</th>
-          <th class="px-4 py-3 text-center text-xs font-medium text-gray-400 uppercase">Thao tác</th>
+          <th class="px-4 py-3 text-left text-xs font-medium dark:text-gray-400 text-gray-700 uppercase">Ngày</th>
+          <th class="px-4 py-3 text-left text-xs font-medium dark:text-gray-400 text-gray-700 uppercase">Loại</th>
+          <th class="px-4 py-3 text-left text-xs font-medium dark:text-gray-400 text-gray-700 uppercase">Danh mục</th>
+          <th class="px-4 py-3 text-left text-xs font-medium dark:text-gray-400 text-gray-700 uppercase">Số tiền</th>
+          <th class="px-4 py-3 text-left text-xs font-medium dark:text-gray-400 text-gray-700 uppercase">Mô tả</th>
+          <th class="px-4 py-3 text-left text-xs font-medium dark:text-gray-400 text-gray-700 uppercase">Mã tham chiếu</th>
+          <th class="px-4 py-3 text-center text-xs font-medium dark:text-gray-400 text-gray-700 uppercase">Thao tác</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-gray-800">
+      <tbody class="divide-y dark:divide-gray-800 divide-gray-200">
         {% for transaction in transactions %}
-        <tr class="hover:bg-[#161616] transition">
-          <td class="px-4 py-3 text-sm text-gray-300">{{ transaction.transaction_date|date:"d/m/Y H:i" }}</td>
+        <tr class="dark:hover:bg-[#161616] hover:bg-gray-100 transition">
+          <td class="px-4 py-3 text-sm dark:text-gray-300 text-gray-800">{{ transaction.transaction_date|date:"d/m/Y H:i" }}</td>
           <td class="px-4 py-3 text-sm">
             {% if transaction.transaction_type == 'deposit' %}
             <span class="px-2 py-1 text-xs rounded bg-blue-900/30 text-blue-400 border border-blue-800">
@@ -156,7 +156,7 @@
             </span>
             {% endif %}
           </td>
-          <td class="px-4 py-3 text-sm text-gray-300">{{ transaction.get_category_display }}</td>
+          <td class="px-4 py-3 text-sm dark:text-gray-300 text-gray-800">{{ transaction.get_category_display }}</td>
           <td class="px-4 py-3 text-sm font-semibold {% if transaction.transaction_type == 'deposit' %}text-emerald-400{% else %}text-orange-400{% endif %}">
             {% if wallet.currency == 'VND' %}
               {% if transaction.transaction_type == 'deposit' %}+{% else %}-{% endif %}{{ transaction.amount|smart_vnd }}
@@ -164,7 +164,7 @@
               {% if transaction.transaction_type == 'deposit' %}+{% else %}-{% endif %}{{ transaction.amount|floatformat:2 }} {{ wallet.currency }}
             {% endif %}
           </td>
-          <td class="px-4 py-3 text-sm text-gray-400">{{ transaction.description|truncatewords:10|default:"-" }}</td>
+          <td class="px-4 py-3 text-sm dark:text-gray-400 text-gray-600">{{ transaction.description|truncatewords:10|default:"-" }}</td>
           <td class="px-4 py-3 text-sm">
             {% if transaction.reference_code %}
               {% if transaction.reference_code|slice:":6" == "TRANS-" %}
