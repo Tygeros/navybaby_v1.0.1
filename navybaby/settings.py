@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "categories",
     "suppliers",
     "finance",
+    "wallet",
 ]
 
 # === MIDDLEWARE ===

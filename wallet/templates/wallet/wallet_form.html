@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if wallet %}Chỉnh sửa Ví{% else %}Tạo Ví Mới{% endif %} - NavyBaby{% endblock %}
+{% block navbar_icon %}wallet{% endblock %}
+{% block navbar_title %}{% if wallet %}Chỉnh sửa Ví{% else %}Tạo Ví Mới{% endif %}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold flex items-center text-blue-400">
+      <i data-lucide="wallet" class="w-6 h-6 mr-2"></i>
+      {% if wallet %}Chỉnh sửa Ví{% else %}Tạo Ví Mới{% endif %}
+    </h2>
+    <a href="{% if wallet %}{% url 'wallet:wallet_detail' wallet.id %}{% else %}{% url 'wallet:wallet_list' %}{% endif %}" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition flex items-center gap-2">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      Quay lại
+    </a>
+  </div>
+
+  <div class="bg-[#161616] border border-gray-800 rounded-lg p-6">
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="mb-4">
+        <label for="name" class="block text-sm font-medium text-gray-300 mb-2">
+          Tên ví <span class="text-red-400">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="name" 
+          name="name" 
+          value="{{ wallet.name|default:'' }}"
+          required
+          class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500"
+          placeholder="Ví CNY chính"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label for="currency" class="block text-sm font-medium text-gray-300 mb-2">
+          Loại tiền tệ <span class="text-red-400">*</span>
+        </label>
+        <select 
+          id="currency" 
+          name="currency" 
+          required
+          class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500"
+        >
+          <option value="VND" {% if wallet.currency == 'VND' %}selected{% elif not wallet %}{% endif %}>Việt Nam Đồng (VNĐ)</option>
+          <option value="CNY" {% if wallet.currency == 'CNY' or not wallet and wallet.currency != 'VND' %}selected{% endif %}>Đồng Nhân dân tệ (CNY)</option>
+        </select>
+        <p class="text-xs text-gray-500 mt-1">Chọn loại tiền tệ cho ví</p>
+      </div>
+
+      {% if not wallet %}
+      <div class="mb-4">
+        <label for="initial_balance" class="block text-sm font-medium text-gray-300 mb-2">
+          Số dư ban đầu
+        </label>
+        <input 
+          type="number" 
+          id="initial_balance" 
+          name="initial_balance" 
+          step="0.01"
+          min="0"
+          value="0.00"
+          class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500"
+          placeholder="0.00"
+        />
+        <p class="text-xs text-gray-500 mt-1">Nhập số dư ban đầu cho ví (có thể khác 0)</p>
+      </div>
+      {% endif %}
+
+      <div class="mb-4">
+        <label for="description" class="block text-sm font-medium text-gray-300 mb-2">
+          Mô tả
+        </label>
+        <textarea 
+          id="description" 
+          name="description" 
+          rows="3"
+          class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500"
+          placeholder="Mô tả về ví này..."
+        >{{ wallet.description|default:'' }}</textarea>
+      </div>
+
+      {% if wallet %}
+      <div class="mb-6">
+        <label class="flex items-center">
+          <input 
+            type="checkbox" 
+            name="is_active" 
+            {% if wallet.is_active %}checked{% endif %}
+            class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+          />
+          <span class="ml-2 text-sm text-gray-300">Ví đang hoạt động</span>
+        </label>
+      </div>
+
+      <!-- Điều chỉnh số dư thủ công -->
+      <div class="bg-[#0a0a0a] border border-yellow-800 rounded-lg p-4 mb-6">
+        <h3 class="text-sm font-semibold text-yellow-400 mb-3 flex items-center">
+          <i data-lucide="edit-3" class="w-4 h-4 mr-2"></i>
+          Điều chỉnh số dư thủ công
+        </h3>
+        <p class="text-xs text-gray-400 mb-3">Số dư hiện tại: <span class="font-bold text-emerald-400">{{ wallet.balance|floatformat:2 }} {{ wallet.currency }}</span></p>
+        
+        <div class="mb-3">
+          <label for="balance_adjustment" class="block text-sm font-medium text-gray-300 mb-2">
+            Số tiền điều chỉnh
+          </label>
+          <input 
+            type="number" 
+            id="balance_adjustment" 
+            name="balance_adjustment" 
+            step="0.01"
+            placeholder="0.00"
+            class="w-full bg-[#161616] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-yellow-500"
+          />
+          <p class="text-xs text-gray-500 mt-1">Nhập số dương để tăng, số âm để giảm. Ví dụ: +1000 hoặc -500</p>
+        </div>
+        
+        <div>
+          <label for="adjustment_note" class="block text-sm font-medium text-gray-300 mb-2">
+            Ghi chú điều chỉnh
+          </label>
+          <input 
+            type="text" 
+            id="adjustment_note" 
+            name="adjustment_note" 
+            placeholder="Lý do điều chỉnh..."
+            class="w-full bg-[#161616] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-yellow-500"
+          />
+          <p class="text-xs text-gray-500 mt-1">Ghi chú sẽ được lưu vào nhật ký giao dịch</p>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class="flex gap-3">
+        <button 
+          type="submit" 
+          class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition flex items-center justify-center gap-2"
+        >
+          <i data-lucide="save" class="w-4 h-4"></i>
+          {% if wallet %}Cập nhật{% else %}Tạo ví{% endif %}
+        </button>
+        <a 
+          href="{% if wallet %}{% url 'wallet:wallet_detail' wallet.id %}{% else %}{% url 'wallet:wallet_list' %}{% endif %}" 
+          class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition flex items-center justify-center gap-2"
+        >
+          <i data-lucide="x" class="w-4 h-4"></i>
+          Hủy
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  lucide.createIcons();
+</script>
+{% endblock %}

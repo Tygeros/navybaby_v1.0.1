@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if transaction %}Chỉnh sửa Giao dịch{% else %}Thêm Giao dịch{% endif %} - NavyBaby{% endblock %}
+{% block navbar_icon %}receipt{% endblock %}
+{% block navbar_title %}{% if transaction %}Chỉnh sửa Giao dịch{% else %}Thêm Giao dịch{% endif %}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold flex items-center text-blue-400">
+      <i data-lucide="receipt" class="w-6 h-6 mr-2"></i>
+      {% if transaction %}Chỉnh sửa Giao dịch{% else %}Thêm Giao dịch{% endif %}
+    </h2>
+    <a href="{% url 'wallet:wallet_detail' wallet.id %}" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition flex items-center gap-2">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i>
+      Quay lại
+    </a>
+  </div>
+
+  <!-- Thông tin ví -->
+  <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-800 rounded-lg p-4 mb-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-gray-400 text-sm">Ví</p>
+        <p class="text-lg font-semibold text-gray-100">{{ wallet.name }}</p>
+      </div>
+      <div class="text-right">
+        <p class="text-gray-400 text-sm">Số dư hiện tại</p>
+        <p class="text-lg font-semibold text-emerald-400">{{ wallet.balance|floatformat:2 }} {{ wallet.currency }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-[#161616] border border-gray-800 rounded-lg p-6">
+    <form method="post">
+      {% csrf_token %}
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <label for="transaction_type" class="block text-sm font-medium text-gray-300 mb-2">
+            Loại giao dịch <span class="text-red-400">*</span>
+          </label>
+          <select 
+            id="transaction_type" 
+            name="transaction_type" 
+            required
+            class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500"
+          >
+            {% for value, label in transaction_types %}
+            <option value="{{ value }}" {% if transaction.transaction_type == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div>
+          <label for="category" class="block text-sm font-medium text-gray-300 mb-2">
+            Danh mục <span class="text-red-400">*</span>
+          </label>
+          <select 
+            id="category" 
+            name="category" 
+            required
+            class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500"
+          >
+            {% for value, label in categories %}
+            <option value="{{ value }}" {% if transaction.category == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label for="amount" class="block text-sm font-medium text-gray-300 mb-2">
+          Số tiền ({{ wallet.currency }}) <span class="text-red-400">*</span>
+        </label>
+        <input 
+          type="number" 
+          id="amount" 
+          name="amount" 
+          step="0.01"
+          min="0.01"
+          value="{{ transaction.amount|default:'' }}"
+          required
+          class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500"
+          placeholder="0.00"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label for="transaction_date" class="block text-sm font-medium text-gray-300 mb-2">
+          Ngày giao dịch <span class="text-red-400">*</span>
+        </label>
+        <input 
+          type="datetime-local" 
+          id="transaction_date" 
+          name="transaction_date" 
+          value="{% if transaction %}{{ transaction.transaction_date|date:'Y-m-d\TH:i' }}{% endif %}"
+          class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500"
+        />
+        <p class="text-xs text-gray-500 mt-1">Mặc định là thời gian hiện tại, có thể chỉnh sửa</p>
+      </div>
+
+      <div class="mb-4">
+        <label for="reference_code" class="block text-sm font-medium text-gray-300 mb-2">
+          Mã tham chiếu
+        </label>
+        <input 
+          type="text" 
+          id="reference_code" 
+          name="reference_code" 
+          value="{{ transaction.reference_code|default:'' }}"
+          class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500"
+          placeholder="Mã đơn hàng, mã giao dịch..."
+        />
+      </div>
+
+      <div class="mb-6">
+        <label for="description" class="block text-sm font-medium text-gray-300 mb-2">
+          Mô tả
+        </label>
+        <textarea 
+          id="description" 
+          name="description" 
+          rows="3"
+          class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500"
+          placeholder="Ghi chú về giao dịch này..."
+        >{{ transaction.description|default:'' }}</textarea>
+      </div>
+
+      <div class="flex gap-3">
+        <button 
+          type="submit" 
+          class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition flex items-center justify-center gap-2"
+        >
+          <i data-lucide="save" class="w-4 h-4"></i>
+          {% if transaction %}Cập nhật{% else %}Thêm giao dịch{% endif %}
+        </button>
+        <a 
+          href="{% url 'wallet:wallet_detail' wallet.id %}" 
+          class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition flex items-center justify-center gap-2"
+        >
+          <i data-lucide="x" class="w-4 h-4"></i>
+          Hủy
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  lucide.createIcons();
+  
+  // Auto-fill current datetime if creating new transaction
+  {% if not transaction %}
+  document.addEventListener('DOMContentLoaded', function() {
+    const dateInput = document.getElementById('transaction_date');
+    if (!dateInput.value) {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      dateInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+  });
+  {% endif %}
+  
+  // Auto-select category based on transaction type
+  const transactionTypeSelect = document.getElementById('transaction_type');
+  const categorySelect = document.getElementById('category');
+  
+  function updateCategory() {
+    const transactionType = transactionTypeSelect.value;
+    
+    // If transaction type is 'deposit', auto-select 'deposit' category
+    if (transactionType === 'deposit') {
+      categorySelect.value = 'deposit';
+    }
+    // If transaction type is 'withdrawal' and category is 'deposit', change to 'other'
+    else if (transactionType === 'withdrawal' && categorySelect.value === 'deposit') {
+      categorySelect.value = 'other';
+    }
+  }
+  
+  // Update category when transaction type changes
+  transactionTypeSelect.addEventListener('change', updateCategory);
+  
+  // Run on page load to set initial state
+  updateCategory();
+</script>
+{% endblock %}

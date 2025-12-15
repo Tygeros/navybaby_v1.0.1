@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Xóa Giao dịch - NavyBaby{% endblock %}
+{% block navbar_icon %}trash-2{% endblock %}
+{% block navbar_title %}Xóa Giao dịch{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+  <div class="bg-[#161616] border border-red-800 rounded-lg p-6">
+    <div class="flex items-center gap-4 mb-6">
+      <div class="bg-red-900/30 p-3 rounded-full">
+        <i data-lucide="alert-triangle" class="w-8 h-8 text-red-400"></i>
+      </div>
+      <div>
+        <h2 class="text-2xl font-bold text-red-400">Xác nhận xóa giao dịch</h2>
+        <p class="text-gray-400">Hành động này không thể hoàn tác</p>
+      </div>
+    </div>
+
+    <div class="bg-[#0a0a0a] border border-gray-800 rounded-lg p-4 mb-6">
+      <p class="text-gray-300 mb-3">Bạn có chắc chắn muốn xóa giao dịch này?</p>
+      <div class="space-y-2">
+        <div class="flex justify-between">
+          <span class="text-gray-400">Loại:</span>
+          <span class="text-gray-100 font-semibold">{{ transaction.get_transaction_type_display }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-400">Danh mục:</span>
+          <span class="text-gray-100">{{ transaction.get_category_display }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-400">Số tiền:</span>
+          <span class="text-emerald-400 font-bold">{{ transaction.amount|floatformat:2 }} {{ wallet.currency }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-400">Ngày:</span>
+          <span class="text-gray-100">{{ transaction.transaction_date|date:"d/m/Y H:i" }}</span>
+        </div>
+        {% if transaction.description %}
+        <div class="flex justify-between">
+          <span class="text-gray-400">Mô tả:</span>
+          <span class="text-gray-100">{{ transaction.description|truncatewords:10 }}</span>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="bg-yellow-900/20 border border-yellow-800 rounded-lg p-4 mb-6">
+      <div class="flex gap-3">
+        <i data-lucide="info" class="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5"></i>
+        <div>
+          <p class="text-yellow-400 font-semibold mb-1">Lưu ý</p>
+          <p class="text-gray-300 text-sm">Số dư ví sẽ được tự động cập nhật sau khi xóa giao dịch này.</p>
+        </div>
+      </div>
+    </div>
+
+    <form method="post" class="flex gap-3">
+      {% csrf_token %}
+      <button 
+        type="submit" 
+        class="flex-1 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md transition flex items-center justify-center gap-2"
+      >
+        <i data-lucide="trash-2" class="w-4 h-4"></i>
+        Xác nhận xóa
+      </button>
+      <a 
+        href="{% url 'wallet:wallet_detail' wallet.id %}" 
+        class="flex-1 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-md transition flex items-center justify-center gap-2"
+      >
+        <i data-lucide="x" class="w-4 h-4"></i>
+        Hủy
+      </a>
+    </form>
+  </div>
+</div>
+
+<script>
+  lucide.createIcons();
+</script>
+{% endblock %}

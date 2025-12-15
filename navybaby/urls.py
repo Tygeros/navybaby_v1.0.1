@@ -30,6 +30,7 @@ urlpatterns = [
     path('', include('orders.urls')),
     path('', include('products.urls')),
     path('', include('finance.urls')),
+    path('vi/', include('wallet.urls')),
 ]
 
 if settings.DEBUG or not getattr(settings, "CLOUDINARY_URL", None):

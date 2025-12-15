@@ -87,6 +87,12 @@
             <span class="transition-transform group-hover:translate-x-0.5">Tài chính</span>
           </a>
         </li>
+        <li>
+          <a href="{% url 'wallet:wallet_list' %}" class="group flex items-center space-x-3 p-2 rounded-md text-gray-300 hover:bg-zinc-800/70 hover:text-white transition {% if '/vi/' in request.path %}bg-blue-900/30 text-blue-400{% endif %}">
+            <i data-lucide="coins" class="w-5 h-5"></i>
+            <span class="transition-transform group-hover:translate-x-0.5">Ví tiền tệ</span>
+          </a>
+        </li>
       </ul>
     </nav>
 

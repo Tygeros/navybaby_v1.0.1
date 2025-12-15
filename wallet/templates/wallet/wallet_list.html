@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load number_extras %}
+
+{% block title %}Quản lý Ví - NavyBaby{% endblock %}
+{% block navbar_icon %}wallet{% endblock %}
+{% block navbar_title %}Quản lý Ví{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+  <div>
+    <h2 class="text-2xl font-bold flex items-center text-blue-400">
+      <i data-lucide="wallet" class="w-6 h-6 mr-2"></i>Quản lý Ví
+    </h2>
+    <p class="text-gray-400">Quản lý ví đa tiền tệ (VNĐ, CNY)</p>
+  </div>
+  <a href="{% url 'wallet:wallet_create' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition flex items-center gap-2">
+    <i data-lucide="plus" class="w-4 h-4"></i>
+    Tạo ví mới
+  </a>
+</div>
+
+<!-- Số dư theo loại tiền tệ -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+  <!-- Số dư VNĐ -->
+  <div class="bg-gradient-to-r from-emerald-900/30 to-green-900/30 border border-emerald-800 rounded-lg p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-gray-400 text-sm mb-1 flex items-center">
+          <i data-lucide="wallet" class="w-4 h-4 mr-1"></i>
+          Tổng số dư VNĐ
+        </p>
+        <h3 class="text-3xl font-bold text-emerald-300">{{ vnd_balance|smart_vnd }}</h3>
+        <p class="text-xs text-gray-500 mt-1">Việt Nam Đồng</p>
+      </div>
+      <div class="bg-emerald-500/20 p-4 rounded-full">
+        <i data-lucide="coins" class="w-12 h-12 text-emerald-400"></i>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Số dư CNY -->
+  <div class="bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-800 rounded-lg p-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-gray-400 text-sm mb-1 flex items-center">
+          <i data-lucide="wallet" class="w-4 h-4 mr-1"></i>
+          Tổng số dư CNY
+        </p>
+        <h3 class="text-3xl font-bold text-blue-300">{{ cny_balance|floatformat:2 }} ¥</h3>
+        <p class="text-xs text-gray-500 mt-1">Đồng Nhân dân tệ</p>
+      </div>
+      <div class="bg-blue-500/20 p-4 rounded-full">
+        <i data-lucide="coins" class="w-12 h-12 text-blue-400"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Danh sách ví -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  {% for wallet in wallets %}
+  <div class="bg-[#161616] border border-gray-800 rounded-lg p-5 hover:border-gray-700 transition">
+    <div class="flex items-start justify-between mb-4">
+      <div class="flex-1">
+        <h3 class="text-lg font-semibold text-gray-100 mb-1">{{ wallet.name }}</h3>
+        <span class="text-xs px-2 py-1 rounded {% if wallet.is_active %}bg-green-900/30 text-green-400 border border-green-800{% else %}bg-gray-900/30 text-gray-400 border border-gray-800{% endif %}">
+          {% if wallet.is_active %}Đang hoạt động{% else %}Không hoạt động{% endif %}
+        </span>
+      </div>
+      <i data-lucide="wallet" class="w-8 h-8 text-blue-400"></i>
+    </div>
+    
+    <div class="mb-4">
+      <p class="text-gray-400 text-sm mb-1">Số dư hiện tại</p>
+      {% if wallet.currency == 'VND' %}
+      <p class="text-2xl font-bold text-emerald-400">{{ wallet.balance|smart_vnd }}</p>
+      {% else %}
+      <p class="text-2xl font-bold text-emerald-400">{{ wallet.balance|floatformat:2 }} {{ wallet.currency }}</p>
+      {% endif %}
+    </div>
+    
+    {% if wallet.description %}
+    <p class="text-gray-400 text-sm mb-4 line-clamp-2">{{ wallet.description }}</p>
+    {% endif %}
+    
+    <div class="flex gap-2">
+      <a href="{% url 'wallet:wallet_detail' wallet.id %}" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center px-3 py-2 rounded-md text-sm transition">
+        <i data-lucide="eye" class="w-4 h-4 inline mr-1"></i>Chi tiết
+      </a>
+      <a href="{% url 'wallet:wallet_edit' wallet.id %}" class="bg-gray-700 hover:bg-gray-600 text-white px-3 py-2 rounded-md text-sm transition" title="Chỉnh sửa">
+        <i data-lucide="edit" class="w-4 h-4"></i>
+      </a>
+      <a href="{% url 'wallet:wallet_delete' wallet.id %}" class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-md text-sm transition" title="Xóa ví">
+        <i data-lucide="trash-2" class="w-4 h-4"></i>
+      </a>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-span-full bg-[#161616] border border-gray-800 rounded-lg p-8 text-center">
+    <i data-lucide="wallet" class="w-16 h-16 text-gray-600 mx-auto mb-4"></i>
+    <p class="text-gray-400 mb-4">Chưa có ví nào. Tạo ví đầu tiên để bắt đầu quản lý!</p>
+    <a href="{% url 'wallet:wallet_create' %}" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition">
+      <i data-lucide="plus" class="w-4 h-4"></i>
+      Tạo ví mới
+    </a>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+  lucide.createIcons();
+</script>
+{% endblock %}
