@@ -22,6 +22,28 @@ class HomePageView(LoginRequiredMixin, TemplateView):
         context['recent_orders'] = []
         context['top_products'] = []
 
+        # Get custom date range from GET parameters
+        start_date_str = self.request.GET.get('start_date', '')
+        end_date_str = self.request.GET.get('end_date', '')
+        
+        # Parse dates
+        custom_start_date = None
+        custom_end_date = None
+        
+        if start_date_str:
+            try:
+                custom_start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+                context['start_date'] = start_date_str
+            except ValueError:
+                pass
+        
+        if end_date_str:
+            try:
+                custom_end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+                context['end_date'] = end_date_str
+            except ValueError:
+                pass
+
         # Lãi ròng ước tính
         # - Loại trừ trạng thái: Đã đối soát (reconciled), Hủy đơn (cancelled)
         # - Bỏ qua đơn có product.purchase_price = 0
@@ -63,6 +85,27 @@ class HomePageView(LoginRequiredMixin, TemplateView):
             prev_month_start_date = datetime(today_date.year, today_date.month - 1, 1)
         prev_month_start = timezone.make_aware(prev_month_start_date)
         prev_month_end = start_month
+        
+        # Determine date range for charts based on custom dates or defaults
+        if custom_start_date and custom_end_date:
+            chart_start = timezone.make_aware(datetime.combine(custom_start_date, datetime.min.time()))
+            chart_end = timezone.make_aware(datetime.combine(custom_end_date, datetime.max.time()))
+            date_range_label = f"từ {start_date_str} đến {end_date_str}"
+        elif custom_start_date:
+            chart_start = timezone.make_aware(datetime.combine(custom_start_date, datetime.min.time()))
+            chart_end = now
+            date_range_label = f"từ {start_date_str}"
+        elif custom_end_date:
+            chart_start = start_month  # Default to start of month if only end date provided
+            chart_end = timezone.make_aware(datetime.combine(custom_end_date, datetime.max.time()))
+            date_range_label = f"đến {end_date_str}"
+        else:
+            # Default: last 30 days for timeline, current month for top products/customers
+            chart_start = start_today - timedelta(days=30)
+            chart_end = now
+            date_range_label = "30 ngày qua"
+        
+        context['date_range_label'] = date_range_label
 
         # Common filters/helpers
         def in_range(model_qs, field, start, end=None):
@@ -124,12 +167,13 @@ class HomePageView(LoginRequiredMixin, TemplateView):
             'last_month': orders_last_month,
         }
 
-        # Top-selling products this month (by net revenue)
+        # Top-selling products (by net revenue) - use custom date range or current month
         from django.db.models import Case, When, Value, FloatField
+        top_products_start = chart_start if (custom_start_date or custom_end_date) else start_month
         top_products_qs = (
             Order.objects
             .exclude(status__in=['reconciled', 'cancelled'])
-            .filter(created_at__gte=start_month)
+            .filter(created_at__gte=top_products_start, created_at__lte=chart_end)
             .select_related('product')
             .values('product_id', 'product__name', 'product__code')
             .annotate(
@@ -141,11 +185,12 @@ class HomePageView(LoginRequiredMixin, TemplateView):
         )
         context['top_products'] = list(top_products_qs)
 
-        # Top customers this month (by net revenue)
+        # Top customers (by net revenue) - use custom date range or current month
+        top_customers_start = chart_start if (custom_start_date or custom_end_date) else start_month
         top_customers_qs = (
             Order.objects
             .exclude(status__in=['reconciled', 'cancelled'])
-            .filter(created_at__gte=start_month)
+            .filter(created_at__gte=top_customers_start, created_at__lte=chart_end)
             .select_related('customer')
             .values('customer_id', 'customer__name', 'customer__code')
             .annotate(
@@ -157,11 +202,12 @@ class HomePageView(LoginRequiredMixin, TemplateView):
         )
         context['top_customers'] = list(top_customers_qs)
 
-        # Order status breakdown
+        # Order status breakdown - use custom date range or current month
         from django.db.models import Count
+        status_breakdown_start = chart_start if (custom_start_date or custom_end_date) else start_month
         status_breakdown_qs = (
             Order.objects
-            .filter(created_at__gte=start_month)
+            .filter(created_at__gte=status_breakdown_start, created_at__lte=chart_end)
             .values('status')
             .annotate(
                 order_count=Count('id'),
@@ -180,13 +226,12 @@ class HomePageView(LoginRequiredMixin, TemplateView):
             })
         context['status_breakdown'] = status_breakdown
 
-        # Revenue over last 30 days (daily)
+        # Revenue timeline (daily) - use custom date range or last 30 days
         from django.db.models.functions import TruncDate
-        thirty_days_ago = start_today - timedelta(days=30)
         daily_revenue_qs = (
             Order.objects
             .exclude(status__in=['reconciled', 'cancelled'])
-            .filter(created_at__gte=thirty_days_ago)
+            .filter(created_at__gte=chart_start, created_at__lte=chart_end)
             .annotate(day=TruncDate('created_at'))
             .values('day')
             .annotate(
@@ -199,8 +244,9 @@ class HomePageView(LoginRequiredMixin, TemplateView):
         
         # Fill missing days with 0
         revenue_timeline = []
-        current_day = thirty_days_ago.date()
-        while current_day <= today_date:
+        current_day = chart_start.date()
+        end_day = chart_end.date()
+        while current_day <= end_day:
             data = revenue_by_day.get(current_day, {'count': 0, 'revenue': 0})
             revenue_timeline.append({
                 'day': current_day.strftime('%Y-%m-%d'),

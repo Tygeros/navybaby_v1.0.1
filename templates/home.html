@@ -43,35 +43,122 @@
   </div>
 </div>
 
-<!-- Biểu đồ doanh thu & đơn hàng 30 ngày -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-  <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
-    <div class="flex items-center justify-between mb-3">
-      <h5 class="font-semibold text-lg flex items-center text-emerald-400">
-        <i data-lucide="trending-up" class="w-5 h-5 mr-2"></i>Doanh thu 30 ngày qua
-      </h5>
-      <div class="text-right">
-        <p class="text-xs text-gray-400">Tổng</p>
-        <p id="totalRevenue" class="text-lg font-bold text-emerald-400">-</p>
-      </div>
+<!-- Date Range Filter -->
+<div class="bg-[#161616] border border-gray-800 rounded-lg p-4 mb-6">
+  <form method="get" action="{% url 'home' %}" class="flex flex-col md:flex-row gap-4 items-end">
+    <div class="flex-1">
+      <label for="start_date" class="block text-sm font-medium text-gray-300 mb-2">
+        <i data-lucide="calendar" class="w-4 h-4 inline mr-1"></i>Ngày bắt đầu
+      </label>
+      <input 
+        type="date" 
+        id="start_date" 
+        name="start_date" 
+        value="{{ start_date|default:'' }}"
+        class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500 transition"
+      />
     </div>
-    <div class="h-64">
-      <canvas id="revenueChart"></canvas>
+    <div class="flex-1">
+      <label for="end_date" class="block text-sm font-medium text-gray-300 mb-2">
+        <i data-lucide="calendar" class="w-4 h-4 inline mr-1"></i>Ngày kết thúc
+      </label>
+      <input 
+        type="date" 
+        id="end_date" 
+        name="end_date" 
+        value="{{ end_date|default:'' }}"
+        class="w-full bg-[#0a0a0a] border border-gray-700 rounded-md px-3 py-2 text-gray-100 focus:outline-none focus:border-blue-500 transition"
+      />
+    </div>
+    <div class="flex gap-2">
+      <button 
+        type="submit" 
+        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-md transition flex items-center gap-2"
+      >
+        <i data-lucide="filter" class="w-4 h-4"></i>
+        Áp dụng
+      </button>
+      <a 
+        href="{% url 'home' %}" 
+        class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-md transition flex items-center gap-2"
+      >
+        <i data-lucide="x" class="w-4 h-4"></i>
+        Xóa bộ lọc
+      </a>
+    </div>
+  </form>
+  {% if start_date or end_date %}
+  <div class="mt-3 text-sm text-gray-400">
+    <i data-lucide="info" class="w-4 h-4 inline mr-1"></i>
+    Đang hiển thị báo cáo từ 
+    <span class="text-blue-400 font-medium">{{ start_date|default:"(không giới hạn)" }}</span> 
+    đến 
+    <span class="text-blue-400 font-medium">{{ end_date|default:"(không giới hạn)" }}</span>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Biểu đồ doanh thu & đơn hàng -->
+<div class="mb-6">
+  <!-- View Mode Selector -->
+  <div class="flex items-center justify-between mb-4">
+    <h4 class="text-lg font-semibold text-gray-200 flex items-center">
+      <i data-lucide="bar-chart-3" class="w-5 h-5 mr-2"></i>Biểu đồ theo thời gian
+    </h4>
+    <div class="flex gap-2 bg-[#161616] border border-gray-800 rounded-lg p-1">
+      <button 
+        onclick="changeChartView('day')" 
+        id="viewDay" 
+        class="px-4 py-2 rounded-md text-sm font-medium transition bg-blue-600 text-white"
+      >
+        <i data-lucide="calendar-days" class="w-4 h-4 inline mr-1"></i>Ngày
+      </button>
+      <button 
+        onclick="changeChartView('week')" 
+        id="viewWeek" 
+        class="px-4 py-2 rounded-md text-sm font-medium transition text-gray-400 hover:text-gray-200"
+      >
+        <i data-lucide="calendar-range" class="w-4 h-4 inline mr-1"></i>Tuần
+      </button>
+      <button 
+        onclick="changeChartView('month')" 
+        id="viewMonth" 
+        class="px-4 py-2 rounded-md text-sm font-medium transition text-gray-400 hover:text-gray-200"
+      >
+        <i data-lucide="calendar" class="w-4 h-4 inline mr-1"></i>Tháng
+      </button>
     </div>
   </div>
-  
-  <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
-    <div class="flex items-center justify-between mb-3">
-      <h5 class="font-semibold text-lg flex items-center text-yellow-400">
-        <i data-lucide="shopping-cart" class="w-5 h-5 mr-2"></i>Số lượng đơn hàng 30 ngày qua
-      </h5>
-      <div class="text-right">
-        <p class="text-xs text-gray-400">Tổng</p>
-        <p id="totalOrders" class="text-lg font-bold text-yellow-400">-</p>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h5 class="font-semibold text-lg flex items-center text-emerald-400">
+          <i data-lucide="trending-up" class="w-5 h-5 mr-2"></i>Doanh thu {{ date_range_label }}
+        </h5>
+        <div class="text-right">
+          <p class="text-xs text-gray-400">Tổng</p>
+          <p id="totalRevenue" class="text-lg font-bold text-emerald-400">-</p>
+        </div>
+      </div>
+      <div class="h-64">
+        <canvas id="revenueChart"></canvas>
       </div>
     </div>
-    <div class="h-64">
-      <canvas id="orderCountChart"></canvas>
+    
+    <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h5 class="font-semibold text-lg flex items-center text-yellow-400">
+          <i data-lucide="shopping-cart" class="w-5 h-5 mr-2"></i>Số lượng đơn hàng {{ date_range_label }}
+        </h5>
+        <div class="text-right">
+          <p class="text-xs text-gray-400">Tổng</p>
+          <p id="totalOrders" class="text-lg font-bold text-yellow-400">-</p>
+        </div>
+      </div>
+      <div class="h-64">
+        <canvas id="orderCountChart"></canvas>
+      </div>
     </div>
   </div>
 </div>
@@ -81,7 +168,7 @@
   <!-- Top sản phẩm -->
   <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
     <h5 class="font-semibold text-lg mb-3 flex items-center text-blue-400">
-      <i data-lucide="package" class="w-5 h-5 mr-2"></i>Top sản phẩm tháng này
+      <i data-lucide="package" class="w-5 h-5 mr-2"></i>Top sản phẩm {{ date_range_label }}
     </h5>
     <div class="h-80">
       <canvas id="topProductsChart"></canvas>
@@ -91,7 +178,7 @@
   <!-- Top khách hàng -->
   <div class="bg-[#121212] border border-gray-800 rounded-lg p-4">
     <h5 class="font-semibold text-lg mb-3 flex items-center text-purple-400">
-      <i data-lucide="users" class="w-5 h-5 mr-2"></i>Top khách hàng tháng này
+      <i data-lucide="users" class="w-5 h-5 mr-2"></i>Top khách hàng {{ date_range_label }}
     </h5>
     <div class="h-80">
       <canvas id="topCustomersChart"></canvas>
@@ -122,39 +209,113 @@
   const topCustomersData = {{ top_customers_chart|default:'[]' }};
   const statusData = {{ status_breakdown_chart|default:'[]' }};
 
+  // Store original data
+  const originalRevenueData = [...revenueData];
+  
+  // Chart instances
+  let revenueChart = null;
+  let orderCountChart = null;
+  let currentViewMode = 'day';
+
   // Calculate totals
-  let totalRevenue30Days = 0;
-  let totalOrders30Days = 0;
-  if (revenueData && revenueData.length > 0) {
-    revenueData.forEach(d => {
-      totalRevenue30Days += d.revenue || 0;
-      totalOrders30Days += d.order_count || 0;
-    });
-    
-    // Display totals
-    const totalRevenueEl = document.getElementById('totalRevenue');
-    const totalOrdersEl = document.getElementById('totalOrders');
-    if (totalRevenueEl) {
-      totalRevenueEl.textContent = (totalRevenue30Days / 1000000).toFixed(1) + 'Mđ';
-    }
-    if (totalOrdersEl) {
-      totalOrdersEl.textContent = totalOrders30Days.toLocaleString('vi-VN');
+  function updateTotals(data) {
+    let totalRevenue = 0;
+    let totalOrders = 0;
+    if (data && data.length > 0) {
+      data.forEach(d => {
+        totalRevenue += d.revenue || 0;
+        totalOrders += d.order_count || 0;
+      });
+      
+      const totalRevenueEl = document.getElementById('totalRevenue');
+      const totalOrdersEl = document.getElementById('totalOrders');
+      if (totalRevenueEl) {
+        totalRevenueEl.textContent = (totalRevenue / 1000000).toFixed(1) + 'Mđ';
+      }
+      if (totalOrdersEl) {
+        totalOrdersEl.textContent = totalOrders.toLocaleString('vi-VN');
+      }
     }
   }
 
-  // Revenue chart (30 days)
-  if (revenueData && revenueData.length > 0) {
-    const ctx1 = document.getElementById('revenueChart');
-    new Chart(ctx1, {
+  // Get week number
+  function getWeekNumber(date) {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() + 4 - (d.getDay() || 7));
+    const yearStart = new Date(d.getFullYear(), 0, 1);
+    const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    return d.getFullYear() + '-W' + weekNo;
+  }
+
+  // Get month key
+  function getMonthKey(date) {
+    const d = new Date(date);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  }
+
+  // Aggregate data by view mode
+  function aggregateData(data, mode) {
+    if (mode === 'day') {
+      return data;
+    }
+
+    const aggregated = {};
+    
+    data.forEach(item => {
+      let key;
+      if (mode === 'week') {
+        key = getWeekNumber(item.day);
+      } else if (mode === 'month') {
+        key = getMonthKey(item.day);
+      }
+
+      if (!aggregated[key]) {
+        aggregated[key] = {
+          key: key,
+          revenue: 0,
+          order_count: 0,
+          days: []
+        };
+      }
+
+      aggregated[key].revenue += item.revenue || 0;
+      aggregated[key].order_count += item.order_count || 0;
+      aggregated[key].days.push(item.day);
+    });
+
+    return Object.values(aggregated).sort((a, b) => a.key.localeCompare(b.key));
+  }
+
+  // Format label based on view mode
+  function formatLabel(item, mode) {
+    if (mode === 'day') {
+      const date = new Date(item.day);
+      return date.getDate() + '/' + (date.getMonth() + 1);
+    } else if (mode === 'week') {
+      const parts = item.key.split('-W');
+      return 'Tuần ' + parts[1] + '/' + parts[0];
+    } else if (mode === 'month') {
+      const parts = item.key.split('-');
+      return 'Tháng ' + parts[1] + '/' + parts[0];
+    }
+  }
+
+  // Create or update revenue chart
+  function createRevenueChart(data, mode) {
+    const ctx = document.getElementById('revenueChart');
+    
+    if (revenueChart) {
+      revenueChart.destroy();
+    }
+
+    revenueChart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: revenueData.map(d => {
-          const date = new Date(d.day);
-          return date.getDate() + '/' + (date.getMonth() + 1);
-        }),
+        labels: data.map(d => formatLabel(d, mode)),
         datasets: [{
           label: 'Doanh thu (đ)',
-          data: revenueData.map(d => d.revenue),
+          data: data.map(d => d.revenue),
           borderColor: '#10b981',
           backgroundColor: 'rgba(16, 185, 129, 0.1)',
           tension: 0.4,
@@ -188,19 +349,21 @@
     });
   }
 
-  // Order count chart (30 days)
-  if (revenueData && revenueData.length > 0) {
-    const ctx1b = document.getElementById('orderCountChart');
-    new Chart(ctx1b, {
+  // Create or update order count chart
+  function createOrderCountChart(data, mode) {
+    const ctx = document.getElementById('orderCountChart');
+    
+    if (orderCountChart) {
+      orderCountChart.destroy();
+    }
+
+    orderCountChart = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: revenueData.map(d => {
-          const date = new Date(d.day);
-          return date.getDate() + '/' + (date.getMonth() + 1);
-        }),
+        labels: data.map(d => formatLabel(d, mode)),
         datasets: [{
           label: 'Số đơn',
-          data: revenueData.map(d => d.order_count),
+          data: data.map(d => d.order_count),
           backgroundColor: '#f59e0b',
           borderRadius: 4,
           maxBarThickness: 40,
@@ -229,6 +392,39 @@
         }
       }
     });
+  }
+
+  // Change chart view mode
+  window.changeChartView = function(mode) {
+    currentViewMode = mode;
+    
+    // Update button styles
+    ['day', 'week', 'month'].forEach(m => {
+      const btn = document.getElementById('view' + m.charAt(0).toUpperCase() + m.slice(1));
+      if (btn) {
+        if (m === mode) {
+          btn.className = 'px-4 py-2 rounded-md text-sm font-medium transition bg-blue-600 text-white';
+        } else {
+          btn.className = 'px-4 py-2 rounded-md text-sm font-medium transition text-gray-400 hover:text-gray-200';
+        }
+      }
+    });
+
+    // Aggregate data and update charts
+    const aggregatedData = aggregateData(originalRevenueData, mode);
+    updateTotals(aggregatedData);
+    createRevenueChart(aggregatedData, mode);
+    createOrderCountChart(aggregatedData, mode);
+    
+    // Reinitialize lucide icons
+    lucide.createIcons();
+  }
+
+  // Initialize charts with day view
+  if (revenueData && revenueData.length > 0) {
+    updateTotals(revenueData);
+    createRevenueChart(revenueData, 'day');
+    createOrderCountChart(revenueData, 'day');
   }
 
   // Top products chart with custom tooltip
