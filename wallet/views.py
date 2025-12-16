@@ -70,6 +70,26 @@ def wallet_detail(request, wallet_id):
     if category:
         transactions = transactions.filter(category=category)
     
+    # Xử lý hiển thị đúng loại giao dịch cho các giao dịch tự động từ Finance
+    from finance.models import FinanceTransaction
+    transactions_list = list(transactions)
+    for tx in transactions_list:
+        if tx.reference_code and tx.reference_code.startswith('TRANS-'):
+            try:
+                finance_id = tx.reference_code.replace('TRANS-', '')
+                finance_tx = FinanceTransaction.objects.get(id=finance_id)
+                if finance_tx.category:
+                    if finance_tx.category.type == 'INCOME':
+                        tx.display_type = 'income'
+                    else:
+                        tx.display_type = 'expense'
+                else:
+                    tx.display_type = 'income' if finance_tx.amount > 0 else 'expense'
+            except (FinanceTransaction.DoesNotExist, ValueError):
+                tx.display_type = tx.transaction_type
+        else:
+            tx.display_type = tx.transaction_type
+    
     # Thống kê
     total_deposits = wallet.transactions.filter(
         transaction_type='deposit'
@@ -81,7 +101,7 @@ def wallet_detail(request, wallet_id):
     
     context = {
         'wallet': wallet,
-        'transactions': transactions,
+        'transactions': transactions_list,
         'total_deposits': total_deposits,
         'total_withdrawals': total_withdrawals,
         'start_date': start_date,

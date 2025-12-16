@@ -146,9 +146,17 @@
         <tr class="dark:hover:bg-[#161616] hover:bg-gray-100 transition">
           <td class="px-4 py-3 text-sm dark:text-gray-300 text-gray-800">{{ transaction.transaction_date|date:"d/m/Y H:i" }}</td>
           <td class="px-4 py-3 text-sm">
-            {% if transaction.transaction_type == 'deposit' %}
+            {% if transaction.display_type == 'deposit' %}
             <span class="px-2 py-1 text-xs rounded bg-blue-900/30 text-blue-400 border border-blue-800">
               <i data-lucide="arrow-down-circle" class="w-3 h-3 inline"></i> Nạp tiền
+            </span>
+            {% elif transaction.display_type == 'income' %}
+            <span class="px-2 py-1 text-xs rounded bg-emerald-900/30 text-emerald-400 border border-emerald-800">
+              <i data-lucide="trending-up" class="w-3 h-3 inline"></i> Khoản thu (Tự động từ tài chính)
+            </span>
+            {% elif transaction.display_type == 'expense' %}
+            <span class="px-2 py-1 text-xs rounded bg-red-900/30 text-red-400 border border-red-800">
+              <i data-lucide="trending-down" class="w-3 h-3 inline"></i> Khoản chi (Tự động từ tài chính)
             </span>
             {% else %}
             <span class="px-2 py-1 text-xs rounded bg-orange-900/30 text-orange-400 border border-orange-800">
@@ -157,11 +165,11 @@
             {% endif %}
           </td>
           <td class="px-4 py-3 text-sm dark:text-gray-300 text-gray-800">{{ transaction.get_category_display }}</td>
-          <td class="px-4 py-3 text-sm font-semibold {% if transaction.transaction_type == 'deposit' %}text-emerald-400{% else %}text-orange-400{% endif %}">
+          <td class="px-4 py-3 text-sm font-semibold {% if transaction.display_type == 'deposit' or transaction.display_type == 'income' %}text-emerald-400{% else %}text-orange-400{% endif %}">
             {% if wallet.currency == 'VND' %}
-              {% if transaction.transaction_type == 'deposit' %}+{% else %}-{% endif %}{{ transaction.amount|smart_vnd }}
+              {% if transaction.display_type == 'deposit' or transaction.display_type == 'income' %}+{% else %}-{% endif %}{{ transaction.amount|smart_vnd }}
             {% else %}
-              {% if transaction.transaction_type == 'deposit' %}+{% else %}-{% endif %}{{ transaction.amount|floatformat:2 }} {{ wallet.currency }}
+              {% if transaction.display_type == 'deposit' or transaction.display_type == 'income' %}+{% else %}-{% endif %}{{ transaction.amount|floatformat:2 }} {{ wallet.currency }}
             {% endif %}
           </td>
           <td class="px-4 py-3 text-sm dark:text-gray-400 text-gray-600">{{ transaction.description|truncatewords:10|default:"-" }}</td>
