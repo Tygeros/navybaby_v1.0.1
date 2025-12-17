@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Sum, Q, Count
 from django.db.models.functions import TruncDate
+from django.core.paginator import Paginator
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from datetime import datetime, timedelta
@@ -70,10 +71,13 @@ def wallet_detail(request, wallet_id):
     if category:
         transactions = transactions.filter(category=category)
     
+    page = request.GET.get('page')
+    paginator = Paginator(transactions, 25)
+    transactions_page = paginator.get_page(page)
+    
     # Xử lý hiển thị đúng loại giao dịch cho các giao dịch tự động từ Finance
     from finance.models import FinanceTransaction
-    transactions_list = list(transactions)
-    for tx in transactions_list:
+    for tx in transactions_page:
         if tx.reference_code and tx.reference_code.startswith('TRANS-'):
             try:
                 finance_id = tx.reference_code.replace('TRANS-', '')
@@ -90,6 +94,11 @@ def wallet_detail(request, wallet_id):
         else:
             tx.display_type = tx.transaction_type
     
+    query_params = request.GET.copy()
+    if 'page' in query_params:
+        del query_params['page']
+    query_string = query_params.urlencode()
+
     # Thống kê
     total_deposits = wallet.transactions.filter(
         transaction_type='deposit'
@@ -101,7 +110,7 @@ def wallet_detail(request, wallet_id):
     
     context = {
         'wallet': wallet,
-        'transactions': transactions_list,
+        'transactions': transactions_page,
         'total_deposits': total_deposits,
         'total_withdrawals': total_withdrawals,
         'start_date': start_date,
@@ -110,6 +119,7 @@ def wallet_detail(request, wallet_id):
         'category': category,
         'transaction_types': WalletTransaction.TRANSACTION_TYPES,
         'categories': WalletTransaction.CATEGORY_CHOICES,
+        'query_string': query_string,
     }
     return render(request, 'wallet/wallet_detail.html', context)
 

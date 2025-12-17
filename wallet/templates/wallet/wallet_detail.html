@@ -210,6 +210,46 @@
         {% endfor %}
       </tbody>
     </table>
+    {% if transactions.paginator.num_pages > 1 %}
+    <div class="px-4 py-3 border-t dark:border-gray-800 border-gray-200 flex items-center justify-between">
+      <div class="text-sm text-gray-400">
+        Trang {{ transactions.number }} / {{ transactions.paginator.num_pages }}
+      </div>
+      <div class="flex items-center gap-1">
+        {% if transactions.has_previous %}
+        <a href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ transactions.previous_page_number }}" class="px-3 py-1 text-sm rounded-md bg-[#0a0a0a] border border-gray-700 text-gray-200 hover:bg-gray-800 transition">
+          Trước
+        </a>
+        {% else %}
+        <span class="px-3 py-1 text-sm rounded-md bg-[#050505] border border-gray-800 text-gray-600 cursor-not-allowed">
+          Trước
+        </span>
+        {% endif %}
+
+        {% for num in transactions.paginator.page_range %}
+          {% if num == transactions.number %}
+          <span class="px-3 py-1 text-sm rounded-md bg-blue-600 text-white border border-blue-500">
+            {{ num }}
+          </span>
+          {% else %}
+          <a href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ num }}" class="px-3 py-1 text-sm rounded-md bg-[#0a0a0a] border border-gray-700 text-gray-200 hover:bg-gray-800 transition">
+            {{ num }}
+          </a>
+          {% endif %}
+        {% endfor %}
+
+        {% if transactions.has_next %}
+        <a href="?{% if query_string %}{{ query_string }}&{% endif %}page={{ transactions.next_page_number }}" class="px-3 py-1 text-sm rounded-md bg-[#0a0a0a] border border-gray-700 text-gray-200 hover:bg-gray-800 transition">
+          Sau
+        </a>
+        {% else %}
+        <span class="px-3 py-1 text-sm rounded-md bg-[#050505] border border-gray-800 text-gray-600 cursor-not-allowed">
+          Sau
+        </span>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
   </div>
 </div>
 
