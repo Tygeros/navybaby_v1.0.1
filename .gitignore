@@ -276,3 +276,6 @@ fixtures/
 render_db_info.local.txt
 render_env.local.sh
 
+note.txt
+fixtures/
+load_fixtures.sh
