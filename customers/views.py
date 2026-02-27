@@ -747,9 +747,9 @@ class CustomerBillView(DetailView):
             from urllib.parse import quote
         except Exception:
             quote = lambda x: x
-        bank_name = 'Techcombank'
+        bank_name = 'Vietcombank'
         bank_owner = 'Quách Thị Phương Nga'
-        bank_account = '19036902149010'
+        bank_account = '9372282552'
         amount_int = int(remaining)
         qr_url = self.request.GET.get('qr_url')
         if not qr_url:
@@ -786,7 +786,7 @@ class CustomerBillView(DetailView):
             # No explicit QR; prefer a fixed default id=3, then latest uploaded
             try:
                 from .models import QRCode
-                preferred = QRCode.objects.filter(id=4).first()
+                preferred = QRCode.objects.filter(id=5).first()
                 if preferred and getattr(preferred, 'url', ''):
                     qr_url = preferred.url
                 else:

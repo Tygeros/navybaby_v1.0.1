@@ -277,5 +277,6 @@ render_db_info.local.txt
 render_env.local.sh
 
 note.txt
-fixtures/
-load_fixtures.sh
+dump_fixtures.sh
+clean_fixtures.sh
+restore_fixtures.sh
