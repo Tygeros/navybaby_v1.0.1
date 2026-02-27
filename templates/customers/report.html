@@ -21,7 +21,7 @@
        class="px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700 flex items-center">
       <i data-lucide="arrow-left" class="inline w-4 h-4 mr-1"></i>Quay lại chi tiết
     </a>
-    <a href="{% url 'customers:customer_bill' customer.code %}{% if request.GET %}?{{ request.GET.urlencode }}&qr_id=4{% else %}?qr_id=4{% endif %}"
+    <a href="{% url 'customers:customer_bill' customer.code %}{% if request.GET %}?{{ request.GET.urlencode }}&qr_id=5{% else %}?qr_id=5{% endif %}"
        class="px-3 py-1.5 rounded-md border text-sm transition bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-500 flex items-center">
       <i data-lucide="file-text" class="inline w-4 h-4 mr-1"></i>Mở bill
     </a>
