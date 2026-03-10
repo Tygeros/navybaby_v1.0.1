@@ -1,4 +1,6 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
@@ -13,7 +15,7 @@ from customers.models import Customer
 from products.models import Product, Color, Size
 
 
-class OrderListView(ListView):
+class OrderListView(LoginRequiredMixin, ListView):
     model = Order
     template_name = 'orders/list.html'
     context_object_name = 'orders'
@@ -260,7 +262,7 @@ class OrderListView(ListView):
         return context
 
 
-class OrderCreateView(CreateView):
+class OrderCreateView(LoginRequiredMixin, CreateView):
     model = Order
     form_class = OrderForm
     template_name = 'orders/create.html'
@@ -511,7 +513,7 @@ class OrderCreateView(CreateView):
         return super().form_invalid(form)
 
 
-class OrderUpdateView(UpdateView):
+class OrderUpdateView(LoginRequiredMixin, UpdateView):
     model = Order
     form_class = OrderForm
     template_name = 'orders/create.html'
@@ -534,7 +536,7 @@ class OrderUpdateView(UpdateView):
         return super().form_invalid(form)
 
 
-class OrderDetailView(DetailView):
+class OrderDetailView(LoginRequiredMixin, DetailView):
     model = Order
     template_name = 'orders/detail.html'
     context_object_name = 'order'
@@ -589,7 +591,7 @@ class OrderDetailView(DetailView):
         return context
 
 
-class OrderDeleteView(DeleteView):
+class OrderDeleteView(LoginRequiredMixin, DeleteView):
     model = Order
     success_url = reverse_lazy('orders:order_list')
     template_name = 'orders/confirm_delete.html'
@@ -599,6 +601,7 @@ class OrderDeleteView(DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
+@login_required
 @require_http_methods(["POST"])
 def update_order_status(request, pk):
     order = get_object_or_404(Order, pk=pk)
@@ -617,6 +620,7 @@ def update_order_status(request, pk):
     return redirect('orders:order_detail', pk=order.pk)
 
 
+@login_required
 def get_product_details(request, product_id):
     try:
         product = Product.objects.get(id=product_id)
@@ -649,6 +653,7 @@ def get_product_details(request, product_id):
         return JsonResponse({'success': False, 'error': 'Product not found'})
 
 
+@login_required
 @require_http_methods(["POST"])
 def bulk_update_order_status(request):
     ids = request.POST.getlist('order_ids')

@@ -1,4 +1,5 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
@@ -14,7 +15,7 @@ from customers.models import Customer
 from .forms import FinanceCategoryForm, FinanceTransactionForm
 
 
-class CategoryListView(ListView):
+class CategoryListView(LoginRequiredMixin, ListView):
     model = FinanceCategory
     template_name = 'finance/categories_list.html'
     context_object_name = 'categories'
@@ -38,7 +39,7 @@ class CategoryListView(ListView):
         return ctx
 
 
-class CategoryCreateView(CreateView):
+class CategoryCreateView(LoginRequiredMixin, CreateView):
     model = FinanceCategory
     form_class = FinanceCategoryForm
     template_name = 'finance/category_form.html'
@@ -49,7 +50,7 @@ class CategoryCreateView(CreateView):
         return super().form_valid(form)
 
 
-class IncomeQuickConfirmView(View):
+class IncomeQuickConfirmView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         # Read params from POST data
         cust_param = (request.POST.get('customer') or '').strip()
@@ -116,7 +117,7 @@ class IncomeQuickConfirmView(View):
         messages.success(request, 'Đã xác nhận thanh toán và tạo giao dịch!')
         return redirect('finance:transactions_list')
 
-class CategoryUpdateView(UpdateView):
+class CategoryUpdateView(LoginRequiredMixin, UpdateView):
     model = FinanceCategory
     form_class = FinanceCategoryForm
     template_name = 'finance/category_form.html'
@@ -129,7 +130,7 @@ class CategoryUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class CategoryDeleteView(DeleteView):
+class CategoryDeleteView(LoginRequiredMixin, DeleteView):
     model = FinanceCategory
     template_name = 'finance/category_confirm_delete.html'
     success_url = reverse_lazy('finance:category_list')
@@ -139,7 +140,7 @@ class CategoryDeleteView(DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class TransactionListView(ListView):
+class TransactionListView(LoginRequiredMixin, ListView):
     model = FinanceTransaction
     template_name = 'finance/transactions_list.html'
     context_object_name = 'transactions'
@@ -283,7 +284,7 @@ class TransactionListView(ListView):
         return ctx
 
 
-class IncomeCreateView(CreateView):
+class IncomeCreateView(LoginRequiredMixin, CreateView):
     model = FinanceTransaction
     form_class = FinanceTransactionForm
     template_name = 'finance/transaction_form.html'
@@ -322,7 +323,7 @@ class IncomeCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ExpenseCreateView(CreateView):
+class ExpenseCreateView(LoginRequiredMixin, CreateView):
     model = FinanceTransaction
     form_class = FinanceTransactionForm
     template_name = 'finance/transaction_form.html'
@@ -382,7 +383,7 @@ class ExpenseCreateView(CreateView):
         return super().form_valid(form)
 
 
-class TransactionUpdateView(UpdateView):
+class TransactionUpdateView(LoginRequiredMixin, UpdateView):
     model = FinanceTransaction
     form_class = FinanceTransactionForm
     template_name = 'finance/transaction_form.html'
@@ -395,7 +396,7 @@ class TransactionUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class TransactionDeleteView(DeleteView):
+class TransactionDeleteView(LoginRequiredMixin, DeleteView):
     model = FinanceTransaction
     template_name = 'finance/transaction_confirm_delete.html'
     success_url = reverse_lazy('finance:transactions_list')

@@ -2,6 +2,7 @@ from decimal import Decimal
 import json
 
 from django.views.generic import ListView, CreateView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .models import Customer
 from django.views.generic.edit import UpdateView
@@ -13,7 +14,7 @@ from django.db import models
 from django.utils.safestring import mark_safe
 
 
-class CustomerListView(ListView):
+class CustomerListView(LoginRequiredMixin, ListView):
     model = Customer
     template_name = 'customers/list.html'
     context_object_name = 'customers'
@@ -89,7 +90,7 @@ class CustomerListView(ListView):
         return context
 
 
-class CustomerCreateView(CreateView):
+class CustomerCreateView(LoginRequiredMixin, CreateView):
     model = Customer
     template_name = 'customers/create.html'
     fields = ['code', 'name', 'phone_number', 'social_link', 'address', 'is_affiliate', 'note']
@@ -117,7 +118,7 @@ class CustomerCreateView(CreateView):
         return form
 
 
-class CustomerDetailView(DetailView):
+class CustomerDetailView(LoginRequiredMixin, DetailView):
     model = Customer
     template_name = 'customers/detail.html'
     context_object_name = 'customer'
@@ -344,7 +345,7 @@ class CustomerDetailView(DetailView):
         return context
 
 
-class CustomerReportView(DetailView):
+class CustomerReportView(LoginRequiredMixin, DetailView):
     model = Customer
     template_name = 'customers/report.html'
     context_object_name = 'customer'
@@ -591,7 +592,7 @@ class CustomerReportView(DetailView):
         return context
 
 
-class CustomerUpdateView(UpdateView):
+class CustomerUpdateView(LoginRequiredMixin, UpdateView):
     model = Customer
     template_name = 'customers/update.html'
     context_object_name = 'customer'
@@ -620,14 +621,14 @@ class CustomerUpdateView(UpdateView):
         return form
 
 
-class DeleteCustomerView(View):
+class DeleteCustomerView(LoginRequiredMixin, View):
     def post(self, request, code):
         customer = get_object_or_404(Customer, code=code)
         customer.delete()
         return redirect('customers:customer_list')
 
 
-class CustomerBillView(DetailView):
+class CustomerBillView(LoginRequiredMixin, DetailView):
     model = Customer
     template_name = 'customers/bill.html'
     context_object_name = 'customer'

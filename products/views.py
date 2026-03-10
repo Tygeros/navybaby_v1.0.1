@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db.models import Q, Count, Sum, F, FloatField, IntegerField, ExpressionWrapper
@@ -11,7 +12,7 @@ from orders.models import Order
 from .forms import ProductForm
 
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = 'products/list.html'
     context_object_name = 'products'
@@ -119,7 +120,7 @@ class ProductListView(ListView):
         return context
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     template_name = 'products/create.html'
@@ -141,7 +142,7 @@ class ProductCreateView(CreateView):
         return super().form_invalid(form)
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'products/create.html'
@@ -165,7 +166,7 @@ class ProductUpdateView(UpdateView):
         return super().form_invalid(form)
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'products/detail.html'
     context_object_name = 'product'
@@ -315,7 +316,7 @@ class ProductDetailView(DetailView):
         return context
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     template_name = 'products/confirm_delete.html'
     success_url = reverse_lazy('products:product_list')
@@ -326,7 +327,7 @@ class ProductDeleteView(DeleteView):
         return response
 
 
-class ProductReportView(DetailView):
+class ProductReportView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = 'products/report.html'
     context_object_name = 'product'
