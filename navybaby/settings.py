@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     "categories",
     "suppliers",
     "finance",
-    "wallet.apps.WalletConfig",
 ]
 
 # === MIDDLEWARE ===
