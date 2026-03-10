@@ -56,6 +56,7 @@ INSTALLED_APPS = [
 
 # === MIDDLEWARE ===
 MIDDLEWARE = [
+    "accounts.middleware.BotBlockingMiddleware",  # Block bots FIRST
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",  # serve static files
     "django.contrib.sessions.middleware.SessionMiddleware",

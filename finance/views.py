@@ -50,11 +50,11 @@ class CategoryCreateView(CreateView):
 
 
 class IncomeQuickConfirmView(View):
-    def get(self, request, *args, **kwargs):
-        # Read params
-        cust_param = (request.GET.get('customer') or '').strip()
-        amt_param = (request.GET.get('amount') or '').strip()
-        note = request.GET.get('note') or ''
+    def post(self, request, *args, **kwargs):
+        # Read params from POST data
+        cust_param = (request.POST.get('customer') or '').strip()
+        amt_param = (request.POST.get('amount') or '').strip()
+        note = request.POST.get('note') or ''
         # Resolve customer by id or code
         customer = None
         if cust_param:
@@ -84,7 +84,7 @@ class IncomeQuickConfirmView(View):
             note=(note or customer.code or ''),
         )
         # If a deposit was deducted on the bill, auto-create a deduction expense transaction
-        paid_override = (request.GET.get('paid_override') or '').strip()
+        paid_override = (request.POST.get('paid_override') or '').strip()
         try:
             paid_override_dec = Decimal(str(float(paid_override))) if paid_override else Decimal('0')
         except Exception:
@@ -102,13 +102,13 @@ class IncomeQuickConfirmView(View):
             )
         # Also move all orders in the current bill (same filters) to 'reconciled'
         qs = Order.objects.filter(customer=customer).select_related('product')
-        status_list = request.GET.getlist('status')
+        status_list = request.POST.getlist('status')
         if status_list:
             qs = qs.filter(status__in=status_list)
-        supplier_ids = request.GET.getlist('supplier')
+        supplier_ids = request.POST.getlist('supplier')
         if supplier_ids:
             qs = qs.filter(product__supplier_id__in=supplier_ids)
-        q = request.GET.get('q')
+        q = request.POST.get('q')
         if q:
             from django.db import models as dj_models
             qs = qs.filter(dj_models.Q(code__icontains=q) | dj_models.Q(product__name__icontains=q))

@@ -59,3 +59,35 @@ class ApprovalRequiredMiddleware:
             return redirect("accounts:cho-duyet")
 
         return self.get_response(request)
+
+
+class BotBlockingMiddleware:
+    """
+    Block search engine bots and crawlers from accessing the application.
+    This prevents bots from triggering GET requests that modify data.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        user_agent = request.META.get('HTTP_USER_AGENT', '').lower()
+        
+        # List of bot patterns to block
+        bot_patterns = [
+            'bot', 'crawler', 'spider', 'scraper',
+            'amazonbot', 'googlebot', 'bingbot',
+            'slurp', 'duckduckbot', 'baiduspider',
+            'yandexbot', 'facebookexternalhit'
+        ]
+        
+        # Check if user agent contains any bot pattern
+        if any(pattern in user_agent for pattern in bot_patterns):
+            from django.http import HttpResponseForbidden
+            return HttpResponseForbidden(
+                "<h1>403 Forbidden</h1>"
+                "<p>Bot access is not allowed on this application.</p>"
+                "<p>If you believe this is an error, please contact the administrator.</p>"
+            )
+        
+        return self.get_response(request)

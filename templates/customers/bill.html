@@ -15,9 +15,20 @@
     <a href="{% url 'customers:customer_detail' customer.code %}?{% if request.GET %}{{ request.GET.urlencode }}{% endif %}" class="inline-flex items-center px-3 py-1.5 rounded-md border text-sm transition bg-[#161616] text-gray-300 border-gray-800 hover:border-gray-700">
       <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i>Quay lại KH
     </a>
-    <a href="{% url 'finance:income_quick_confirm' %}?customer={{ customer.id }}&amount={{ remaining_amount|default:0 }}&note={{ customer.code }}{% if request.GET %}&{{ request.GET.urlencode }}{% endif %}" class="inline-flex items-center px-3 py-1.5 rounded-md border text-sm transition bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-500" onclick="return confirm('Xác nhận tạo giao dịch thanh toán số tiền còn lại?');">
-      <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i>Xác nhận thanh toán
-    </a>
+    <form method="POST" action="{% url 'finance:income_quick_confirm' %}" style="display:inline;" onsubmit="return confirm('Xác nhận tạo giao dịch thanh toán số tiền còn lại?');">
+      {% csrf_token %}
+      <input type="hidden" name="customer" value="{{ customer.id }}">
+      <input type="hidden" name="amount" value="{{ remaining_amount|default:0 }}">
+      <input type="hidden" name="note" value="{{ customer.code }}">
+      {% if request.GET %}
+        {% for key, value in request.GET.items %}
+          <input type="hidden" name="{{ key }}" value="{{ value }}">
+        {% endfor %}
+      {% endif %}
+      <button type="submit" class="inline-flex items-center px-3 py-1.5 rounded-md border text-sm transition bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-500">
+        <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i>Xác nhận thanh toán
+      </button>
+    </form>
     <button id="btn-export" class="inline-flex items-center px-3 py-1.5 rounded-md border text-sm transition bg-blue-600 text-white border-blue-700 hover:bg-blue-500">
       <i data-lucide="image" class="w-4 h-4 mr-1"></i>Xuất ảnh
     </button>

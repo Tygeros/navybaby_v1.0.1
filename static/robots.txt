@@ -1,0 +1,24 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /tai-chinh/
+Disallow: /don-hang/
+Disallow: /khach-hang/
+Disallow: /san-pham/
+Disallow: /nha-cung-cap/
+Disallow: /danh-muc/
+Disallow: /dang-nhap/
+Disallow: /dang-ky/
+Disallow: /dang-xuat/
+
+# Block all bots from the entire application
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: Googlebot
+Disallow: /
+
+User-agent: bingbot
+Disallow: /
+
+User-agent: *
+Disallow: /
