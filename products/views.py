@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.db.models import Q, Count, Sum, F, FloatField, IntegerField, ExpressionWrapper
-from django.db.models.functions import Coalesce
+from django.db.models.functions import Coalesce, Cast
 from django.core.paginator import Paginator
 
 from .models import Product, Category, Supplier
@@ -29,7 +29,10 @@ class ProductListView(LoginRequiredMixin, ListView):
         )
         # Exclude cancelled orders from revenue aggregation
         from django.db.models import Case, When, Value
-        revenue_term = ExpressionWrapper(F('orders__amount') * F('price'), output_field=FloatField())
+        revenue_term = ExpressionWrapper(
+            Cast(F('orders__amount'), FloatField()) * Cast(F('price'), FloatField()),
+            output_field=FloatField(),
+        )
         queryset = queryset.annotate(
             total_revenue=Coalesce(
                 Sum(

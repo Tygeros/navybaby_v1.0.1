@@ -22,7 +22,7 @@ class CustomerListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         from django.db.models import Q, Count, Sum, F, FloatField, IntegerField, ExpressionWrapper, Case, When, Value
-        from django.db.models.functions import Coalesce, TruncDate
+        from django.db.models.functions import Coalesce, TruncDate, Cast
 
         qs = (
             Customer.objects
@@ -43,7 +43,10 @@ class CustomerListView(LoginRequiredMixin, ListView):
             )
         )
 
-        revenue_term = ExpressionWrapper(F('orders__amount') * F('orders__sale_price'), output_field=FloatField())
+        revenue_term = ExpressionWrapper(
+            Cast(F('orders__amount'), FloatField()) * Cast(F('orders__sale_price'), FloatField()),
+            output_field=FloatField(),
+        )
         qs = qs.annotate(
             total_revenue=Coalesce(
                 Sum(
