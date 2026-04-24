@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import F, IntegerField, ExpressionWrapper, Sum
+from django.db.models import F, IntegerField, BigIntegerField, ExpressionWrapper, Sum, Value
 from django.db.models.functions import Coalesce
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -59,9 +59,11 @@ class HomePageView(LoginRequiredMixin, TemplateView):
             Coalesce(F('sale_price'), 0) * Coalesce(F('amount'), 0)
             - Coalesce(F('discount'), 0)
             - F('product__purchase_price'),
-            output_field=IntegerField(),
+            output_field=BigIntegerField(),
         )
-        context['net_profit'] = orders_qs.aggregate(total=Coalesce(Sum(profit_expr), 0))['total']
+        context['net_profit'] = orders_qs.aggregate(
+            total=Coalesce(Sum(profit_expr), Value(0), output_field=BigIntegerField())
+        )['total']
 
         # ===== Period-based statistics for charts =====
         now = timezone.now()
@@ -142,13 +144,15 @@ class HomePageView(LoginRequiredMixin, TemplateView):
         orders_all = Order.objects.exclude(status__in=['reconciled', 'cancelled'])
         order_value_expr = ExpressionWrapper(
             Coalesce(F('sale_price'), 0) * Coalesce(F('amount'), 0) - Coalesce(F('discount'), 0),
-            output_field=IntegerField(),
+            output_field=BigIntegerField(),
         )
 
         def agg_counts_and_values(qs):
             return {
                 'count': qs.count(),
-                'value': qs.aggregate(total=Coalesce(Sum(order_value_expr), 0))['total']
+                'value': qs.aggregate(
+                    total=Coalesce(Sum(order_value_expr), Value(0), output_field=BigIntegerField())
+                )['total']
             }
 
         orders_today = agg_counts_and_values(in_range(orders_all, 'created_at', start_today))

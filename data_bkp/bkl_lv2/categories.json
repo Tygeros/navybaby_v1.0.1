@@ -1,0 +1,101 @@
+[
+{
+  "model": "categories.category",
+  "pk": 1,
+  "fields": {
+    "code": "DM-071125-001",
+    "name": "Quần áo",
+    "note": "",
+    "created_at": "2025-11-07T03:03:23.364Z",
+    "updated_at": "2025-11-07T03:03:23.364Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 2,
+  "fields": {
+    "code": "DM-071125-002",
+    "name": "Giày dép",
+    "note": "",
+    "created_at": "2025-11-07T03:03:32.122Z",
+    "updated_at": "2025-11-07T03:03:32.122Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 3,
+  "fields": {
+    "code": "DM-081125-001",
+    "name": "Mũ",
+    "note": "",
+    "created_at": "2025-11-08T07:47:41.229Z",
+    "updated_at": "2025-11-08T07:47:41.229Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 4,
+  "fields": {
+    "code": "DM-081125-002",
+    "name": "Phụ kiện",
+    "note": "",
+    "created_at": "2025-11-08T07:47:49.471Z",
+    "updated_at": "2025-11-08T07:47:49.471Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 5,
+  "fields": {
+    "code": "DM-081125-003",
+    "name": "Đồ gia dụng",
+    "note": "",
+    "created_at": "2025-11-08T07:47:56.748Z",
+    "updated_at": "2025-11-08T07:47:56.748Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 6,
+  "fields": {
+    "code": "DM-081125-004",
+    "name": "Quần áo, Phụ kiện",
+    "note": "",
+    "created_at": "2025-11-08T08:20:45.406Z",
+    "updated_at": "2025-11-08T08:20:45.406Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 7,
+  "fields": {
+    "code": "DM-081125-005",
+    "name": "Phụ kiện, Quần áo",
+    "note": "",
+    "created_at": "2025-11-08T08:42:30.205Z",
+    "updated_at": "2025-11-08T08:42:30.206Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 8,
+  "fields": {
+    "code": "DM-081125-006",
+    "name": "Đồ da dụng",
+    "note": "",
+    "created_at": "2025-11-08T09:06:21.139Z",
+    "updated_at": "2025-11-08T09:06:21.139Z"
+  }
+},
+{
+  "model": "categories.category",
+  "pk": 9,
+  "fields": {
+    "code": "DM-081125-007",
+    "name": "Quần áo, Giày dép, Phụ kiện",
+    "note": "",
+    "created_at": "2025-11-08T09:22:11.510Z",
+    "updated_at": "2025-11-08T09:22:11.510Z"
+  }
+}
+]

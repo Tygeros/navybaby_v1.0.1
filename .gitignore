@@ -280,3 +280,5 @@ note.txt
 dump_fixtures.sh
 clean_fixtures.sh
 restore_fixtures.sh
+
+scripts/
