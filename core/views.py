@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F, IntegerField, BigIntegerField, ExpressionWrapper, Sum, Value
-from django.db.models.functions import Coalesce
+from django.db.models.functions import Coalesce, Cast
 from django.utils import timezone
 from datetime import datetime, timedelta
 from customers.models import Customer
@@ -56,9 +56,10 @@ class HomePageView(LoginRequiredMixin, TemplateView):
             .filter(product__purchase_price__gt=0)
         )
         profit_expr = ExpressionWrapper(
-            Coalesce(F('sale_price'), 0) * Coalesce(F('amount'), 0)
-            - Coalesce(F('discount'), 0)
-            - F('product__purchase_price'),
+            Coalesce(Cast(F('sale_price'), BigIntegerField()), Value(0), output_field=BigIntegerField())
+            * Coalesce(Cast(F('amount'), BigIntegerField()), Value(0), output_field=BigIntegerField())
+            - Coalesce(Cast(F('discount'), BigIntegerField()), Value(0), output_field=BigIntegerField())
+            - Coalesce(Cast(F('product__purchase_price'), BigIntegerField()), Value(0), output_field=BigIntegerField()),
             output_field=BigIntegerField(),
         )
         context['net_profit'] = orders_qs.aggregate(
@@ -143,7 +144,9 @@ class HomePageView(LoginRequiredMixin, TemplateView):
         # Orders (counts and values)
         orders_all = Order.objects.exclude(status__in=['reconciled', 'cancelled'])
         order_value_expr = ExpressionWrapper(
-            Coalesce(F('sale_price'), 0) * Coalesce(F('amount'), 0) - Coalesce(F('discount'), 0),
+            Coalesce(Cast(F('sale_price'), BigIntegerField()), Value(0), output_field=BigIntegerField())
+            * Coalesce(Cast(F('amount'), BigIntegerField()), Value(0), output_field=BigIntegerField())
+            - Coalesce(Cast(F('discount'), BigIntegerField()), Value(0), output_field=BigIntegerField()),
             output_field=BigIntegerField(),
         )
 
