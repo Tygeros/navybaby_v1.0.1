@@ -183,7 +183,7 @@ class HomePageView(LoginRequiredMixin, TemplateView):
             .annotate(
                 order_count=Coalesce(Sum(Case(When(id__isnull=False, then=1), default=0, output_field=IntegerField())), 0),
                 total_amount=Coalesce(Sum('amount'), 0),
-                net_revenue=Coalesce(Sum(order_value_expr), 0),
+                net_revenue=Coalesce(Sum(order_value_expr), Value(0), output_field=BigIntegerField()),
             )
             .order_by('-net_revenue')[:10]
         )
@@ -200,7 +200,7 @@ class HomePageView(LoginRequiredMixin, TemplateView):
             .annotate(
                 order_count=Coalesce(Sum(Case(When(id__isnull=False, then=1), default=0, output_field=IntegerField())), 0),
                 total_amount=Coalesce(Sum('amount'), 0),
-                net_revenue=Coalesce(Sum(order_value_expr), 0),
+                net_revenue=Coalesce(Sum(order_value_expr), Value(0), output_field=BigIntegerField()),
             )
             .order_by('-net_revenue')[:10]
         )
@@ -215,7 +215,7 @@ class HomePageView(LoginRequiredMixin, TemplateView):
             .values('status')
             .annotate(
                 order_count=Count('id'),
-                total_revenue=Coalesce(Sum(order_value_expr), 0),
+                total_revenue=Coalesce(Sum(order_value_expr), Value(0), output_field=BigIntegerField()),
             )
             .order_by('-order_count')
         )
@@ -240,7 +240,7 @@ class HomePageView(LoginRequiredMixin, TemplateView):
             .values('day')
             .annotate(
                 order_count=Count('id'),
-                revenue=Coalesce(Sum(order_value_expr), 0),
+                revenue=Coalesce(Sum(order_value_expr), Value(0), output_field=BigIntegerField()),
             )
             .order_by('day')
         )
