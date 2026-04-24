@@ -172,7 +172,7 @@ class HomePageView(LoginRequiredMixin, TemplateView):
         }
 
         # Top-selling products (by net revenue) - use custom date range or current month
-        from django.db.models import Case, When, Value, FloatField
+        from django.db.models import Case, When, FloatField
         top_products_start = chart_start if (custom_start_date or custom_end_date) else start_month
         top_products_qs = (
             Order.objects
