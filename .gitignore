@@ -282,3 +282,4 @@ clean_fixtures.sh
 restore_fixtures.sh
 
 scripts/
+data_bkp/
